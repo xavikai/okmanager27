@@ -1,0 +1,17 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Lligues: les veu qualsevol usuari amb sessió; només el creador les pot modificar.
+    match /leagues/{code} {
+      allow read: if request.auth != null;
+      allow create: if request.auth != null && request.resource.data.owner == request.auth.uid;
+      allow update: if request.auth != null && resource.data.owner == request.auth.uid;
+      allow delete: if false;
+    }
+    // Equips: cadascú només escriu el seu document; tothom amb sessió els pot llegir per a la classificació.
+    match /teams/{uid} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null && request.auth.uid == uid;
+    }
+  }
+}
