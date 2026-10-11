@@ -121,7 +121,7 @@ td.r,th.r{text-align:right}
 
 /* Rink */
 .lineup{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:14px}
-.rinkbox{position:relative;width:100%;max-width:100%;aspect-ratio:20/40;max-height:560px;margin:0 auto}
+.rinkbox{position:relative;width:100%;max-width:290px;aspect-ratio:1/2;margin:0 auto}
 .rinkbox svg{position:absolute;inset:0;width:100%;height:100%}
 .slot{position:absolute;transform:translate(-50%,-50%);width:122px;max-width:44%;padding:7px 6px;text-align:center;background:var(--panel);color:var(--fg);border:1px solid var(--line2);border-radius:10px;box-shadow:0 4px 14px rgba(0,0,0,.18);display:flex;flex-direction:column;gap:1px;align-items:center}
 .slot.sel{background:var(--accent);color:var(--accent-fg);border-color:transparent}
@@ -155,7 +155,7 @@ details summary{list-style:revert}
   nav.menu button[aria-current="page"]{box-shadow:inset 0 -3px var(--accent)}
   nav.menu .sep{display:none}
   .lineup{grid-template-columns:1fr}
-  .rinkbox{max-height:520px;max-width:300px}
+  .rinkbox{max-width:260px}
 }
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 .legal{font-size:12.5px;line-height:1.5;color:var(--dim);margin:0;padding:0 4px}
@@ -163,6 +163,11 @@ details summary{list-style:revert}
 .sndbtn{position:fixed;right:calc(14px + env(safe-area-inset-right,0px));bottom:calc(14px + env(safe-area-inset-bottom,0px));z-index:55;width:44px;height:44px;border-radius:50%;border:1px solid var(--line2);background:var(--panel);color:var(--fg);display:grid;place-items:center;cursor:pointer;box-shadow:var(--shadow)}
 .sndbtn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 .sndbtn svg{width:20px;height:20px}
+.win{margin:0;padding:10px 12px;border-radius:10px;background:var(--panel2);border:1px solid var(--line);font-size:13.5px}
+.win.open{background:color-mix(in srgb,var(--good) 12%,var(--panel));border-color:color-mix(in srgb,var(--good) 40%,var(--line))}
+.perks{display:grid;gap:6px}.perks label{display:flex;gap:8px;align-items:flex-start;font-size:14px}.perks small{color:var(--dim);display:block}
+.offer{display:grid;gap:10px;border-top:1px solid var(--line);padding-top:12px}
+.offer .f{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}.offer .f label{display:grid;gap:4px;min-width:0}.offer .f input,.offer .f select{width:100%;min-width:0;box-sizing:border-box}
 </style>
 
 <div class="wrap" id="app"></div>
@@ -243,7 +248,7 @@ let S=null, view="inici", ui={selSlot:null,mPos:"TOT",mQ:"",eqTeam:null,match:nu
 
 function newGame(teamId){
   R=Math.random;
-  const st={ver:1,season:2026,user:teamId,round:0,teams:{},players:{},news:[],ledger:[],offers:[],nextId:1};
+  const st={ver:1,season:2026,user:teamId,round:0,teams:{},players:{},news:[],ledger:[],offers:[],pending:[],nextId:1};
   for(const t of TEAMS0){
     st.teams[t.id]={id:t.id,name:t.name,city:t.city,c1:t.c1,c2:t.c2,rep:t.rep,budget:t.bud,arena:t.arena,lineup:[],tactic:{style:"EQU",press:"MIG"}};
     for(const a of t.p){const id="p"+(st.nextId++);st.players[id]=makePlayer(a,t.id,id)}
@@ -268,7 +273,7 @@ function load(){try{const s=localStorage.getItem(SAVE);return s?JSON.parse(s):nu
 function pushNews(t,hot){S.news.unshift({r:S.round,t,hot:!!hot});S.news=S.news.slice(0,40)}
 
 const squad=tid=>Object.values(S.players).filter(p=>p.team===tid);
-const salaryMass=tid=>squad(tid).reduce((s,p)=>s+p.salary,0);
+const salaryMass=tid=>squad(tid).reduce((s,p)=>s+p.salary+perkCost(p),0);
 const avail=p=>p.inj<=0;
 function teamOvr(tid){const L=lineupOf(tid).map(id=>S.players[id]);return L.length?Math.round(L.reduce((s,p)=>s+ovr(p),0)/L.length):0}
 function autoLineup(tid){
@@ -351,12 +356,14 @@ function playRound(){
   // lesions i recuperació
   for(const p of Object.values(S.players))if(p.inj>0)p.inj--;
   finances(rd);
+  promises();
   aiOffers();
   const um=rd.find(m=>m.h===me||m.a===me);
   const r=um.res,mine=um.h===me?[r.gh,r.ga]:[r.ga,r.gh];
   const opp=S.teams[um.h===me?um.a:um.h].name;
   S.round++;
   pushNews(`J${S.round}: ${S.teams[um.h].name} ${r.gh}-${r.ga} ${S.teams[um.a].name}. ${mine[0]>mine[1]?"Victòria":mine[0]<mine[1]?"Derrota":"Empat"} contra el ${opp}.`,true);
+  if(S.round===WINTER){pushNews(`S'obre el mercat de Nadal. Els acords pendents ja són efectius i pots fitxar fins a la J${WINTER+1}.`,true);openWindow()}
   for(const p of squad(me))if(p.inj>0&&um.res.ev.some(e=>e.t==="inj"&&e.pid===p.id))pushNews(`${p.name} estarà ${p.inj} setmanes de baixa.`);
   autoFix(me);
   for(const tid in S.teams)if(tid!==me)autoLineup(tid);
@@ -394,52 +401,148 @@ function endSeason(){
 }
 function newSeason(){
   S.season++;S.round=0;S.finished=false;S.offers=[];
+  for(const p of Object.values(S.players))if(p.contract<S.season)p.contract=S.season+1+(hash(p.name+S.season)%2);
   for(const p of Object.values(S.players)){
     p.age++;const d=p.age<=23?ri(1,4):p.age<=27?ri(0,2):p.age<=30?ri(-1,1):ri(-4,-1);
     for(const k in p.a)if(!(p.pos!=="POR"&&(k==="ref"||k==="col")))p.a[k]=clamp(p.a[k]+d+ri(-1,1),20,99);
     p.goals=0;p.apps=0;p.cards=0;p.energy=100;p.inj=0;p.morale=70;
   }
+  openWindow();
   S.fixtures=makeFixtures(Object.keys(S.teams),hash("s"+S.season+S.user));
   for(const id in S.teams)autoLineup(id);
   pushNews(`Comença la temporada ${S.season}-${(S.season+1)%100}. Els jugadors han envellit un any i han evolucionat.`,true);
   save();
 }
 
-/* ============ MERCAT ============ */
+/* ============ MERCAT ============
+   Finestres: estiu (abans de la J1 i entre temporades) i Nadal (després de la J13).
+   Fora de finestra es poden tancar acords, però el jugador no s'incorpora fins a la finestra següent. */
+const WINTER=13,JOBS=3;
+const mktOpen=()=>S.finished||S.round===0||S.round===WINTER;
+const nextWin=()=>S.finished||S.round>WINTER?"l'estiu":"Nadal";
+const winLabel=()=>S.finished||S.round===0?"Mercat d'estiu obert":S.round===WINTER?"Mercat de Nadal obert":`Mercat tancat · els acords es fan efectius per ${nextWin()==="Nadal"?"Nadal (després de la J"+WINTER+")":"l'estiu"}`;
+const PERKS=[
+ {k:"feina",l:"Feina en una empresa col·laboradora",cost:0,d:"Sense cost, però el club només en té "+JOBS},
+ {k:"pis",l:"Pis pagat a la ciutat",cost:4.5,d:"≈450 €/mes"},
+ {k:"cotxe",l:"Cotxe del patrocinador",cost:1.5,d:"≈150 €/mes"},
+ {k:"estudis",l:"Estudis pagats",cost:2,d:"≈200 €/mes"},
+ {k:"titular",l:"Promesa de titularitat",cost:0,d:"Si no juga de titular, perdrà moral"}];
+const perkCost=p=>p.perks?PERKS.reduce((s,x)=>s+(p.perks[x.k]?x.cost:0),0):0;
+const jobsUsed=tid=>squad(tid).filter(p=>p.perks&&p.perks.feina).length+(S.pending||[]).filter(x=>x.to===tid&&x.deal&&x.deal.perks.feina).length;
 function isKey(p){const sq=squad(p.team).sort((a,b)=>ovr(b)-ovr(a));return sq.indexOf(p)<3}
 function canLeave(p){const sq=squad(p.team);if(sq.length<=8)return "L'equip no té prou jugadors per vendre'l.";if(p.pos==="POR"&&sq.filter(x=>x.pos==="POR").length<=2)return "No vendran un dels seus dos porters.";return null}
-function makeOffer(pid,amount){
-  const p=S.players[pid],me=S.teams[S.user];
-  if(squad(S.user).length>=12)return {ok:false,msg:"Tens 12 jugadors. Ven-ne algun abans de fitxar."};
-  if(amount>me.budget)return {ok:false,msg:"No tens prou pressupost per aquesta oferta."};
+const pend=()=>S.pending||(S.pending=[]);
+const incoming=tid=>pend().filter(x=>x.to===tid).length;
+const outgoing=tid=>pend().filter(x=>x.from===tid).length;
+const committed=tid=>pend().filter(x=>x.to===tid).reduce((s,x)=>s+x.fee,0);
+/* Què valora cada jugador: perfil fix a partir del nom, l'edat i la seva situació */
+function prefs(p,to){
+  const r=rng(hash(p.name+"|pref")),cur=monthlyOf(p),me=S.teams[to],from=S.teams[p.team];
+  const starter=from.lineup.includes(p.id);
+  const w=()=>.5+r();
+  const v={
+    feina:Math.round(clamp(950-cur*.45,80,950)*w()*(p.age<20?.5:1)),
+    pis:Math.round((me.city===from.city?80:380+r()*300)),
+    cotxe:Math.round(80+r()*170),
+    estudis:Math.round(p.age<=21?350+r()*350:p.age<=25?150+r()*250:p.age<=29?r()*120:0),
+    titular:Math.round(starter?60+r()*120:350+r()*450),
+  };
+  const arrel=Math.round(r()*450*(p.age>=28?1.4:1));
+  return {v,arrel};
+}
+function prefHint(p,to){const {v}=prefs(p,to);const L={feina:"tenir feina a la ciutat",pis:"un pis pagat",cotxe:"un cotxe",estudis:"poder estudiar",titular:"tenir minuts de titular"};
+  return Object.entries(v).sort((a,b)=>b[1]-a[1]).slice(0,2).map(([k])=>L[k]).join(" i ")}
+/* Utilitat de l'oferta en €/mes equivalents */
+function evalDeal(p,to,deal){
+  const {v,arrel}=prefs(p,to),cur=monthlyOf(p);
+  let U=deal.sal*1000/10;
+  for(const k in v)if(deal.perks[k])U+=v[k];
+  U+=(S.teams[to].rep-S.teams[p.team].rep)*140;
+  const y=deal.years;U+=p.age>=29?(y-1)*110:p.age<=23&&y>3?-(y-3)*90:y>=2?60:0;
+  const need=Math.max(cur*1.12,cur+150)+arrel;
+  return {U,need,ratio:U/Math.max(need,1)};
+}
+function feeOk(p,fee){
+  let v=valueOf(p)*(isKey(p)?1.35:1);if(p.contract<=S.season+1)v*=.6;
+  const ratio=fee/v;const prob=ratio>=1.25?1:ratio>=1?.6+(ratio-1)*1.6:ratio>=.85?.15:0;
+  return {v,ratio,ok:R()<prob};
+}
+function makeOffer(pid,deal){
+  const p=S.players[pid],me=S.teams[S.user],from=S.teams[p.team];
+  if(p.talked===S.season*100+S.round)return {ok:false,msg:`Ja has parlat amb ${p.name} aquesta jornada. Torna-ho a provar després del proper partit.`};
+  if(pend().some(x=>x.pid===pid))return {ok:false,msg:`${p.name} ja té un acord tancat amb un club.`};
+  if(squad(S.user).length+incoming(S.user)>=12)return {ok:false,msg:"Entre la plantilla i els fitxatges pendents ja tens 12 jugadors."};
+  if(deal.fee+committed(S.user)>me.budget)return {ok:false,msg:"No tens prou pressupost (compta també els fitxatges pendents de pagar)."};
+  if(deal.perks.feina&&jobsUsed(S.user)>=JOBS)return {ok:false,msg:`Les ${JOBS} feines de les empreses col·laboradores ja estan donades.`};
   const no=canLeave(p);if(no)return {ok:false,msg:no};
-  const v=valueOf(p)*(isKey(p)?1.35:1);
-  const offerSal=salaryOf(ovr(p),p.age,S.user);
-  if(offerSal<p.salary*.7)return {ok:false,msg:`${p.name} no vol venir: cobra ${eurMes(p)} i el teu club només li pot pagar uns ${(Math.round(offerSal*1000/10/10)*10).toLocaleString("ca-ES")} €/mes.`};
-  const ratio=amount/v;const prob=ratio>=1.25?1:ratio>=1?.6+(ratio-1)*1.6:ratio>=.85?.15:0;
-  if(R()<prob){
-    const from=S.teams[p.team];from.budget+=amount;me.budget-=amount;
-    p.team=S.user;p.salary=Math.max(p.salary*1.05,salaryOf(ovr(p),p.age,S.user));p.forSale=false;p.morale=80;
-    autoLineup(from.id);
-    pushNews(`FITXATGE: ${p.name} arriba del ${from.name} per ${money(amount)}.`,true);save();
-    return {ok:true,msg:`${p.name} és nou jugador del ${me.name}!`};
+  p.talked=S.season*100+S.round;
+  const c=feeOk(p,deal.fee);
+  if(!c.ok){save();return {ok:false,msg:c.ratio<.85?`El ${from.name} ni s'ho planteja. Valoren ${p.name} en uns ${money(Math.round(c.v))}.`:`El ${from.name} rebutja el traspàs. Potser amb una mica més…`}}
+  const e=evalDeal(p,S.user,deal);
+  const yes=e.ratio>=1||(e.ratio>=.92&&R()<.4);
+  if(!yes){save();const gap=Math.round((e.need-e.U)/10)*10;
+    return {ok:false,msg:`El ${from.name} accepta el traspàs, però ${p.name} diu que no. ${e.ratio<.75?"La proposta queda molt lluny del que vol.":"S'hi acosta: li falten uns "+gap.toLocaleString("ca-ES")+" €/mes en sou o en condicions."} Li importa sobretot ${prefHint(p,S.user)}.`}}
+  if(mktOpen()){doTransfer({pid,from:p.team,to:S.user,fee:deal.fee,deal});save();return {ok:true,msg:`${p.name} és nou jugador del ${me.name}!`}}
+  pend().push({id:"t"+(S.nextId++),pid,from:p.team,to:S.user,fee:deal.fee,deal});
+  pushNews(`ACORD: ${p.name} (${from.name}) jugarà al ${me.name} a partir de ${nextWin()==="Nadal"?"Nadal":"l'estiu"}. Traspàs de ${money(deal.fee)}, que es pagarà quan s'incorpori.`,true);save();
+  return {ok:true,msg:`Acord tancat! ${p.name} s'incorporarà per ${nextWin()==="Nadal"?"Nadal":"l'estiu"}.`};
+}
+function doTransfer(x){
+  const p=S.players[x.pid],from=S.teams[x.from],to=S.teams[x.to];
+  from.budget+=x.fee;to.budget-=x.fee;p.team=x.to;p.forSale=false;p.morale=80;p.leaving=false;
+  if(x.deal){p.salary=x.deal.sal;p.perks={...x.deal.perks};p.contract=S.season+x.deal.years}
+  else p.perks=null;
+  from.lineup=from.lineup.filter(id=>id!==p.id);autoLineup(from.id);autoLineup(to.id);
+  const extra=x.deal?Object.keys(x.deal.perks).filter(k=>x.deal.perks[k]).map(k=>({feina:"feina",pis:"pis",cotxe:"cotxe",estudis:"estudis",titular:"titularitat"})[k]):[];
+  pushNews(`${x.to===S.user?"FITXATGE":x.from===S.user?"VENDA":"MERCAT"}: ${p.name} passa del ${from.name} al ${to.name} per ${money(x.fee)}${extra.length?" (amb "+extra.join(", ")+")":""}.`,x.to===S.user||x.from===S.user);
+}
+/* Quan s'obre una finestra, s'executen els acords pendents i els altres clubs també es mouen */
+function openWindow(){
+  const list=pend().slice();S.pending=[];
+  for(const x of list){const p=S.players[x.pid],to=S.teams[x.to];
+    if(!p||p.team!==x.from){continue}
+    if(to.budget<x.fee||squad(x.to).length>=12||squad(x.from).length<=8){p.leaving=false;pushNews(`S'ha caigut el traspàs de ${p.name} al ${to.name}.`,x.to===S.user||x.from===S.user);continue}
+    doTransfer(x);
   }
-  return {ok:false,msg:ratio<.85?`El ${S.teams[p.team].name} ni s'ho planteja. Valoren ${p.name} en uns ${money(Math.round(v))}.`:`El ${S.teams[p.team].name} rebutja l'oferta. Potser amb una mica més…`};
+  S.offers=S.offers.filter(o=>S.players[o.pid].team===S.user);
+  aiMarket();
+}
+function aiMarket(){
+  const ai=Object.keys(S.teams).filter(t=>t!==S.user);
+  for(let n=0;n<3;n++){
+    const buyer=ai[ri(0,ai.length-1)],B=S.teams[buyer];if(squad(buyer).length>=12)continue;
+    const cands=Object.values(S.players).filter(p=>p.team!==buyer&&p.team!==S.user&&!isKey(p)&&!canLeave(p)&&squad(p.team).length>9&&valueOf(p)<=B.budget*.3&&!pend().some(x=>x.pid===p.id));
+    if(!cands.length)continue;cands.sort((a,b)=>ovr(b)-ovr(a));const p=cands[ri(0,Math.min(5,cands.length-1))];
+    doTransfer({pid:p.id,from:p.team,to:buyer,fee:Math.round(valueOf(p)*(.9+R()*.3)*10)/10});
+  }
 }
 function aiOffers(){
-  for(const p of squad(S.user)){if(!p.forSale)continue;
-    if(R()<.55){const buyers=Object.keys(S.teams).filter(t=>t!==S.user&&S.teams[t].budget>valueOf(p)*.8&&squad(t).length<12);
+  for(const p of squad(S.user)){if(!p.forSale||p.leaving)continue;
+    if(R()<.55){const buyers=Object.keys(S.teams).filter(t=>t!==S.user&&S.teams[t].budget>valueOf(p)*.8&&squad(t).length+incoming(t)<12);
       if(!buyers.length)continue;const b=buyers[ri(0,buyers.length-1)];const amt=Math.max(1,Math.round(valueOf(p)*(.75+R()*.45)));
       if(!S.offers.some(o=>o.pid===p.id&&o.from===b)){S.offers.push({id:"o"+(S.nextId++),pid:p.id,from:b,amt});pushNews(`Oferta del ${S.teams[b].name} per ${p.name}: ${money(amt)}.`,true)}}}
 }
 function acceptOffer(oid){
-  const o=S.offers.find(x=>x.id===oid);if(!o)return;const p=S.players[o.pid],b=S.teams[o.from],me=S.teams[S.user];
-  if(squad(S.user).length<=8){toast("Necessites com a mínim 8 jugadors.");return}
+  const o=S.offers.find(x=>x.id===oid);if(!o)return;const p=S.players[o.pid],b=S.teams[o.from];
+  if(squad(S.user).length-outgoing(S.user)<=8){toast("Necessites com a mínim 8 jugadors.");return}
   if(b.budget<o.amt){toast(`El ${b.name} ja no té diners.`);S.offers=S.offers.filter(x=>x.id!==oid);render();return}
-  b.budget-=o.amt;me.budget+=o.amt;p.team=b.id;p.forSale=false;
-  S.offers=S.offers.filter(x=>x.pid!==p.id);autoLineup(S.user);autoLineup(b.id);
-  pushNews(`VENDA: ${p.name} marxa al ${b.name} per ${money(o.amt)}.`,true);save();toast(`${p.name} venut per ${money(o.amt)}`);render();
+  S.offers=S.offers.filter(x=>x.pid!==p.id);
+  if(mktOpen()){doTransfer({pid:p.id,from:S.user,to:b.id,fee:o.amt});toast(`${p.name} venut per ${money(o.amt)}`)}
+  else{pend().push({id:"t"+(S.nextId++),pid:p.id,from:S.user,to:b.id,fee:o.amt});p.leaving=true;p.forSale=false;
+    pushNews(`ACORD: ${p.name} marxarà al ${b.name} per ${money(o.amt)} a partir de ${nextWin()==="Nadal"?"Nadal":"l'estiu"}. Fins llavors segueix a l'equip.`,true);toast(`Acord tancat: ${p.name} marxarà per ${nextWin()==="Nadal"?"Nadal":"l'estiu"}`)}
+  save();render();
 }
+function cancelPending(id){const x=pend().find(y=>y.id===id);if(!x)return;S.pending=pend().filter(y=>y.id!==id);const p=S.players[x.pid];p.leaving=false;
+  if(x.to===S.user){p.morale=Math.max(20,p.morale-15);pushNews(`Has trencat l'acord amb ${p.name}. El ${S.teams[x.from].name} no en queda gaire content.`,true)}
+  else{p.morale=Math.max(20,p.morale-20);pushNews(`Has fet enrere la venda de ${p.name} al ${S.teams[x.to].name}. El jugador queda tocat.`,true)}
+  save();render()}
+function promises(){
+  for(const p of squad(S.user)){if(!p.perks||!p.perks.titular||!avail(p))continue;
+    if(!S.teams[S.user].lineup.includes(p.id)){p.morale=Math.max(10,p.morale-5);
+      if(p.morale<40&&!p.warned){p.warned=true;pushNews(`${p.name} recorda que li vas prometre ser titular. Està molest.`,true)}}
+    else{p.morale=Math.min(100,p.morale+1);if(p.morale>=55)p.warned=false}}
+}
+function migrate(st){if(st){st.pending=st.pending||[];}return st}
 
 /* ============ UI COMPONENTS ============ */
 /* Distintiu genèric (no és l'escut real): rodella amb els dos colors del club i l'abreviatura de la RFEP */
@@ -529,6 +632,7 @@ function startScreen(){
   </div>${LEGAL}</div>`;
 }
 
+function winBanner(){const o=mktOpen();return `<p class="win ${o?"open":""}"><b>${winLabel()}</b>${o?(S.round===WINTER?` · tanca quan juguis la J${WINTER+1}`:S.round===0?" · tanca quan juguis la J1":""):". Pots negociar igualment: el jugador seguirà al seu club fins llavors."}</p>`}
 const VIEWS={
 inici(){
   const me=S.user,rd=S.fixtures[S.round];const m=rd&&rd.find(x=>x.h===me||x.a===me);
@@ -552,7 +656,7 @@ plantilla(){
 },
 alineacio(){
   const t=S.teams[S.user],L=t.lineup;
-  const coords=[[50,86,"POR"],[30,64,"DEF"],[70,64,"DEF"],[30,36,"DAV"],[70,36,"DAV"]];
+  const coords=[[50,87,"POR"],[26,66,"DEF"],[74,66,"DEF"],[26,36,"DAV"],[74,36,"DAV"]];
   const slots=coords.map(([x,y,r],i)=>{const p=L[i]&&S.players[L[i]];
     return `<button class="slot ${ui.selSlot===i?"sel":""} ${p?"":"empty"}" style="left:${x}%;top:${y}%" data-slot="${i}" aria-label="Posició ${i+1}">${p?`<span class="nm">${esc(p.name)}</span><small>${p.pos} · ${ovr(p)} · ${p.energy}%</small>`:`<span class="nm">Buit</span><small>${r}</small>`}</button>`}).join("");
   const bench=squad(S.user).filter(p=>!L.includes(p.id)).sort((a,b)=>ovr(b)-ovr(a));
@@ -589,17 +693,19 @@ mercat(){
   const q=ui.mQ.toLowerCase();
   let list=Object.values(S.players).filter(p=>p.team!==S.user&&(ui.mPos==="TOT"||p.pos===ui.mPos)&&(!q||p.name.toLowerCase().includes(q)||S.teams[p.team].name.toLowerCase().includes(q)));
   list.sort((a,b)=>ovr(b)-ovr(a));
-  return `<section class="bevel panel"><div class="row" style="justify-content:space-between"><h2>Mercat de fitxatges</h2><span class="muted">Disponible: <b>${money(S.teams[S.user].budget)}</b> · Plantilla ${squad(S.user).length}/12</span></div>
+  return `<section class="bevel panel"><div class="row" style="justify-content:space-between"><h2>Mercat de fitxatges</h2><span class="muted">Disponible: <b>${money(S.teams[S.user].budget-committed(S.user))}</b> · Plantilla ${squad(S.user).length}/12${incoming(S.user)?` (+${incoming(S.user)} pendents)`:""}</span></div>
+  ${winBanner()}
   <div class="row"><label class="lbl" for="mQ">Cerca</label><input id="mQ" value="${esc(ui.mQ)}" placeholder="Jugador o equip">
    <label class="lbl" for="mPos">Posició</label><select id="mPos">${["TOT","POR","DEF","DAV"].map(x=>`<option ${ui.mPos===x?"selected":""}>${x}</option>`).join("")}</select></div>
   <div class="scroll"><table><thead><tr><th>Pos</th><th>Nom</th><th>Equip</th><th class="r">Edat</th><th class="r">Med</th><th class="r">Valor</th><th class="r">Sou</th></tr></thead><tbody>
-  ${list.map(p=>`<tr class="click" data-pl="${p.id}" tabindex="0"><td>${pos(p.pos)}</td><td>${esc(p.name)} ${p.inj>0?`<span class="tag inj">LES</span>`:""}</td><td>${esc(S.teams[p.team].name)}</td><td class="r">${edat(p)}</td><td class="r"><span class="ovr" style="color:${ovrCol(ovr(p))}">${ovr(p)}</span></td><td class="r">${money(valueOf(p))}</td><td class="r muted">${eurMes(p)}</td></tr>`).join("")}
+  ${list.map(p=>`<tr class="click" data-pl="${p.id}" tabindex="0"><td>${pos(p.pos)}</td><td>${esc(p.name)} ${p.inj>0?`<span class="tag inj">LES</span>`:""}${pend().some(x=>x.pid===p.id)?` <span class="tag sale">ACORD</span>`:""}</td><td>${esc(S.teams[p.team].name)}</td><td class="r">${edat(p)}</td><td class="r"><span class="ovr" style="color:${ovrCol(ovr(p))}">${ovr(p)}</span></td><td class="r">${money(valueOf(p))}</td><td class="r muted">${eurMes(p)}</td></tr>`).join("")}
   </tbody></table></div></section>`;
 },
 oficina(){
   const forSale=squad(S.user).filter(p=>p.forSale);
-  return `<section class="bevel panel"><h2>Ofertes rebudes</h2>${S.offers.length?`<div class="scroll"><table><thead><tr><th>Jugador</th><th>Club</th><th class="r">Valor</th><th class="r">Oferta</th><th></th></tr></thead><tbody>
+  return `<section class="bevel panel"><h2>Ofertes rebudes</h2>${winBanner()}${S.offers.length?`<div class="scroll"><table><thead><tr><th>Jugador</th><th>Club</th><th class="r">Valor</th><th class="r">Oferta</th><th></th></tr></thead><tbody>
   ${S.offers.map(o=>{const p=S.players[o.pid];return `<tr><td>${esc(p.name)}</td><td>${esc(S.teams[o.from].name)}</td><td class="r muted">${money(valueOf(p))}</td><td class="r"><b class="acc">${money(o.amt)}</b></td><td><button class="btn small primary" data-acc="${o.id}">Acceptar</button> <button class="btn small" data-rej="${o.id}">Rebutjar</button></td></tr>`}).join("")}</tbody></table></div>`:`<p class="muted" style="margin:0">No hi ha ofertes. Posa jugadors a la venda des de la seva fitxa i els clubs faran ofertes a les properes jornades.</p>`}
+  <h3>Acords pendents</h3>${pend().filter(x=>x.to===S.user||x.from===S.user).length?`<div class="scroll"><table><tbody>${pend().filter(x=>x.to===S.user||x.from===S.user).map(x=>{const p=S.players[x.pid],inn=x.to===S.user;return `<tr><td>${inn?'<span class="good">ARRIBA</span>':'<span class="bad">MARXA</span>'}</td><td>${esc(p.name)}</td><td>${inn?"del":"al"} ${esc(S.teams[inn?x.from:x.to].name)}</td><td class="r"><b>${money(x.fee)}</b></td><td class="muted">per ${nextWin()==="Nadal"?"Nadal":"l'estiu"}</td><td><button class="btn small" data-canc="${x.id}">Trencar l'acord</button></td></tr>`}).join("")}</tbody></table></div>`:`<p class="muted" style="margin:0">Cap acord pendent.</p>`}
   <h3>A la venda</h3><p style="margin:0">${forSale.length?forSale.map(p=>esc(p.name)).join(", "):`<span class="muted">Cap jugador.</span>`}</p></section>`;
 },
 equips(){
@@ -644,21 +750,64 @@ partit(){
 function miniTable(tb){return `<table><thead><tr><th>#</th><th>Equip</th><th class="r">PJ</th><th class="r">Pts</th></tr></thead><tbody>${tb.map((r,i)=>`<tr class="${r.id===S.user?"me":""}"><td>${i+1}</td><td>${esc(S.teams[r.id].name)}</td><td class="r">${r.pj}</td><td class="r"><b class="acc">${r.pts}</b></td></tr>`).join("")}</tbody></table>`}
 function playerTable(sq,mine){
   return `<table><thead><tr><th>Pos</th><th>Nom</th><th class="r">Edat</th><th class="r">Med</th><th class="r" title="Patinatge">PAT</th><th class="r" title="Tècnica d'estic">TEC</th><th class="r" title="Xut">XUT</th><th class="r" title="Defensa">DEF</th><th class="r" title="Físic">FIS</th><th class="r" title="Reflexos (porter)">REF</th><th>Energia</th><th>Moral</th><th class="r">Gols</th><th class="r">Sou</th><th class="r">Valor</th></tr></thead><tbody>
-  ${sq.map(p=>{const a=p.a,g=p.pos==="POR";return `<tr class="click" data-pl="${p.id}" tabindex="0"><td>${pos(p.pos)}</td><td>${esc(p.name)} ${p.inj>0?`<span class="tag inj">LES ${p.inj}s</span>`:""}${p.forSale?` <span class="tag sale">VENDA</span>`:""}</td><td class="r">${edat(p)}</td><td class="r"><span class="ovr" style="color:${ovrCol(ovr(p))}">${ovr(p)}</span></td>
+  ${sq.map(p=>{const a=p.a,g=p.pos==="POR";return `<tr class="click" data-pl="${p.id}" tabindex="0"><td>${pos(p.pos)}</td><td>${esc(p.name)} ${p.inj>0?`<span class="tag inj">LES ${p.inj}s</span>`:""}${p.forSale?` <span class="tag sale">VENDA</span>`:""}${p.leaving?` <span class="tag sale">MARXA</span>`:""}${p.perks&&p.perks.titular?` <span class="tag" style="background:var(--data);color:#fff" title="Promesa de titularitat">PROMESA</span>`:""}</td><td class="r">${edat(p)}</td><td class="r"><span class="ovr" style="color:${ovrCol(ovr(p))}">${ovr(p)}</span></td>
   <td class="r">${a.pat}</td><td class="r">${g?"–":a.tec}</td><td class="r">${g?"–":a.xut}</td><td class="r">${g?"–":a.def}</td><td class="r">${a.fis}</td><td class="r">${g?a.ref:"–"}</td><td>${bar(p.energy)}</td><td>${bar(p.morale,"var(--data)")}</td><td class="r">${p.goals}</td><td class="r muted">${eurMes(p)}</td><td class="r">${money(valueOf(p))}</td></tr>`}).join("")}</tbody></table>`;
 }
+/* Pista d'hoquei patins (reglament World Skate): 40×20 m, cantonades de 3 m de radi, tanca d'1 m.
+   Escala 10 unitats = 1 m. Línia de gol a 3 m del fons; àrea de 9×5,4 m; zona de protecció semicircular entre pals;
+   punt de penal a 5,4 m i punt de falta directa a 7,4 m; línia central i cercle central de 3 m de radi. */
 function rinkSVG(){
+  const end=(y0,dir)=>{const gl=y0+30*dir,ar=gl+54*dir,pk=gl+54*dir,fd=gl+74*dir,net=gl-9*dir;
+    return `<rect x="55" y="${Math.min(gl,ar)}" width="90" height="54"/>
+    <path d="M91.5 ${gl} A8.5 8.5 0 0 ${dir>0?0:1} 108.5 ${gl}"/>
+    <line x1="91.5" y1="${gl}" x2="108.5" y2="${gl}"/>
+    <circle cx="100" cy="${pk}" r="1.6" fill="var(--rinkline)"/><circle cx="100" cy="${fd}" r="1.6" fill="var(--rinkline)"/>
+    <path d="M91.5 ${gl} L91.5 ${net} L108.5 ${net} L108.5 ${gl}" stroke="#ff6a13" stroke-width="2.6" fill="rgba(255,255,255,.18)"/>`};
   return `<svg viewBox="0 0 200 400" preserveAspectRatio="none" aria-hidden="true">
-  <rect x="4" y="4" width="192" height="392" rx="34" fill="var(--rink)" stroke="var(--line2)" stroke-width="5"/>
-  <g fill="none" stroke="var(--rinkline)" stroke-width="2" opacity=".85">
-   <line x1="4" y1="200" x2="196" y2="200"/><circle cx="100" cy="200" r="30"/><circle cx="100" cy="200" r="2.5" fill="var(--rinkline)"/>
-   <line x1="4" y1="78" x2="196" y2="78" stroke="#ff7b7b"/><line x1="4" y1="322" x2="196" y2="322" stroke="#ff7b7b"/>
-   <rect x="55" y="4" width="90" height="48"/><rect x="55" y="348" width="90" height="48"/>
-   <rect x="80" y="20" width="40" height="18"/><rect x="80" y="362" width="40" height="18"/>
-   <circle cx="100" cy="64" r="2.5" fill="var(--rinkline)"/><circle cx="100" cy="336" r="2.5" fill="var(--rinkline)"/>
+  <rect x="0" y="0" width="200" height="400" rx="30" fill="var(--rink)"/>
+  <g fill="none" stroke="var(--rinkline)" stroke-width="1.2" opacity=".9">
+   <line x1="0" y1="200" x2="200" y2="200"/><circle cx="100" cy="200" r="30"/><circle cx="100" cy="200" r="1.6" fill="var(--rinkline)"/>
+   ${end(0,1)}${end(400,-1)}
   </g>
-  <rect x="88" y="378" width="24" height="10" fill="#e53935"/><rect x="88" y="12" width="24" height="10" fill="#e53935"/></svg>`;
+  <rect x="1.5" y="1.5" width="197" height="397" rx="29" fill="none" stroke="var(--board)" stroke-width="3" opacity=".55"/></svg>`;
 }
+/* Formulari d'oferta: traspàs al club + sou + anys + condicions no econòmiques */
+function offerForm(p){
+  const v=valueOf(p)*(isKey(p)?1.35:1)*(p.contract<=S.season+1?.6:1);
+  const sal0=Math.max(monthlyOf(p),monthly(ovr(p),p.age,tierOf(S.user)));
+  const used=jobsUsed(S.user),deal=pend().find(x=>x.pid===p.id);
+  if(deal)return `<p class="win" style="margin:0"><b>${p.name} ja té un acord tancat</b> per jugar al ${esc(S.teams[deal.to].name)}.</p>`;
+  return `<div class="offer">
+   <h3 style="margin:0">Fer una oferta</h3>
+   ${winBanner()}
+   <div class="f">
+    <label><span class="lbl">Traspàs al club (€)</span><input id="oFee" type="number" min="0" step="100" value="${Math.round(v*10)*100}"></label>
+    <label><span class="lbl">Sou (€/mes)</span><input id="oSal" type="number" min="0" step="50" value="${Math.round(sal0/50)*50}"></label>
+    <label><span class="lbl">Contracte</span><select id="oYears">${[1,2,3,4].map(y=>`<option value="${y}" ${y===2?"selected":""}>${y} ${y===1?"any":"anys"}</option>`).join("")}</select></label>
+   </div>
+   <div class="perks"><span class="lbl">Altres condicions</span>
+    ${PERKS.map(x=>{const dis=x.k==="feina"&&used>=JOBS;return `<label><input type="checkbox" data-perk="${x.k}" ${dis?"disabled":""}><span>${x.l}<small>${x.k==="feina"?`${JOBS-used} de ${JOBS} disponibles`:x.d}</small></span></label>`}).join("")}
+   </div>
+   <p class="muted" style="margin:0">Informe del secretari tècnic: a ${esc(p.name)} li importa sobretot <b>${prefHint(p,S.user)}</b>.${p.contract<=S.season+1?" Acaba contracte aviat i el club el deixarà anar més barat.":isKey(p)?" És un jugador clau: el club demanarà més del seu valor.":""}</p>
+   <p style="margin:0" id="oCost"></p>
+   <div class="row"><button class="btn primary" id="mBuy">Fer l'oferta</button></div>
+   <p class="muted" style="margin:0" id="mMsg"></p>
+  </div>`;
+}
+function readDeal(d){
+  const perks={};d.querySelectorAll("[data-perk]").forEach(c=>perks[c.dataset.perk]=c.checked);
+  const salM=Math.max(0,+d.querySelector("#oSal").value||0);
+  return {fee:Math.max(0,+d.querySelector("#oFee").value||0)/1000,sal:salM*10/1000,salM,years:+d.querySelector("#oYears").value||2,perks};
+}
+function bindOffer(d,p,close){
+  const btn=d.querySelector("#mBuy");if(!btn)return;
+  const upd=()=>{const x=readDeal(d);const pc=PERKS.reduce((s,k)=>s+(x.perks[k.k]?k.cost:0),0);
+    d.querySelector("#oCost").innerHTML=`Cost per temporada: <b>${money(x.sal+pc)}</b> <span class="muted">(sou ${money(x.sal)}${pc?` + condicions ${money(pc)}`:""})</span> · Traspàs: <b>${money(x.fee)}</b>`};
+  d.querySelectorAll("#oFee,#oSal,#oYears,[data-perk]").forEach(el=>el.addEventListener("input",upd));upd();
+  btn.onclick=()=>{const r=makeOffer(p.id,readDeal(d));
+    if(r.ok){sfx("ok");toast(r.msg);close()}else{sfx("no");const m=d.querySelector("#mMsg");m.textContent=r.msg;m.className="bad"}};
+}
+
 function playerModal(pid){
   const p=S.players[pid],mine=p.team===S.user,t=S.teams[p.team];
   const g=p.pos==="POR";const a=p.a;
@@ -668,9 +817,10 @@ function playerModal(pid){
    <div class="row" style="justify-content:space-between;flex-wrap:nowrap">${shield(t,36)}<div style="flex:1;min-width:0"><h2 style="font-size:32px">${esc(p.name)}</h2><span class="muted">${esc(t.name)} · ${p.nat} · ${p.age<18?"menor d'edat":p.age+" anys"} · contracte fins ${p.contract}</span></div><span class="ovr" style="font-size:48px;color:${ovrCol(ovr(p))}">${ovr(p)}</span></div>
    <div class="attrs">${rows}</div>
    <p class="muted" style="margin:0">${p.s?`OK Liga 2025-26 (${esc(p.s[0])}): <b class="dat">${p.s[3]} PJ · ${p.s[1]} gols · ${p.s[2]} assist.</b>`:"Sense partits a l'OK Liga 2025-26: mitjana estimada."}</p>
+   ${p.perks&&Object.values(p.perks).some(Boolean)?`<p class="muted" style="margin:0">Condicions del contracte: ${PERKS.filter(x=>p.perks[x.k]).map(x=>x.l.toLowerCase()).join(" · ")}</p>`:""}
    <div class="row muted">${pos(p.pos)} Valor ${money(v)} · Sou ${eurMes(p)} · ${p.apps} PJ · ${p.goals} gols · ${p.cards} blaves ${p.inj>0?`· <span class="bad">lesionat ${p.inj} setm.</span>`:""}</div>
    ${mine?`<div class="row"><button class="btn" id="mSale">${p.forSale?"Treure de la venda":"Posar a la venda"}</button></div>`:
-   `<div class="row"><label class="lbl" for="mAmt">Oferta (€)</label><input id="mAmt" type="number" min="0" step="100" value="${Math.round(v*(isKey(p)?1.35:1)*10)*100}" style="width:120px"><button class="btn primary" id="mBuy">Fer oferta</button></div><p class="muted" style="margin:0" id="mMsg">${isKey(p)?"És un jugador clau: el club demanarà més del seu valor.":"Ofertes per sota del valor tenen poques opcions."}</p>`}
+   offerForm(p)}
    <details><summary class="lbl" style="cursor:pointer">Editar dades del jugador</summary>
     <div class="row" style="margin-top:8px"><input id="eName" value="${esc(p.name)}" aria-label="Nom" style="flex:1;min-width:160px">
      <select id="ePos" aria-label="Posició">${["POR","DEF","DAV"].map(x=>`<option ${p.pos===x?"selected":""}>${x}</option>`).join("")}</select>
@@ -685,7 +835,7 @@ function playerModal(pid){
   d.addEventListener("keydown",e=>{if(e.key==="Escape")close()});
   d.querySelector("#mClose").focus();
   if(mine)d.querySelector("#mSale").onclick=()=>{p.forSale=!p.forSale;save();toast(p.forSale?`${p.name} a la venda`:`${p.name} ja no està a la venda`);close()};
-  else d.querySelector("#mBuy").onclick=()=>{const amt=(+d.querySelector("#mAmt").value||0)/1000;const r=makeOffer(pid,amt);if(r.ok){toast(r.msg);close()}else{const m=d.querySelector("#mMsg");m.textContent=r.msg;m.className="bad"}};
+  else bindOffer(d,p,close);
   d.querySelector("#eSave").onclick=()=>{
     const nm=d.querySelector("#eName").value.trim();if(nm)p.name=nm;
     const np=d.querySelector("#ePos").value,na=d.querySelector("#eAge")?clamp(+d.querySelector("#eAge").value||p.age,18,45):p.age,no=clamp(+d.querySelector("#eOvr").value||ovr(p),40,99);
@@ -710,67 +860,63 @@ function runMatchView(){
 }
 
 /* ============ SO ============
-   Tot es genera amb Web Audio: música pròpia del joc i efectes sintetitzats, sense fitxers externs. */
-const SND={on:true,ctx:null,master:null,mbus:null,noise:null,menu:false,unlocked:false};
+   Efectes d'interfície sintetitzats amb Web Audio (sense fitxers): sons curts i suaus, filtrats i amb una mica de sala. */
+const SND={on:true,ctx:null,master:null,dry:null,wet:null,noise:null,menu:false,unlocked:false};
 try{SND.on=localStorage.getItem("rm27-sound")!=="0"}catch(e){}
 function actx(){
   if(!SND.ctx){const C=window.AudioContext||window.webkitAudioContext;if(!C)return null;
-    const c=new C();SND.ctx=c;SND.master=c.createGain();SND.master.gain.value=SND.on?1:0;SND.master.connect(c.destination);
-    SND.mbus=c.createGain();SND.mbus.gain.value=0;SND.mbus.connect(SND.master);
-    const b=c.createBuffer(1,c.sampleRate,c.sampleRate),d=b.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1;SND.noise=b}
+    const c=new C();SND.ctx=c;
+    const comp=c.createDynamicsCompressor();comp.threshold.value=-18;comp.ratio.value=4;comp.connect(c.destination);
+    const lp=c.createBiquadFilter();lp.type="lowpass";lp.frequency.value=9000;lp.connect(comp);
+    SND.master=c.createGain();SND.master.gain.value=SND.on?.8:0;SND.master.connect(lp);
+    const rv=c.createConvolver(),len=Math.floor(c.sampleRate*.9),ir=c.createBuffer(2,len,c.sampleRate);
+    for(let ch=0;ch<2;ch++){const d=ir.getChannelData(ch);for(let i=0;i<len;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/len,3.2)}
+    rv.buffer=ir;SND.wet=c.createGain();SND.wet.gain.value=.16;SND.wet.connect(rv);rv.connect(SND.master);
+    SND.dry=SND.master;
+    const b=c.createBuffer(1,c.sampleRate*2,c.sampleRate),d=b.getChannelData(0);let last=0;
+    for(let i=0;i<d.length;i++){const w=Math.random()*2-1;last=(last+.02*w)/1.02;d[i]=w*.6+last*3}SND.noise=b}
   if(SND.ctx.state==="suspended")SND.ctx.resume();
   return SND.ctx;
 }
 const mtof=n=>440*Math.pow(2,(n-69)/12);
-function tone(f,t,d,type,v,dest,f2){const c=SND.ctx,o=c.createOscillator(),g=c.createGain();o.type=type||"square";o.frequency.setValueAtTime(f,t);if(f2)o.frequency.exponentialRampToValueAtTime(f2,t+d);
-  g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(v,t+.008);g.gain.exponentialRampToValueAtTime(.0001,t+d);o.connect(g);g.connect(dest||SND.master);o.start(t);o.stop(t+d+.03)}
-function noise(t,d,v,freq,q,dest){const c=SND.ctx,s=c.createBufferSource(),f=c.createBiquadFilter(),g=c.createGain();s.buffer=SND.noise;f.type="bandpass";f.frequency.value=freq;f.Q.value=q||1;
-  g.gain.setValueAtTime(v,t);g.gain.exponentialRampToValueAtTime(.0001,t+d);s.connect(f);f.connect(g);g.connect(dest||SND.master);s.start(t,Math.random()*.5);s.stop(t+d+.03)}
+function out(node,wet){node.connect(SND.master);if(wet)node.connect(SND.wet)}
+/* to amb envolupant suau i filtre */
+function tone(f,t,d,o={}){const c=SND.ctx,os=c.createOscillator(),g=c.createGain(),fl=c.createBiquadFilter();
+  os.type=o.type||"sine";os.frequency.setValueAtTime(f,t);if(o.to)os.frequency.exponentialRampToValueAtTime(o.to,t+(o.glide||d));
+  fl.type="lowpass";fl.frequency.value=o.cut||4000;
+  const at=o.at||.004;g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(o.v||.1,t+at);g.gain.exponentialRampToValueAtTime(.0001,t+d);
+  os.connect(fl);fl.connect(g);out(g,o.wet);os.start(t);os.stop(t+d+.05);return os}
+function noise(t,d,o={}){const c=SND.ctx,s=c.createBufferSource(),f=c.createBiquadFilter(),g=c.createGain();s.buffer=SND.noise;
+  f.type=o.type||"bandpass";f.frequency.setValueAtTime(o.f||1500,t);if(o.fto)f.frequency.exponentialRampToValueAtTime(o.fto,t+d);f.Q.value=o.q||.8;
+  const at=o.at||.002;g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(o.v||.1,t+at);if(o.hold)g.gain.setValueAtTime(o.v||.1,t+o.hold);g.gain.exponentialRampToValueAtTime(.0001,t+d);
+  s.connect(f);f.connect(g);out(g,o.wet);s.start(t,Math.random());s.stop(t+d+.05)}
 function sfx(k){
   if(!SND.on)return;const c=actx();if(!c)return;const t=c.currentTime+.005;
-  if(k==="click"){tone(1180,t,.05,"triangle",.10);tone(1770,t+.025,.05,"triangle",.06)}
-  else if(k==="nav"){tone(660,t,.06,"triangle",.09);tone(990,t+.04,.07,"triangle",.07)}
-  else if(k==="ok"){[0,4,7,12].forEach((n,i)=>tone(mtof(72+n),t+i*.06,.16,"square",.05))}
-  else if(k==="goal"){[57,61,64,69].forEach(n=>tone(mtof(n),t,1.1,"sawtooth",.045));noise(t,1.4,.18,900,.6);noise(t+.15,1.6,.12,1800,.5)}
-  else if(k==="whistle"||k==="whistle2"){const o=c.createOscillator(),l=c.createOscillator(),lg=c.createGain(),g=c.createGain();o.type="sine";o.frequency.value=2650;l.frequency.value=32;lg.gain.value=90;l.connect(lg);lg.connect(o.frequency);
-    const d=k==="whistle"?.45:1.0;g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(.07,t+.02);g.gain.setValueAtTime(.07,t+d-.05);g.gain.linearRampToValueAtTime(0,t+d);
-    o.connect(g);g.connect(SND.master);o.start(t);l.start(t);o.stop(t+d+.05);l.stop(t+d+.05)}
+  if(k==="click"){            // toc sec i suau, com un botó físic
+    noise(t,.018,{f:2600,q:1.2,v:.09});tone(180,t,.035,{v:.05,to:120,cut:900})}
+  else if(k==="nav"){          // lliscament curt per canviar de pantalla
+    noise(t,.09,{f:900,fto:2600,q:.7,v:.035,at:.03});noise(t+.005,.018,{f:2200,q:1.2,v:.05})}
+  else if(k==="ok"){           // confirmació: dues notes netes tipus campaneta
+    for(const [n,dt] of [[79,0],[86,.075]]){tone(mtof(n),t+dt,.5,{v:.045,cut:5000,wet:true});tone(mtof(n)*2.01,t+dt,.18,{v:.012,cut:8000,wet:true})}}
+  else if(k==="no"){           // avís discret, descendent
+    tone(mtof(67),t,.22,{v:.05,cut:2500,wet:true});tone(mtof(62),t+.09,.32,{v:.045,cut:2200,wet:true})}
+  else if(k==="goal"){         // pavelló: botzina greu i ovació del públic
+    for(const n of [50,57,62])tone(mtof(n),t,1.3,{type:"sawtooth",v:.028,cut:1100,at:.04,wet:true});
+    noise(t+.05,2.6,{type:"bandpass",f:1100,q:.5,v:.16,at:.25,hold:.9,wet:true});
+    noise(t+.1,2.2,{type:"highpass",f:3000,q:.3,v:.05,at:.3,hold:.7,wet:true})}
+  else if(k==="whistle"||k==="whistle2"){  // xiulet d'àrbitre amb el trinat de la boleta
+    const d=k==="whistle"?.38:.95,o1=c.createOscillator(),o2=c.createOscillator(),am=c.createOscillator(),amg=c.createGain(),g=c.createGain(),bp=c.createBiquadFilter();
+    o1.frequency.value=2900;o2.frequency.value=2945;am.frequency.value=38;amg.gain.value=.5;
+    bp.type="bandpass";bp.frequency.value=2950;bp.Q.value=3;g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(.05,t+.03);g.gain.setValueAtTime(.05,t+d-.06);g.gain.linearRampToValueAtTime(0,t+d);
+    const mod=c.createGain();mod.gain.value=.5;am.connect(amg);amg.connect(mod.gain);
+    o1.connect(bp);o2.connect(bp);bp.connect(mod);mod.connect(g);out(g,true);noise(t,d,{f:3000,q:2,v:.015,at:.03,hold:d-.08,wet:true});
+    for(const o of [o1,o2,am]){o.start(t);o.stop(t+d+.05)}}
 }
-/* Música del menú: tema original, 8 compassos en bucle a 126 bpm */
-const MUS={timer:null,step:0,next:0};
-const BPM=126,STEP=60/BPM/4;
-const PROG=[48,43,45,41,48,43,41,43];            // C G Am F C G F G (arrel)
-const CHORD=[[0,4,7],[0,4,7],[0,3,7],[0,4,7],[0,4,7],[0,4,7],[0,4,7],[0,4,7]];
-const LEAD={};
-[[0,72,2],[2,76,2],[4,79,4],[8,76,2],[10,79,2],[12,84,4],[16,83,4],[20,79,2],[22,74,2],[24,79,6],
- [32,81,2],[34,79,2],[36,76,4],[40,72,2],[42,76,2],[44,81,4],[48,77,4],[52,81,4],[56,84,8],
- [64,72,2],[66,76,2],[68,79,4],[72,76,2],[74,79,2],[76,84,4],[80,83,4],[84,79,2],[86,74,2],[88,79,6],
- [96,81,2],[98,84,2],[100,81,2],[102,77,2],[104,72,4],[108,77,4],[112,79,4],[116,83,4],[120,86,8]].forEach(([s,n,l])=>LEAD[s]=[n,l]);
-function musStep(st,t){
-  const bar=Math.floor(st/16),b=st%16,root=PROG[bar],ch=CHORD[bar],B=SND.mbus;
-  if(b%2===0)tone(mtof(root-12+(b%4===2?12:0)),t,STEP*1.8,"square",.07,B);
-  tone(mtof(root+24+ch[[0,1,2,1][b%4]]+(b>=8?12:0)),t,STEP*.9,"triangle",.035,B);
-  if(LEAD[st]){const [n,l]=LEAD[st];tone(mtof(n),t,STEP*l*.95,"square",.05,B);tone(mtof(n)*1.005,t,STEP*l*.95,"sawtooth",.018,B)}
-  if(b%4===0)tone(150,t,.18,"sine",.5,B,40);
-  if(b%8===4)noise(t,.14,.28,2200,.8,B);
-  if(b%2===1)noise(t,.04,.10,8000,1.5,B);
-}
-function musTick(){const c=SND.ctx;while(MUS.next<c.currentTime+.15){musStep(MUS.step,MUS.next);MUS.next+=STEP;MUS.step=(MUS.step+1)%128}}
-function musPlay(){
-  const c=actx();if(!c||MUS.timer)return;
-  SND.mbus.gain.cancelScheduledValues(c.currentTime);SND.mbus.gain.setValueAtTime(SND.mbus.gain.value,c.currentTime);SND.mbus.gain.linearRampToValueAtTime(.55,c.currentTime+1.2);
-  MUS.step=0;MUS.next=c.currentTime+.08;MUS.timer=setInterval(musTick,30);musTick();
-}
-function musStop(){
-  const c=SND.ctx;if(!c||!MUS.timer)return;
-  SND.mbus.gain.cancelScheduledValues(c.currentTime);SND.mbus.gain.setValueAtTime(SND.mbus.gain.value,c.currentTime);SND.mbus.gain.linearRampToValueAtTime(0,c.currentTime+.6);
-  clearInterval(MUS.timer);MUS.timer=null;
-}
-function sndMenu(on){SND.menu=on;if(on&&SND.on&&SND.unlocked)musPlay();else if(!on)musStop()}
+function sndMenu(on){}
 function sndSet(on){
   SND.on=on;try{localStorage.setItem("rm27-sound",on?"1":"0")}catch(e){}
-  if(SND.ctx)SND.master.gain.setTargetAtTime(on?1:0,SND.ctx.currentTime,.05);
-  if(on){SND.unlocked=true;actx();if(SND.menu)musPlay()}else musStop();
+  if(SND.ctx)SND.master.gain.setTargetAtTime(on?.8:0,SND.ctx.currentTime,.05);
+  if(on){SND.unlocked=true;actx()}
   sndBtn();
 }
 function sndBtn(){
@@ -781,10 +927,10 @@ function sndBtn(){
 }
 /* El primer toc desbloqueja l'àudio (els navegadors no deixen sonar res abans) */
 document.addEventListener("pointerdown",e=>{
-  if(!SND.unlocked){SND.unlocked=true;if(SND.on){actx();if(SND.menu)musPlay()}}
+  if(!SND.unlocked){SND.unlocked=true;if(SND.on)actx()}
   if(e.target.closest("#sndBtn"))return;
   const b=e.target.closest("button,.click,[data-pl]");if(!b||b.disabled)return;
-  if(b.matches("#bPlay"))return;
+  if(b.matches("#bPlay,#mBuy"))return;
   if(b.matches(".primary,[data-start],#fcGo,#fjGo,#lSave"))sfx("ok");
   else if(b.matches("[data-v],[data-ft],[data-step],[data-mode],#bMenu,#fMenu"))sfx("nav");
   else sfx("click");
@@ -813,6 +959,7 @@ function bind(){
   const es=$("#eqSel");if(es)es.onchange=()=>{ui.eqTeam=es.value;render()};
   ["eqC1","eqC2"].forEach((k,i)=>{const el=$("#"+k);if(el)el.onchange=()=>{const t=S.teams[ui.eqTeam||S.user];t[i?"c2":"c1"]=el.value;t.cEdit=true;save();render()}});
   document.querySelectorAll("[data-acc]").forEach(b=>b.onclick=()=>acceptOffer(b.dataset.acc));
+  document.querySelectorAll("[data-canc]").forEach(b=>b.onclick=()=>cancelPending(b.dataset.canc));
   document.querySelectorAll("[data-rej]").forEach(b=>b.onclick=()=>{S.offers=S.offers.filter(o=>o.id!==b.dataset.rej);save();render()});
   const bs=$("#bSave");if(bs)bs.onclick=()=>{save();toast("Partida desada")};
   const bq=$("#bQuit");if(bq)bq.onclick=()=>{save();S=null;startStep="menu";render()};
@@ -827,7 +974,7 @@ document.addEventListener("click",e=>{
   const sg=e.target.closest("[data-start]");if(sg&&!S){newGame(sg.dataset.start);startStep="menu";view="inici";render();window.scrollTo(0,0);return}
   if(e.target.closest("#bMenu")&&S){save();if(ticker){clearInterval(ticker);ticker=null}S=null;startStep="menu";render();window.scrollTo(0,0);return}
   if(e.target.closest("#bSwitch")&&S){save();S=null;startStep="pick";render();window.scrollTo(0,0);return}
-  if(e.target.closest("#bCont")&&!S){S=load();for(const t0 of TEAMS0){const t=S.teams[t0.id];if(t&&!t.cEdit){t.c1=t0.c1;t.c2=t0.c2}}view="inici";render()}
+  if(e.target.closest("#bCont")&&!S){S=migrate(load());for(const t0 of TEAMS0){const t=S.teams[t0.id];if(t&&!t.cEdit){t.c1=t0.c1;t.c2=t0.c2}}view="inici";render()}
 });
 
 
@@ -1057,7 +1204,7 @@ function fLeague(){
 function fTeamTab(L,rec,j,c,pr){
   if(rec.squad.length<FANT.squad)return `<section class="bevel panel"><h2>Completa la plantilla</h2><p style="margin:0">Necessites ${FANT.squad} jugadors: 2 porters i 6 de pista, com a màxim ${FANT.maxClub} del mateix club. Tens ${rec.squad.length} jugadors i ${fmtM(rec.bank)} per gastar.</p><button class="btn primary" data-ft="mercat" style="align-self:flex-start">Anar al mercat</button>${rec.squad.length?squadTable(rec,pr,L):""}</section>`;
   const dr=draftFor(rec,L),locked=isLocked(L,j);
-  const coords=[[50,86],[30,62],[70,62],[30,36],[70,36]];
+  const coords=[[50,87],[26,66],[74,66],[26,36],[74,36]];
   const slots=coords.map(([x,y],i)=>{const p=dr.xi[i]&&FPM[dr.xi[i]];return `<button class="slot ${F.sel===i?"sel":""} ${p?"":"empty"}" style="left:${x}%;top:${y}%" data-fs="${i}" ${locked?"disabled":""}>${p?`<span class="nm">${dr.cap===p.id?"Ⓒ ":""}${esc(p.name)}</span><small>${p.pos} · ${esc(ABBR[p.team])} · ${fmtM(pr[p.id].price)}</small>`:`<span class="nm">Buit</span><small>${i===0?"Porter":"Jugador de pista"}</small>`}</button>`}).join("");
   const bench=rec.squad.filter(id=>!dr.xi.includes(id)).map(id=>FPM[id]).filter(Boolean);
   const lastPts=c?teamPoints(rec,L,c):null;
@@ -1159,7 +1306,7 @@ function bindF(){
   on("#fLeaveY","click",()=>{const c=F.code;fWrite(()=>leaveLeague(c),"Has sortit de la lliga")});
 }
 
-function start(data){if(data&&data.S){S=data.S;view=data.view||"inici"}render()}
+function start(data){if(data&&data.S){S=migrate(data.S);view=data.view||"inici"}render()}
 window.claude?.hot?.snapshot?.(()=>({S,view:view==="partit"?"inici":view}));
 window.claude?.hot?.ready?window.claude.hot.ready(start):start(window.claude?.hot?.data??{});
 </script>
