@@ -1,6 +1,6 @@
-# OKManager27
+# RinkManager 27
 
-El Fantasy de l'OK Liga masculina d'hoquei patins (temporada 2026-27), amb els jugadors reals, i un mode mànager a l'estil del PC Fútbol.
+Un fantasy d'hoquei patins de la lliga masculina de màxima categoria (temporada 2026-27), amb els noms dels jugadors, i un mode mànager a l'estil dels mànagers clàssics. Joc de fans, gratuït i sense ànim de lucre, fet per donar a conèixer l'hoquei patins.
 
 ## Què hi ha al repositori
 
@@ -20,10 +20,10 @@ El Fantasy de l'OK Liga masculina d'hoquei patins (temporada 2026-27), amb els j
 ## Posar-lo en marxa
 
 ### 1. GitHub Pages
-Settings → Pages → Source: *Deploy from a branch* → branca `main`, carpeta `/ (root)`. El joc queda a `https://<usuari>.github.io/okmanager27/`.
+Settings → Pages → Source: *Deploy from a branch* → branca `main`, carpeta `/ (root)`. El joc queda a `https://<usuari>.github.io/<repositori>/`.
 
 ### 2. Firebase (només per al Fantasy)
-1. A <https://console.firebase.google.com> crea un projecte (per exemple, `okmanager27`). No cal Google Analytics.
+1. A <https://console.firebase.google.com> crea un projecte (per exemple, `rinkmanager27`). No cal Google Analytics.
 2. **Authentication** → *Sign-in method* → activa **Google**. A *Settings → Authorized domains*, afegeix `<usuari>.github.io`.
 3. **Firestore Database** → *Create database* (mode producció, regió `europe-west`). A la pestanya *Rules*, enganxa el contingut de `firestore.rules` i publica-les.
 4. **Configuració del projecte** → *Les teves apps* → afegeix una app **Web**, copia l'objecte `firebaseConfig` i enganxa'l a `firebase-config.js`.
@@ -54,3 +54,13 @@ L'id de cada jugador és `CLUB-nom-en-minúscules-amb-guions`.
 - Calendari: RFEP. Les jornades 13, 25 i 26 encara tenen data provisional.
 
 Les mitges, els preus i els sous són estimacions del joc. No són dades oficials.
+
+## Avís legal
+
+- Joc **no oficial**: no té cap relació amb la RFEP, la FECAPA, la competició ni els clubs. No fa servir escuts, logotips ni imatges.
+- Els noms dels clubs i dels jugadors només s'hi fan servir per identificar-los. Les **mitjanes, els sous, els valors i els preus són estimacions inventades pel joc** i no corresponen a dades reals de ningú.
+- Dels jugadors menors d'edat no se'n mostra l'edat (surt «<18») ni el sou. El repositori no conté dates de naixement.
+- Els resultats i estadístiques provenen de les webs públiques de la RFEP i la FECAPA, que se citen com a font.
+- Fantasy: només es guarda un identificador del compte de Google, el nom de pila i els equips de cada usuari. No es guarda el correu. Cada usuari pot esborrar les seves dades des del mateix joc.
+- És gratuït, sense publicitat i sense premis en diners.
+- Si ets jugador o representes un club i vols que es corregeixi o es retiri alguna dada, obre una *issue* en aquest repositori.
