@@ -10,6 +10,7 @@
     "test:cloud": "node --test tests/cloud-save.test.mjs tests/cloud-manager.test.mjs tests/service-worker.test.mjs",
     "test:travel": "node --test tests/travel-costs.test.mjs",
     "test:rosters": "node --test tests/roster-roles.test.mjs",
-    "test:coaches": "node --test tests/coach-market.test.mjs"
+    "test:coaches": "node --test tests/coach-market.test.mjs",
+    "test:updates": "node --test tests/app-updates.test.mjs tests/service-worker.test.mjs"
   }
 }
