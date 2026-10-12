@@ -19,12 +19,16 @@ Un fantasy d'hoquei patins de la lliga masculina de màxima categoria (temporada
   - **Competicions:** Supercopa d'Espanya, Copa del Rei, Lliga Europea (WSE Champions League) i Copa de la CERS (WSE Cup); a la femenina, Supercopa, Copa de la Reina i Lliga Europea femenina. Es juguen entre jornades.
   - **Pedrera:** els juvenils no poden pujar al primer equip d'entrada. Es poden cedir a Tercera, Segona o Primera Catalana i fer tecnificacions especialitzades (porters, tir, defensa, patinatge).
   - **Retirades:** a partir dels 37 anys els jugadors es poden retirar (se'ls pot convèncer). Des de la J18 es poden repescar exjugadors.
+  - **Lliga de veterans:** com a alternativa als fitxatges cars, es poden fitxar jugadors de la Lliga Catalana de Veterans (+35), del Màster 50 (FECAPA) i de la Lliga Màster valenciana (màxim 3, sense traspàs i amb sou petit). Es cansen més que els joves i a final de temporada tornen al seu equip.
   - **Altres:** primes per guanyar, jugadors que volen sortir del seu club, filtres de mercat (preu i mitjana), destitucions, ofertes d'altres clubs a final de temporada i roda de premsa amb crònica del partit.
   - **Escut i fotos:** cada usuari pot posar l'escut del club i fotos dels jugadors. Només es guarden al seu navegador: no van a la partida, ni a l'exportació, ni al núvol.
 
 ## Posar-lo en marxa
 
-### 1. GitHub Pages
+### 1. Netlify (web principal)
+`node scripts/build-site.cjs` prepara `dist/`. Publica aquesta carpeta a Netlify; no publiquis l’arrel del repositori. Vegeu PUBLICACIO_GRATUITA.md.
+
+### GitHub Pages (web anterior dels provadors)
 Settings → Pages → Source: *Deploy from a branch* → branca `main`, carpeta `/ (root)`. El joc queda a `https://<usuari>.github.io/<repositori>/`.
 
 ### 2. Firebase (Fantasy i partides del mànager al núvol)
@@ -85,4 +89,4 @@ Les mitges, els preus i els sous són estimacions del joc. No són dades oficial
 
 ## Publicació gratuïta i mòbil
 
-Web: https://xavikai.github.io/okmanager27/. Consulta [PUBLICACIO_GRATUITA.md](PUBLICACIO_GRATUITA.md) per activar Firebase Spark sense facturació, instal·lar la PWA i entendre els límits gratuïts.
+Web principal: https://hoquei-manager27.netlify.app/. Consulta [PUBLICACIO_GRATUITA.md](PUBLICACIO_GRATUITA.md) per activar Firebase Spark sense facturació, instal·lar la PWA i entendre els límits gratuïts.
