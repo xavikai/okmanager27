@@ -15,7 +15,7 @@ Un fantasy d'hoquei patins de la lliga masculina de màxima categoria (temporada
 ## Modes de joc
 
 - **Fantasy:** lligues amb amics. Cada mànager té 35 M per fer una plantilla de 8 jugadors (2 porters i 6 de pista), alinea cinc titulars i un capità cada jornada, i suma punts segons el que fan els jugadors als partits reals o simulats.
-- **Mànager:** portes un club de l'OK Liga o de l'OK Liga Plata (grups Nord i Sud, amb ascensos i descensos), amb alineacions, tàctica, fitxatges i finances. El mercat s'obre a l'estiu i per Nadal; durant la temporada es poden tancar acords que es fan efectius a la finestra següent. Les ofertes inclouen traspàs, sou, anys de contracte i condicions com feina a la ciutat, pis pagat, cotxe, estudis o promesa de titularitat. La partida es desa al navegador.
+- **Mànager:** portes un club de l'OK Liga o de l'OK Liga Plata (grups Nord i Sud, amb ascensos i descensos), amb alineacions, tàctica, fitxatges i finances. El mercat és obert tota la temporada i els fitxatges s'incorporen a l'instant. Les ofertes inclouen traspàs, sou, anys de contracte i condicions com feina a la ciutat, pis pagat, cotxe, estudis o promesa de titularitat. La partida es desa al navegador.
 
 ## Posar-lo en marxa
 
