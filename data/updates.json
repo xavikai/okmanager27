@@ -1,1 +1,77 @@
-{"updated":"2026-10-13 · revisió de Ballart","sources":["FECAPA","RFEP","hoqueipatins.pt","FISR"],"notes":[],"teams":{"REU":{"add":[["Candid Ballart","POR",null,85,"ESP",0,null]]}},"youth":{"add":[],"pos":{},"remove":[]},"vets":{"add":[]}}
+{
+  "updated": "2026-10-13 · demarcacions contrastades",
+  "sources": [
+    "FECAPA",
+    "RFEP",
+    "hoqueipatins.pt",
+    "FISR"
+  ],
+  "notes": [],
+  "teams": {
+    "REU": {
+      "add": [
+        [
+          "Candid Ballart",
+          "POR",
+          null,
+          85,
+          "ESP",
+          0,
+          null
+        ]
+      ]
+    },
+    "PCPT": {
+      "pos": {
+        "Marc Vila": "JUG",
+        "Xavier Gubau": "POR",
+        "Roger Haro": "POR"
+      }
+    },
+    "PPAL": {
+      "pos": {
+        "Roger Sayeras": "POR"
+      }
+    },
+    "PMAN": {
+      "pos": {
+        "Carlos Paneque": "POR",
+        "Iu López": "POR"
+      }
+    },
+    "ALC": {
+      "pos": {
+        "Nicolás Jordà": "POR"
+      }
+    },
+    "PGEG": {
+      "pos": {
+        "Pol Formatjé": "POR"
+      }
+    },
+    "PACO": {
+      "pos": {
+        "Ivan Recouso": "POR",
+        "Hugo Rodriguez": "POR"
+      }
+    },
+    "PCDM": {
+      "pos": {
+        "Dany Fuentes": "POR"
+      }
+    },
+    "PSJU": {
+      "pos": {
+        "Pau Beal": "POR"
+      }
+    }
+  },
+  "youth": {
+    "add": [],
+    "pos": {},
+    "remove": []
+  },
+  "vets": {
+    "add": []
+  }
+}

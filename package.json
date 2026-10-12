@@ -8,6 +8,7 @@
   "scripts": {
     "build": "node scripts/build-site.cjs",
     "test:cloud": "node --test tests/cloud-save.test.mjs tests/cloud-manager.test.mjs tests/service-worker.test.mjs",
-    "test:travel": "node --test tests/travel-costs.test.mjs"
+    "test:travel": "node --test tests/travel-costs.test.mjs",
+    "test:rosters": "node --test tests/roster-roles.test.mjs"
   }
 }
