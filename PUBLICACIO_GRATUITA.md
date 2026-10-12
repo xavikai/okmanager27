@@ -1,6 +1,6 @@
 # Publicació del joc a Cloudflare
 
-Web principal: https://hoquei-manager27.pages.dev/. El joc continua sent una PWA instal·lable des d’Android/Chrome i iPhone/Safari. El lloc de Netlify i GitHub Pages s’han retirat: Cloudflare és l’única web activa. Si tens una partida exportada anteriorment, la pots importar a la nova adreça.
+Web principal: https://hoquei-manager27.pages.dev/. El joc continua sent una PWA instal·lable des d’Android/Chrome i iPhone/Safari. Netlify s’ha retirat. L’antiga adreça https://xavikai.github.io/okmanager27/ només redirigeix a Cloudflare, que és l’únic allotjament del joc. GitHub Pages publica només els fitxers de redirecció de `docs/`. Si tens una partida exportada anteriorment, la pots importar a la nova adreça.
 
 ## Web i serveis privats
 

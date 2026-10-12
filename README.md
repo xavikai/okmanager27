@@ -88,4 +88,4 @@ Les mitges, els preus i els sous són estimacions del joc. No són dades oficial
 
 Web principal: https://hoquei-manager27.pages.dev/. Consulta [PUBLICACIO_GRATUITA.md](PUBLICACIO_GRATUITA.md) per activar Firebase Spark sense facturació, instal·lar la PWA i entendre els límits gratuïts.
 
-El contacte i el recompte privat d’instal·lacions utilitzen D1. Vegeu PUBLICACIO_GRATUITA.md per consultar-los al panell Cloudflare. La web es publica únicament a Cloudflare; Netlify i GitHub Pages estan retirats. El núvol de partides Firebase encara està pendent de configurar.
+El contacte i el recompte privat d’instal·lacions utilitzen D1. Vegeu PUBLICACIO_GRATUITA.md per consultar-los al panell Cloudflare. El joc es publica únicament a Cloudflare; Netlify està retirat i l’antiga adreça de GitHub Pages només redirigeix a Cloudflare. El núvol de partides Firebase encara està pendent de configurar.
