@@ -1,4 +1,4 @@
-# RinkManager 27
+# Hoquei Manager 27
 
 Un fantasy d'hoquei patins de la lliga masculina de màxima categoria (temporada 2026-27), amb els noms dels jugadors, i un mode mànager a l'estil dels mànagers clàssics. Joc de fans, gratuït i sense ànim de lucre, fet per donar a conèixer l'hoquei patins.
 
@@ -15,7 +15,7 @@ Un fantasy d'hoquei patins de la lliga masculina de màxima categoria (temporada
 ## Modes de joc
 
 - **Fantasy:** lligues amb amics. Cada mànager té 35 M per fer una plantilla de 8 jugadors (2 porters i 6 de pista), alinea cinc titulars i un capità cada jornada, i suma punts segons el que fan els jugadors als partits reals o simulats.
-- **Mànager:** portes un club, amb alineacions, tàctica, fitxatges i finances. La partida es desa al navegador.
+- **Mànager:** portes un club, amb alineacions, tàctica, fitxatges i finances. El mercat s'obre a l'estiu i per Nadal; durant la temporada es poden tancar acords que es fan efectius a la finestra següent. Les ofertes inclouen traspàs, sou, anys de contracte i condicions com feina a la ciutat, pis pagat, cotxe, estudis o promesa de titularitat. La partida es desa al navegador.
 
 ## Posar-lo en marxa
 
@@ -23,10 +23,17 @@ Un fantasy d'hoquei patins de la lliga masculina de màxima categoria (temporada
 Settings → Pages → Source: *Deploy from a branch* → branca `main`, carpeta `/ (root)`. El joc queda a `https://<usuari>.github.io/<repositori>/`.
 
 ### 2. Firebase (només per al Fantasy)
-1. A <https://console.firebase.google.com> crea un projecte (per exemple, `rinkmanager27`). No cal Google Analytics.
+1. A <https://console.firebase.google.com> crea un projecte (per exemple, `hoqueimanager27`). No cal Google Analytics.
 2. **Authentication** → *Sign-in method* → activa **Google**. A *Settings → Authorized domains*, afegeix `<usuari>.github.io`.
 3. **Firestore Database** → *Create database* (mode producció, regió `europe-west`). A la pestanya *Rules*, enganxa el contingut de `firestore.rules` i publica-les.
 4. **Configuració del projecte** → *Les teves apps* → afegeix una app **Web**, copia l'objecte `firebaseConfig` i enganxa'l a `firebase-config.js`.
+
+## Instal·lar-lo al mòbil
+Un cop publicat a GitHub Pages, obre l'adreça del joc al mòbil:
+- **Android (Chrome):** menú ⋮ → *Instal·la l'aplicació* (o *Afegeix a la pantalla d'inici*).
+- **iPhone (Safari):** botó de compartir → *Afegeix a la pantalla d'inici*.
+
+S'obre a pantalla completa com una app i el mode mànager funciona sense connexió. La partida es desa al mateix mòbil.
 
 ## Actualitzar els punts reals
 Després de cada jornada es crea `data/pts/jN.json` a partir de les actes de la RFEP, i s'afegeix N a `data/pts/index.json`. Format:
