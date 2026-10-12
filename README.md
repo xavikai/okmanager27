@@ -92,3 +92,13 @@ Les mitges, els preus i els sous són estimacions del joc. No són dades oficial
 Web principal: https://hoquei-manager27.pages.dev/. Consulta [PUBLICACIO_GRATUITA.md](PUBLICACIO_GRATUITA.md) per activar Firebase Spark sense facturació, instal·lar la PWA i entendre els límits gratuïts.
 
 El contacte i el recompte privat d’instal·lacions utilitzen D1. Vegeu PUBLICACIO_GRATUITA.md per consultar-los al panell Cloudflare. El joc es publica únicament a Cloudflare; Netlify està retirat i l’antiga adreça de GitHub Pages només redirigeix a Cloudflare. El desament del mànager a D1 està implementat; cal configurar `GOOGLE_CLIENT_ID` per activar Google. El Fantasy Firebase continua pendent de configurar.
+
+## Actualització setmanal de plantilles
+Una tasca programada revisa cada setmana la FECAPA, la RFEP, la federació italiana i hoqueipatins.pt i escriu els canvis a `data/updates.json` (altes, baixes i canvis de posició per equip, joves promeses i veterans). El joc els aplica a les partides noves i a les partides en curs, si l'usuari ho accepta des del Despatx; el Fantasy també fa servir aquestes plantilles. Format:
+
+```json
+{"updated":"2026-10-19",
+ "teams":{"MAC":{"add":[["Nom Cognom","DEF",24,72,"ESP",0,null]],"remove":["Nom"],"pos":{"Nom":"DAV"}}},
+ "youth":{"add":[],"pos":{"80224":"POR"},"remove":[]},
+ "vets":{"add":[]}}
+```
