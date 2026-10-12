@@ -9,6 +9,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script src="firebase-config.js"></script>
+<script src="install.js"></script>
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#0d1320">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
@@ -2774,20 +2775,59 @@ async function cloudInit(){
   try{if(window.claude&&window.claude.use){const db=await window.claude.use("db"),us=await window.claude.use("user");
     if(db&&us){CLOUD.db=db;CLOUD.uid=await us.id();if(CLOUD.uid){CLOUD.mode="art";cloudIndex()}}}}catch(e){}
 }
-async function cloudIndex(){if(!CLOUD.uid)return;try{CLOUD.idx=(await cGet(cPath("idx")))||{slots:{}}}catch(e){CLOUD.idx={slots:{}};CLOUD.msg=W("No s'ha pogut llegir el núvol.","No se ha podido leer la nube.")}if(!S)render()}
+async function cloudIndex(){if(!CLOUD.uid)return;try{CLOUD.idx=(await cGet(cPath("idx")))||{slots:{}}}catch(e){CLOUD.idx=null;CLOUD.msg=W("No s'ha pogut llegir el núvol.","No se ha podido leer la nube.")}if(!S)render()}
 async function cloudLogin(){if(CLOUD.mode!=="fb")return;try{await firebase.auth().signInWithPopup(new firebase.auth.GoogleAuthProvider())}catch(e){if(e&&e.code!=="auth/popup-closed-by-user")toast(W("No s'ha pogut iniciar la sessió.","No se ha podido iniciar sesión."))}}
-let cloudTimer=null,cloudPending=null;
-function cloudQueue(slot,j){if(!CLOUD.uid||!CLOUD.idx)return;cloudPending={slot,j};clearTimeout(cloudTimer);cloudTimer=setTimeout(cloudFlush,3500)}
-async function cloudFlush(){const x=cloudPending;cloudPending=null;if(!x||!CLOUD.uid)return;
-  try{const z=await gz(x.j);const body=z||x.j,CH=190000,n=Math.ceil(body.length/CH);
-    for(let i=0;i<n;i++)await cSet(cPath("part",x.slot,i),{d:body.slice(i*CH,(i+1)*CH)});
-    const st=JSON.parse(x.j);const idx=CLOUD.idx||{slots:{}};idx.slots=idx.slots||{};
-    idx.slots[x.slot]={...slotMetaOf(st,x.slot),n,z:!!z};CLOUD.idx=idx;await cSet(cPath("idx"),idx);CLOUD.msg=""}
-  catch(e){CLOUD.msg=W("No s'ha pogut desar al núvol. Es torna a provar a la propera jornada.","No se ha podido guardar en la nube. Se vuelve a probar en la próxima jornada.")}}
+/* Els canvis es desen immediatament al dispositiu; el núvol agrupa còpies
+   per partida i limita les còpies automàtiques a una tanda cada dos minuts. */
+let cloudTimer=null,cloudRunning=false,cloudNext=0;
+const cloudPending=new Map();
+function cloudSchedule(){
+  if(cloudTimer||cloudRunning||!cloudPending.size)return;
+  cloudTimer=setTimeout(()=>{cloudTimer=null;cloudFlush()},Math.max(30000,cloudNext-Date.now()));
+}
+function cloudQueue(slot,j){
+  if(!CLOUD.uid||!CLOUD.idx)return;
+  cloudPending.set(slot,{slot,j,uid:CLOUD.uid});cloudSchedule();
+}
+async function cloudFlush(manual=false){
+  if(cloudRunning||!CLOUD.uid||!CLOUD.idx)return;
+  if(!manual&&Date.now()<cloudNext){cloudSchedule();return}
+  clearTimeout(cloudTimer);cloudTimer=null;
+  const pending=Array.from(cloudPending.values());cloudPending.clear();
+  if(!pending.length)return;
+  cloudRunning=true;CLOUD.busy=true;cloudNext=Date.now()+120000;
+  try{
+    for(const x of pending){
+      if(x.uid!==CLOUD.uid)continue;
+      const z=await gz(x.j);if(x.uid!==CLOUD.uid)continue;
+      const body=z||x.j,CH=190000,n=Math.ceil(body.length/CH);
+      for(let i=0;i<n;i++){
+        if(x.uid!==CLOUD.uid)throw new Error('Session changed');
+        await cSet(cPath('part',x.slot,i),{d:body.slice(i*CH,(i+1)*CH)});
+      }
+      if(x.uid!==CLOUD.uid)continue;
+      const st=JSON.parse(x.j),idx={...CLOUD.idx,slots:{...(CLOUD.idx.slots||{})}};
+      idx.slots[x.slot]={...slotMetaOf(st,x.slot),n,z:!!z};
+      await cSet(cPath('idx'),idx);
+      if(x.uid===CLOUD.uid){CLOUD.idx=idx;CLOUD.msg=''}
+    }
+  }catch(e){
+    for(const x of pending)if(x.uid===CLOUD.uid&&!cloudPending.has(x.slot))cloudPending.set(x.slot,x);
+    cloudNext=Date.now()+900000;
+    CLOUD.msg=W('La còpia al núvol està pendent. La partida està desada al dispositiu; torna-ho a provar més tard.','La copia en la nube está pendiente. La partida está guardada en el dispositivo; inténtalo más tarde.');
+  }finally{cloudRunning=false;CLOUD.busy=false;cloudSchedule();if(!S)render()}
+}
+async function cloudSaveNow(){
+  if(!CLOUD.uid||!CLOUD.idx||cloudRunning)return;
+  for(const m of slotsList()){const st=await loadSlotAsync(m.id);if(st)cloudQueue(m.id,JSON.stringify(st))}
+  await cloudFlush(true);
+  toast(CLOUD.msg||W('Còpia al núvol desada.','Copia en la nube guardada.'));
+}
+
 async function cloudPull(slot){const m=CLOUD.idx&&CLOUD.idx.slots&&CLOUD.idx.slots[slot];if(!m)return null;
   let body="";for(let i=0;i<m.n;i++){const d=await cGet(cPath("part",slot,i));if(!d)return null;body+=d.d}
   return JSON.parse(m.z?await gunz(body):body)}
-async function cloudDelete(slot){if(!CLOUD.uid||!CLOUD.idx||!CLOUD.idx.slots||!CLOUD.idx.slots[slot])return;try{delete CLOUD.idx.slots[slot];await cSet(cPath("idx"),CLOUD.idx)}catch(e){}}
+async function cloudDelete(slot){cloudPending.delete(slot);if(!CLOUD.uid||!CLOUD.idx||!CLOUD.idx.slots||!CLOUD.idx.slots[slot])return;try{delete CLOUD.idx.slots[slot];await cSet(cPath("idx"),CLOUD.idx)}catch(e){}}
 
 /* ---------- Escuts i fotos personalitzats ----------
    Només es guarden en aquest navegador (IndexedDB). No van a la partida, ni a l'exportació, ni al núvol. */
@@ -3233,12 +3273,13 @@ function cloudBlock(){
   if(!CLOUD.mode)return `<p class="muted" style="margin:0;font-size:13px">☁ ${W("Per continuar la partida en un altre dispositiu, fes servir «Exportar partida» i «Importar partida», o activa Firebase a la versió de GitHub (vegeu el README) i inicia sessió amb Google.","Para continuar la partida en otro dispositivo, usa «Exportar partida» e «Importar partida», o activa Firebase en la versión de GitHub (ver el README) e inicia sesión con Google.")}</p>`;
   if(!CLOUD.uid)return `<div class="row"><button class="btn" data-cloudin="1">☁ ${W("Inicia sessió amb Google per jugar des de qualsevol dispositiu","Inicia sesión con Google para jugar desde cualquier dispositivo")}</button></div>`;
   const loc=new Map(slotsList().map(m=>[m.id,m]));const cl=Object.values((CLOUD.idx&&CLOUD.idx.slots)||{}).filter(m=>!loc.has(m.id)||(m.upd||0)>(loc.get(m.id).upd||0)+5000);
-  return `<p class="muted" style="margin:0;font-size:13px">☁ ${CLOUD.mode==="fb"?W(`Sessió iniciada${CLOUD.name?" com a "+esc(CLOUD.name):""}. `,`Sesión iniciada${CLOUD.name?" como "+esc(CLOUD.name):""}. `):""}${W("Les partides es desen també al núvol i les pots continuar des de qualsevol dispositiu.","Las partidas se guardan también en la nube y puedes continuarlas desde cualquier dispositivo.")}${CLOUD.msg?" <span class='warn'>"+esc(CLOUD.msg)+"</span>":""}</p>
+  return `<p class="muted" style="margin:0;font-size:13px">☁ ${CLOUD.mode==="fb"?W(`Sessió iniciada${CLOUD.name?" com a "+esc(CLOUD.name):""}. `,`Sesión iniciada${CLOUD.name?" como "+esc(CLOUD.name):""}. `):""}${W("Les partides es desen al dispositiu i se’n fan còpies periòdiques al núvol. Abans de canviar de dispositiu, prem «Desar al núvol ara».","Las partidas se guardan en el dispositivo y se hacen copias periódicas en la nube. Antes de cambiar de dispositivo, pulsa «Guardar en la nube ahora».")}${CLOUD.msg?" <span class='warn'>"+esc(CLOUD.msg)+"</span>":""}</p>
+   <div><button class="btn small" data-cloudsave ${CLOUD.busy||!CLOUD.idx?"disabled":""}>${W("Desar al núvol ara","Guardar en la nube ahora")}</button></div>
    ${cl.length?`<span class="lbl">${W("Al núvol (més noves que les d'aquest dispositiu)","En la nube (más nuevas que las de este dispositivo)")}</span>${cl.map(m=>`<div class="bevel" style="display:flex;gap:10px;align-items:center;padding:10px 12px;box-shadow:none">${shield(S0team(m),36)}<div style="flex:1"><b>${esc(m.name)}</b><div class="muted" style="font-size:13px">${m.season}-${String((m.season+1)%100).padStart(2,"0")} · J${(m.round||0)+1}</div></div><button class="btn primary" data-cloudget="${m.id}">☁ ${W("Continuar","Continuar")}</button></div>`).join("")}`:""}`}
 function menuScreen(){
   const L=slotsList().slice().sort((a,b)=>(b.upd||0)-(a.upd||0));
   const hero=`<div class="logo" style="background-image:linear-gradient(90deg,rgba(6,10,20,.92) 0%,rgba(6,10,20,.6) 55%,rgba(6,10,20,.2) 100%),url(${IMG.portada});background-size:cover;background-position:center"><span class="lbl" style="color:inherit;opacity:.7">${W("Hoquei patins · temporada 2026-27","Hockey patines · temporada 2026-27")}</span><span class="big">Hoquei<em>Manager</em>27</span><span class="sub">${W("El fantasy d'hoquei patins amb els jugadors de la màxima categoria. Fes el teu equip, competeix amb els amics o porta un club com a mànager.","El fantasy de hockey patines con los jugadores de la máxima categoría. Haz tu equipo, compite con los amigos o lleva un club como mánager.")}</span></div>`;
-  return `<div class="start" style="max-width:760px;margin:0 auto">${hero}
+  return `<div class="start" style="max-width:760px;margin:0 auto">${hero}${installPanel()}
   <div class="bevel panel" style="gap:10px">
     <span class="lbl">Fantasy</span>
     <button class="btn primary teamcard" data-mode="fantasy" style="padding:14px 16px"><span class="t"><b>${W("Fantasy d'hoquei patins","Fantasy de hockey patines")}</b><span style="opacity:.85">${W("Crea o entra en una lliga amb amics · partits reals o simulats","Crea o entra en una liga con amigos · partidos reales o simulados")}</span></span></button>
@@ -3286,6 +3327,7 @@ document.addEventListener("click",e=>{const T=e.target;let b;
   if((b=T.closest("[data-slotdel]"))&&!S){ui.delSlot=b.dataset.slotdel;render();return}
   if((b=T.closest("[data-slotdelno]"))&&!S){ui.delSlot=null;render();return}
   if((b=T.closest("[data-slotdelok]"))&&!S){deleteSlot(b.dataset.slotdelok);ui.delSlot=null;render();return}
+  if((b=T.closest("[data-cloudsave]"))){cloudSaveNow();return}
   if((b=T.closest("[data-cloudin]"))){cloudLogin();return}
   if((b=T.closest("[data-pickg]"))&&!S){ui.pickG=b.dataset.pickg;render();return}
   if((b=T.closest("[data-step]"))&&!S&&b.dataset.step==="menu"){ui.replaceSlot=null}

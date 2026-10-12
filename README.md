@@ -82,3 +82,7 @@ Les mitges, els preus i els sous són estimacions del joc. No són dades oficial
 - Fantasy: només es guarda un identificador del compte de Google, el nom de pila i els equips de cada usuari. No es guarda el correu. Cada usuari pot esborrar les seves dades des del mateix joc.
 - És gratuït, sense publicitat i sense premis en diners.
 - Si ets jugador o entrenador, o representes un club i vols que es corregeixi o es retiri alguna dada, obre una *issue* en aquest repositori.
+
+## Publicació gratuïta i mòbil
+
+Web: https://xavikai.github.io/okmanager27/. Consulta [PUBLICACIO_GRATUITA.md](PUBLICACIO_GRATUITA.md) per activar Firebase Spark sense facturació, instal·lar la PWA i entendre els límits gratuïts.
