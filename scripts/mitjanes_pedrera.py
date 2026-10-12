@@ -13,7 +13,7 @@ BAND = {"JVP": (44, 48), "JVO": (49, 54), "3A": (55, 60), "JPL": (55, 58), "JUN"
         "2A": (57, 63), "JOR": (57, 62), "1A": (60, 66), "NAC": (63, 68)}
 LV = {"NAC": 6.0, "1A": 5.0, "2A": 4.0, "JOR": 3.8, "3A": 3.0, "JPL": 2.8, "JVO": 2.5, "JVP": 1.6, "IOR": 1.4, "IPL": 0.9}
 # Mitges ajustades a mà per l'usuari: no es toquen
-FIXED_NAMES = {"Joel Bancells", "Ot Caimel", "Lluc Oller", "Aran Faig", "Genis Fugarolas", "Grau Sousa", "Martin Sillero"}
+FIXED_NAMES = {"Joel Bancells", "Ot Caimel", "Lluc Oller", "Aran Faig", "Genis Fugarolas", "Grau Sousa", "Martin Sillero", "Sergi Munso"}
 
 def youth_rows(html):
     line = next(l for l in html.split("\n") if l.startswith("const YOUTH="))
