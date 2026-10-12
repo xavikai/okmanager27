@@ -1,6 +1,6 @@
 # Publicació del joc a Cloudflare
 
-Web principal: https://hoquei-manager27.pages.dev/. El joc continua sent una PWA instal·lable des d’Android/Chrome i iPhone/Safari. La web anterior de Netlify es conserva durant la migració; les partides locals s’han d’exportar des d’allà i importar a la nova adreça.
+Web principal: https://hoquei-manager27.pages.dev/. El joc continua sent una PWA instal·lable des d’Android/Chrome i iPhone/Safari. El lloc de Netlify i GitHub Pages s’han retirat: Cloudflare és l’única web activa. Si tens una partida exportada anteriorment, la pots importar a la nova adreça.
 
 ## Web i serveis privats
 
@@ -25,7 +25,7 @@ FROM installations GROUP BY dia ORDER BY dia DESC;
 
 El joc només envia un identificador aleatori i el tipus de detecció: instal·lació confirmada o primera obertura com a app. No envia nom, correu, partides, ubicació ni agent d’usuari complet. El servidor afegeix la data i el domini; el proveïdor pot tenir metadades de peticions. La clau única evita duplicats en reintents. No hi ha cap endpoint públic que permeti llegir totals o registres.
 
-És una estimació, no un total exacte de descàrregues: esborrar dades, canviar de navegador o canviar de domini pot comptar de nou la mateixa persona. Les instal·lacions que no tornin a obrir l’app no es poden reconstruir. Els bloquejadors poden impedir el registre. Les estadístiques antigues de Netlify continuen al seu panell Forms → installacions-app.
+És una estimació, no un total exacte de descàrregues: esborrar dades, canviar de navegador o canviar de domini pot comptar de nou la mateixa persona. Les instal·lacions que no tornin a obrir l’app no es poden reconstruir. Els bloquejadors poden impedir el registre. Abans de retirar Netlify es va comprovar que no hi havia registres al formulari d’instal·lacions. El recompte actiu es consulta únicament a D1.
 
 ## Contacte (privat)
 
@@ -35,7 +35,7 @@ Els missatges nous es consulten a la mateixa consola D1:
 SELECT created_at,name,email,message FROM contact_messages ORDER BY created_at DESC;
 ```
 
-No s’ha creat una pàgina pública d’administració ni notificacions de correu. Els missatges antics continuen al panell Netlify. Les dades de contacte s’han d’utilitzar únicament per gestionar els avisos rebuts.
+No s’ha creat una pàgina pública d’administració ni notificacions de correu. Abans de retirar Netlify es va comprovar que no hi havia missatges al seu formulari de contacte. Les dades de contacte s’han d’utilitzar únicament per gestionar els avisos rebuts.
 
 ## Desar les partides al núvol
 
