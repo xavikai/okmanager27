@@ -93,7 +93,7 @@
   cloudBlock=function() {
     const html=previousBlock();if(CLOUD.mode!=='cf'||!CLOUD.uid)return html;
     const loc=new Map(slotsList().map(m=>[m.id,m]));
-    const extra=Object.values(CLOUD.idx?.slots||{}).filter(m=>loc.has(m.id)&&m.upd<=(loc.get(m.id).upd||0)+5000&&localVersions[m.id]!==m.version);
+    const extra=Object.values(CLOUD.idx?.slots||{}).filter(m=>loc.has(m.id)&&m.upd<=(loc.get(m.id).upd||0)+5000);
     return `<p class="muted">${W('Sessió iniciada com a','Sesión iniciada como')} ${esc(CLOUD.name)}</p>`+html+extra.map(m=>`<div class="row"><span>${esc(m.name)}</span><button class="btn" data-cloudget="${esc(m.id)}">☁ ${W('Carrega la còpia del núvol','Carga la copia de la nube')}</button></div>`).join('')+`<div class="row"><button class="btn small" data-cloudrefresh ${CLOUD.busy?'disabled':''}>${W('Actualitza les còpies del núvol','Actualiza las copias de la nube')}</button><button class="btn small" data-cloudlogout ${CLOUD.busy?'disabled':''}>${W('Tanca la sessió','Cerrar sesión')}</button></div>`;
   };
   document.addEventListener('click',async event=>{
