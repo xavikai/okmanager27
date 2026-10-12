@@ -10,6 +10,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script src="firebase-config.js"></script>
 <script src="install.js"></script>
+<script src="installation-stats.js"></script>
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#0d1320">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
@@ -18,6 +19,10 @@
 <script>if("serviceWorker" in navigator)addEventListener("load",()=>navigator.serviceWorker.register("sw.js"));</script>
 </head>
 <body>
+<form name="installacions-app" method="POST" data-netlify="true" netlify-honeypot="bot-field" hidden aria-hidden="true">
+  <input type="hidden" name="form-name" value="installacions-app">
+  <input name="installation_id"><input name="detection"><input name="bot-field">
+</form>
 <title>Hoquei Manager 27</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,600;0,700;0,800;1,800&family=Figtree:wght@400;500;600;700&display=swap">

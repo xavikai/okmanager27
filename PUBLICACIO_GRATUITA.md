@@ -40,3 +40,11 @@ Les partides locals de la web anterior no passen automàticament a Netlify: expo
 Executa `node scripts/build-site.cjs` i desplega `dist/` al lloc Netlify `hoquei-manager27` (id `c7e403eb-0050-4678-a5a8-12c8d03bb191`). El desplegament actual és manual: fer push a GitHub no actualitza Netlify automàticament. `netlify.toml` ja deixa preparada la compilació si més endavant es connecta el repositori.
 
 Els avisos de contacte es consulten al panell de Netlify → Forms → contacte-joc. No hi ha notificacions de correu configurades per aquest canvi.
+
+## Recompte privat d’instal·lacions
+
+Obre https://app.netlify.com/projects/hoquei-manager27/forms i selecciona **installacions-app**. El total de registres és una estimació d’instal·lacions detectades des de l’activació del recompte. Les dades només són visibles per als comptes amb accés al panell de gestió Netlify; no hi ha cap comptador ni API de lectura públics al joc.
+
+Es registra un identificador aleatori per navegador i el tipus de detecció: instal·lació confirmada pel navegador, o primera obertura en mode app (inclou iPhone). No enviem noms, correus, partides, ubicació ni l’agent d’usuari complet. Netlify pot conservar metadades de la petició com a proveïdor del servei. El marcador local evita comptar cada obertura; si falla la connexió, queda pendent per a la següent connexió o obertura.
+
+El recompte no és un total exacte de descàrregues: no es poden recuperar les instal·lacions anteriors que no tornin a obrir l’app; esborrar les dades o canviar de navegador pot duplicar un registre; bloquejadors, manca de desament local i filtres antispam poden reduir-lo. Netlify rep els registres com a formularis: si hi ha reintents dubtosos, exporta el CSV i compta identificadors installation_id diferents, revisant també Spam. No és una mètrica auditada ni resistent a registres falsificats. Només s’activa al domini principal hoquei-manager27.netlify.app; GitHub Pages i els desplegaments de prova no registren instal·lacions. En una migració futura caldrà adaptar el destí de les estadístiques.
