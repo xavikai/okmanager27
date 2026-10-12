@@ -25,15 +25,15 @@ Un fantasy d'hoquei patins de la lliga masculina de màxima categoria (temporada
 
 ## Posar-lo en marxa
 
-### 1. Netlify (web principal)
-`node scripts/build-site.cjs` prepara `dist/`. Publica aquesta carpeta a Netlify; no publiquis l’arrel del repositori. Vegeu PUBLICACIO_GRATUITA.md.
+### 1. Cloudflare Pages (web principal)
+`node scripts/build-site.cjs` prepara `dist/`. Publica-la amb `wrangler pages deploy dist --project-name hoquei-manager27 --branch main`; no publiquis l’arrel del repositori. Vegeu PUBLICACIO_GRATUITA.md.
 
 ### GitHub Pages (web anterior dels provadors)
 Settings → Pages → Source: *Deploy from a branch* → branca `main`, carpeta `/ (root)`. El joc queda a `https://<usuari>.github.io/<repositori>/`.
 
 ### 2. Firebase (Fantasy i partides del mànager al núvol)
 1. A <https://console.firebase.google.com> crea un projecte (per exemple, `hoqueimanager27`). No cal Google Analytics.
-2. **Authentication** → *Sign-in method* → activa **Google**. A *Settings → Authorized domains*, afegeix `<usuari>.github.io`.
+2. **Authentication** → *Sign-in method* → activa **Google**. A *Settings → Authorized domains*, afegeix `hoquei-manager27.pages.dev`.
 3. **Firestore Database** → *Create database* (mode producció, regió `europe-west`). A la pestanya *Rules*, enganxa el contingut de `firestore.rules` i publica-les.
 4. **Configuració del projecte** → *Les teves apps* → afegeix una app **Web**, copia l'objecte `firebaseConfig` i enganxa'l a `firebase-config.js`.
 
@@ -89,4 +89,6 @@ Les mitges, els preus i els sous són estimacions del joc. No són dades oficial
 
 ## Publicació gratuïta i mòbil
 
-Web principal: https://hoquei-manager27.netlify.app/. Consulta [PUBLICACIO_GRATUITA.md](PUBLICACIO_GRATUITA.md) per activar Firebase Spark sense facturació, instal·lar la PWA i entendre els límits gratuïts.
+Web principal: https://hoquei-manager27.pages.dev/. Consulta [PUBLICACIO_GRATUITA.md](PUBLICACIO_GRATUITA.md) per activar Firebase Spark sense facturació, instal·lar la PWA i entendre els límits gratuïts.
+
+El contacte i el recompte privat d’instal·lacions utilitzen D1. Vegeu PUBLICACIO_GRATUITA.md per consultar-los al panell Cloudflare. La web antiga de Netlify es conserva i el núvol de partides Firebase encara està pendent de configurar.

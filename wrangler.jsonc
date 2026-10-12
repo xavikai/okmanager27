@@ -1,0 +1,13 @@
+{
+  "name": "hoquei-manager27",
+  "pages_build_output_dir": "./dist",
+  "compatibility_date": "2026-10-12",
+  "d1_databases": [
+    {
+      "binding": "METRICS_DB",
+      "database_name": "hoquei-manager-metrics",
+      "database_id": "13262f39-3ead-4183-93fa-776606462336",
+      "migrations_dir": "migrations"
+    }
+  ]
+}
