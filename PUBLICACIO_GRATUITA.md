@@ -60,3 +60,11 @@ wrangler pages deploy dist --project-name hoquei-manager27 --branch main
 ```
 
 El desplegament és manual: fer push a GitHub desa el codi però no actualitza automàticament Cloudflare. `wrangler.jsonc` conté identificadors públics, no credencials. Les funcions i les migracions queden fora del directori públic `dist/`; Wrangler compila les funcions des de `functions/`. No publiquis l’arrel del repositori.
+
+## Sincronització automàtica del mànager
+
+Amb Google iniciat, els canvis de la partida oberta s’agrupen durant 5 segons; les còpies automàtiques es limiten a una cada 30 segons mentre hi ha activitat. En tornar al menú, passar a segon pla o sortir de la pàgina s’intenta enviar immediatament la còpia pendent. Es prepara la compressió abans de sortir i s’utilitza fetch keepalive per a peticions de menys de 60 KB. Les còpies grans s’envien amb peticions normals.
+
+El joc mostra l’estat de la sincronització, conserva els canvis locals quan falla la connexió i ho reintenta quan torna. En recarregar, només reprèn automàticament còpies locals més noves que tinguin la mateixa versió del núvol coneguda per aquell compte. No sobreescriu versions d’altres dispositius ni envia automàticament partides locals desconegudes d’un altre compte. Obrir una partida inicia el seu desament automàtic; el botó manual continua disponible.
+
+Tancar a la força l’app, apagar el dispositiu o perdre la connexió pot interrompre l’últim enviament: no es pot garantir l’execució en tancar. Per això es desa durant el joc. Espera que l’estat indiqui que el núvol està al dia abans de continuar des d’un altre dispositiu.

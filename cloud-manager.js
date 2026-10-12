@@ -4,9 +4,13 @@
   const previousInit=cloudInit,previousIndex=cloudIndex,previousLogin=cloudLogin;
   const previousFlush=cloudFlush,previousPull=cloudPull,previousDelete=cloudDelete;
   const previousBlock=cloudBlock;
+  const previousQueue=cloudQueue,previousSchedule=cloudSchedule;
+  let finishPending=false,lastFinish=0;
   const isCloudflare=location.hostname==='hoquei-manager27.pages.dev';
   async function api(path,method='GET',body,user=CLOUD.uid) {
-    const response=await fetch('/api/'+path,{method,credentials:'same-origin',cache:'no-store',headers:{...(body?{'Content-Type':'application/json'}:{}),...(user?{'X-HM27-User':user}:{})},...(body?{body:JSON.stringify(body)}:{})});
+    const serialized=body?JSON.stringify(body):null;
+    const keepalive=method==='PUT'&&path.startsWith('saves/')&&new TextEncoder().encode(serialized).byteLength<=60000;
+    const response=await fetch('/api/'+path,{method,credentials:'same-origin',cache:'no-store',keepalive,headers:{...(body?{'Content-Type':'application/json'}:{}),...(user?{'X-HM27-User':user}:{})},...(body?{body:serialized}:{})});
     if(!response.ok){const error=new Error('Cloud request failed');error.status=response.status;throw error}
     return response.json();
   }
@@ -19,6 +23,33 @@
     if(version)localVersions[slot]=version;else delete localVersions[slot];
     try{localStorage.setItem('hm27-cloud-versions-'+CLOUD.uid,JSON.stringify(localVersions))}catch{}
   }
+  function syncText(){
+    if(!CLOUD.uid)return W('Desada al dispositiu · inicia sessió per activar el núvol','Guardada en el dispositivo · inicia sesión para activar la nube');
+    if(CLOUD.msg)return CLOUD.msg;
+    if(!CLOUD.idx)return W('Connectant amb el núvol…','Conectando con la nube…');
+    if(CLOUD.busy)return W('Desant al núvol…','Guardando en la nube…');
+    if(cloudPending.size)return navigator.onLine===false?W('Sense connexió · canvis desats al dispositiu, núvol pendent','Sin conexión · cambios guardados en el dispositivo, nube pendiente'):W('Canvis desats al dispositiu · sincronització pendent','Cambios guardados en el dispositivo · sincronización pendiente');
+    if(slotsList().some(meta=>!CLOUD.idx.slots[meta.id]||meta.upd>CLOUD.idx.slots[meta.id].upd))return W('Hi ha partides locals pendents · obre-les per sincronitzar-les','Hay partidas locales pendientes · ábrelas para sincronizarlas');
+    return W('✓ Còpies del núvol al dia','✓ Copias de la nube al día');
+  }
+  function syncStatus(){
+    if(!isCloudflare||!document.createElement)return;
+    let badge=document.querySelector('[data-cloud-status]');
+    if(!badge){badge=document.createElement('div');badge.dataset.cloudStatus='';badge.setAttribute('role','status');badge.setAttribute('aria-live','polite');badge.style.cssText='position:fixed;left:12px;bottom:calc(12px + env(safe-area-inset-bottom));max-width:calc(100vw - 90px);padding:7px 10px;border-radius:8px;background:#fff;color:#17243b;box-shadow:0 2px 12px #0002;font:12px/1.3 system-ui;z-index:40;pointer-events:none';document.body.appendChild(badge)}
+    badge.hidden=!S;const text=syncText();if(badge.textContent!==text)badge.textContent=text;
+    const inline=document.querySelector('[data-cloud-menu-status]');if(inline)inline.textContent=text;
+  }
+  cloudSchedule=function(){
+    if(CLOUD.mode!=='cf')return previousSchedule();
+    if(cloudTimer||cloudRunning||!cloudPending.size)return;
+    cloudTimer=setTimeout(()=>{cloudTimer=null;cloudFlush()},Math.max(5000,cloudNext-Date.now()));
+  };
+  cloudQueue=function(slot,j){
+    if(CLOUD.mode!=='cf')return previousQueue(slot,j);
+    if(!CLOUD.uid)return;
+    cloudPending.set(slot,{slot,j,uid:CLOUD.uid,compression:gz(j).catch(()=>null)});
+    cloudSchedule();syncStatus();
+  };
   function googleReady() {
     if(identityReady)return identityReady;
     identityReady=new Promise((resolve,reject)=>{
@@ -39,9 +70,12 @@
   cloudIndex=async function() {
     if(CLOUD.mode!=='cf')return previousIndex();
     if(!CLOUD.uid)return;const user=CLOUD.uid;
-    try{const index=await api('saves');if(user===CLOUD.uid){CLOUD.idx=index;CLOUD.msg=''}}
+    try{const index=await api('saves');if(user===CLOUD.uid){CLOUD.idx=index;CLOUD.msg='';
+      // Després de reiniciar, reprèn només les còpies locals conegudes d’aquest compte.
+      for(const meta of slotsList()){const remote=index.slots[meta.id];if(remote&&localVersions[meta.id]===remote.version&&meta.upd>remote.upd){const state=await loadSlotAsync(meta.id);if(state&&user===CLOUD.uid)cloudQueue(meta.id,JSON.stringify(state))}}
+    }}
     catch(error){if(user===CLOUD.uid){CLOUD.idx=null;CLOUD.msg=W('No s’ha pogut llegir el núvol. Torna a iniciar sessió o comprova la connexió.','No se ha podido leer la nube. Vuelve a iniciar sesión o comprueba la conexión.');if(error.status===401)setUser(null)}}
-    if(!S)render();
+    if(!S)render();if(CLOUD.idx)cloudSchedule();syncStatus();
   };
   cloudLogin=async function() {
     if(CLOUD.mode!=='cf')return previousLogin();
@@ -54,28 +88,29 @@
   };
   cloudFlush=async function(manual=false) {
     if(CLOUD.mode!=='cf')return previousFlush(manual);
-    if(cloudRunning||!CLOUD.uid||!CLOUD.idx)return;
+    if(cloudRunning){if(manual)finishPending=true;return}
+    if(!CLOUD.uid||!CLOUD.idx)return;
     if(!manual&&Date.now()<cloudNext){cloudSchedule();return}
     clearTimeout(cloudTimer);cloudTimer=null;
     const pending=Array.from(cloudPending.values());cloudPending.clear();if(!pending.length)return;
-    const user=CLOUD.uid;cloudRunning=true;CLOUD.busy=true;cloudNext=Date.now()+120000;CLOUD.msg='';
+    const user=CLOUD.uid;cloudRunning=true;CLOUD.busy=true;cloudNext=Date.now()+30000;CLOUD.msg='';syncStatus();
     try{
       for(const item of pending){
         if(item.uid!==user||CLOUD.uid!==user)continue;
         const state=JSON.parse(item.j),metadata=slotMetaOf(state,item.slot),remote=CLOUD.idx.slots[item.slot];
         if(remote&&(remote.upd>metadata.upd+5000||localVersions[item.slot]!==remote.version)){CLOUD.msg=W('Hi ha una còpia del núvol que aquest dispositiu encara no ha carregat. Continua-la des del núvol abans de tornar a desar.','Hay una copia de la nube que este dispositivo todavía no ha cargado. Continúala desde la nube antes de volver a guardar.');continue}
         try{
-          const compressed=await gz(item.j);if(CLOUD.uid!==user)continue;
+          const compressed=await (item.compression||gz(item.j));if(CLOUD.uid!==user)continue;
           const result=await api('saves/'+encodeURIComponent(item.slot),'PUT',{data:compressed||item.j,z:!!compressed,metadata,version:remote?.version||null},user);
           if(CLOUD.uid===user){CLOUD.idx.slots[item.slot]={...metadata,version:result.version};rememberVersion(item.slot,result.version)}
         }catch(error){
           if(CLOUD.uid!==user)continue;
           if(error.status===409){await cloudIndex();CLOUD.msg=W('La partida ha canviat en un altre dispositiu o has arribat al límit de 10 partides al núvol. Revisa les còpies abans de tornar a desar.','La partida ha cambiado en otro dispositivo o has llegado al límite de 10 partidas en la nube. Revisa las copias antes de volver a guardar.');continue}
           if(!cloudPending.has(item.slot))cloudPending.set(item.slot,item);
-          cloudNext=Date.now()+900000;CLOUD.msg=W('La còpia al núvol està pendent. La partida continua desada al dispositiu.','La copia en la nube está pendiente. La partida sigue guardada en el dispositivo.');
+          cloudNext=Date.now()+60000;CLOUD.msg=W('La còpia al núvol està pendent. La partida continua desada al dispositiu.','La copia en la nube está pendiente. La partida sigue guardada en el dispositivo.');
         }
       }
-    }finally{cloudRunning=false;CLOUD.busy=false;cloudSchedule();if(!S)render()}
+    }finally{cloudRunning=false;CLOUD.busy=false;const finish=finishPending;finishPending=false;cloudSchedule();if(!S)render();syncStatus();if(finish&&cloudPending.size&&Date.now()<cloudNext&&CLOUD.msg==='')cloudFlush(true)}
   };
   cloudPull=async function(slot) {
     if(CLOUD.mode!=='cf')return previousPull(slot);
@@ -91,10 +126,11 @@
     catch{toast(W('La còpia del dispositiu s’ha esborrat, però no s’ha pogut esborrar la del núvol.','La copia del dispositivo se ha borrado, pero no se ha podido borrar la de la nube.'))}
   };
   cloudBlock=function() {
-    const html=previousBlock();if(CLOUD.mode!=='cf'||!CLOUD.uid)return html;
+    let html=previousBlock();if(CLOUD.mode!=='cf'||!CLOUD.uid)return html;
+    html=html.replace('Les partides es desen al dispositiu i se’n fan còpies periòdiques al núvol. Abans de canviar de dispositiu, prem «Desar al núvol ara».','Les partides es desen al dispositiu i se sincronitzen automàticament amb el núvol. Quan tornes al menú o passes a una altra app, s’intenten enviar els canvis pendents.').replace('Las partidas se guardan en el dispositivo y se hacen copias periódicas en la nube. Antes de cambiar de dispositivo, pulsa «Guardar en la nube ahora».','Las partidas se guardan en el dispositivo y se sincronizan automáticamente con la nube. Al volver al menú o pasar a otra app, se intentan enviar los cambios pendientes.');
     const loc=new Map(slotsList().map(m=>[m.id,m]));
     const extra=Object.values(CLOUD.idx?.slots||{}).filter(m=>loc.has(m.id)&&m.upd<=(loc.get(m.id).upd||0)+5000);
-    return `<p class="muted">${W('Sessió iniciada com a','Sesión iniciada como')} ${esc(CLOUD.name)}</p>`+html+extra.map(m=>`<div class="row"><span>${esc(m.name)}</span><button class="btn" data-cloudget="${esc(m.id)}">☁ ${W('Carrega la còpia del núvol','Carga la copia de la nube')}</button></div>`).join('')+`<div class="row"><button class="btn small" data-cloudrefresh ${CLOUD.busy?'disabled':''}>${W('Actualitza les còpies del núvol','Actualiza las copias de la nube')}</button><button class="btn small" data-cloudlogout ${CLOUD.busy?'disabled':''}>${W('Tanca la sessió','Cerrar sesión')}</button></div>`;
+    return `<p class="muted">${W('Sessió iniciada com a','Sesión iniciada como')} ${esc(CLOUD.name)}</p><p class="muted" data-cloud-menu-status>${esc(syncText())}</p>`+html+extra.map(m=>`<div class="row"><span>${esc(m.name)}</span><button class="btn" data-cloudget="${esc(m.id)}">☁ ${W('Carrega la còpia del núvol','Carga la copia de la nube')}</button></div>`).join('')+`<div class="row"><button class="btn small" data-cloudrefresh ${CLOUD.busy?'disabled':''}>${W('Actualitza les còpies del núvol','Actualiza las copias de la nube')}</button><button class="btn small" data-cloudlogout ${CLOUD.busy?'disabled':''}>${W('Tanca la sessió','Cerrar sesión')}</button></div>`;
   };
   document.addEventListener('click',async event=>{
     if(event.target.closest('[data-cloudrefresh]'))await cloudIndex();
@@ -103,9 +139,18 @@
       catch{toast(W('No s’ha pogut tancar la sessió. Comprova la connexió.','No se ha podido cerrar sesión. Comprueba la conexión.'))}
     }
   });
+  function finishSession(){
+    if(CLOUD.mode!=='cf'||!CLOUD.uid)return;
+    if(Date.now()-lastFinish<1000)return;lastFinish=Date.now();
+    if(S)save();
+    cloudFlush(true);
+  }
+  document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden')finishSession()});
+  window.addEventListener?.('pagehide',finishSession);
+  document.addEventListener('click',event=>{if(event.target.closest('#bMenu,#bQuit,[data-step="menu"]'))finishSession()});
   // El joc ja s’ha iniciat quan es carrega aquest fitxer.
   // El temporitzador antic pot haver executat cloudInit abans de descarregar aquest script.
   if(isCloudflare)CLOUD.started=false;
-  window.addEventListener?.('online',()=>{if(isCloudflare&&!CLOUD.mode){CLOUD.started=false;cloudInit()}});
+  window.addEventListener?.('online',async()=>{if(!isCloudflare)return;if(!CLOUD.mode){CLOUD.started=false;await cloudInit()}else if(CLOUD.uid){cloudNext=0;if(!CLOUD.idx)await cloudIndex();if(S)save();cloudFlush(true)}});
   cloudInit();
 })();
