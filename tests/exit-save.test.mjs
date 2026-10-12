@@ -5,7 +5,7 @@ import {readFileSync} from 'node:fs';
 const source=readFileSync(new URL('../exit-save.js',import.meta.url),'utf8');
 function setup(){
   const events=new Map(),buttons=new Map(),elements=[];let saves=0;
-  const c={S:{slot:'test'},CLOUD:{mode:'cf',uid:'alice',idx:{slots:{}},msg:''},cloudRunning:false,cloudPending:new Map(),ticker:null,ui:{},view:'inici',startStep:'menu',W:a=>a,save(){saves++},cloudFlush:async()=>{},render(){},toast(){},window:{addEventListener:(name,fn)=>events.set(name,fn),scrollTo(){}},document:{querySelector:()=>null,body:{appendChild(){}},addEventListener:(name,fn)=>events.set(name,fn),createElement(){
+  const c={S:{slot:'test'},CLOUD:{mode:'cf',uid:'alice',idx:{slots:{}},msg:''},cloudRunning:false,cloudPending:new Map(),ticker:null,ui:{},view:'inici',startStep:'menu',W:a=>a,save(){saves++},cloudFlush:async()=>{},render(){},toast(){},window:{addEventListener:(name,fn)=>events.set(name,fn),scrollTo(){}},document:{querySelector:()=>null,getElementById:id=>elements.find(el=>el.id===id)||null,head:{appendChild(){}},body:{appendChild(){}},addEventListener:(name,fn)=>events.set(name,fn),createElement(){
     const el={style:{},setAttribute(){},innerHTML:'',showModal(){el.open=true},remove(){el.open=false},addEventListener(name,fn){el[name]=fn},querySelector(selector){if(!buttons.has(selector))buttons.set(selector,{hidden:true,disabled:false,focus(){}});return buttons.get(selector)},querySelectorAll(){return [...buttons.values()]}};elements.push(el);return el;
   }},Date,setTimeout,clearInterval,Promise};vm.createContext(c);vm.runInContext(source,c);
   const click=()=>events.get('click')({target:{closest:()=>true},preventDefault(){},stopImmediatePropagation(){}});
