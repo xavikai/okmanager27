@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="ca">
 <head>
-<meta name="hm27-version" content="hm27-v23">
+<meta name="hm27-version" content="hm27-v24">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="Hoquei Manager 27: fantasy d'hoquei patins gratuït i no oficial, amb un mode mànager.">
@@ -1026,7 +1026,7 @@ function render(){
   </header>
   <div class="mbar"><button class="btn" id="bNav" aria-haspopup="true"><b aria-hidden="true">☰</b><span>${(items.find(x=>x[0]===view)||items[0])[1]}</span>${nOff?`${_tx(`<span class="badge" title="`)}${W(_tx("Ofertes pendents"),_tx("Ofertas pendientes"))}${_tx(`" style="background:var(--bad);color:#fff;border-radius:10px;padding:0 7px;font-size:12px;margin-left:auto">`)}${nOff} ${W("ofertes","ofertas")}</span>`:""}</button><button class="btn" data-manual-save aria-label="${W("Desar partida","Guardar partida")}" title="${W("Desar partida","Guardar partida")}">💾 ${W("Desar","Guardar")}</button>${ui.match&&ui.match.m&&ui.match.m.live&&view==="partit"?"":S.finished?`<button class="btn primary" data-new="1">${W(_tx("Nova temporada"),_tx("Nueva temporada"))}</button>`:`<button class="btn primary" data-play="1">${W(_tx("Jugar"),_tx("Jugar"))} J${S.round+1} ▸</button>`}</div>
   <div class="shell">
-    <nav class="menu bevel" aria-label="Menú"><div class="navhead"><b>${W(_tx("Menú"),_tx("Menú"))}${_tx(`</b><button class="btn" id="bNavX" aria-label="`)}${W(_tx("Tanca"),_tx("Cierra"))}">✕</button></div>${items.map(([k,l,b])=>k==="sep"?`<div class="sep"></div>`:`${_tx(`<button data-v="`)}${k}" ${view===k?_tx("aria-current=\"page\""):""}>${l}${b?`<span class="badge">${b}</span>`:""}</button>`).join("")}<div class="sep"></div><button data-fed>🔄 ${W("Revisar federacions","Revisar federaciones")}</button><button data-contact>✉ ${W("Contacte","Contacto")}</button><div class="navx"><button class="btn" data-contact>✉ ${W("Contacte","Contacto")}</button><button class="btn" id="bMenu2">${W(_tx("Menú principal"),_tx("Menú principal"))}</button></div></nav>
+    <nav class="menu bevel" aria-label="Menú"><div class="navhead"><b>${W(_tx("Menú"),_tx("Menú"))}${_tx(`</b><button class="btn" id="bNavX" aria-label="`)}${W(_tx("Tanca"),_tx("Cierra"))}">✕</button></div>${items.map(([k,l,b])=>k==="sep"?`<div class="sep"></div>`:`${_tx(`<button data-v="`)}${k}" ${view===k?_tx("aria-current=\"page\""):""}>${l}${b?`<span class="badge">${b}</span>`:""}</button>`).join("")}<div class="sep"></div><button data-fed>🔄 ${W("Revisar federacions","Revisar federaciones")}</button><button data-contact>✉ ${W("Contacte","Contacto")}</button><div class="navx"><button class="btn" id="bMenu2">${W(_tx("Menú principal"),_tx("Menú principal"))}</button></div></nav>
     <main>${VIEWS[view]?VIEWS[view]():VIEWS.inici()}</main>
   </div>`;
   bind();
