@@ -242,7 +242,7 @@ nav.menu .navhead,nav.menu .navx{display:none}
   .top .club b{font-size:21px}
   .top .club .muted{font-size:12.5px}
   .kpi .v{font-size:18px}
-  .top #bMenu,.top #bPlay,.top #bNew{display:none}
+  .top #bMenu,.top #bPlay,.top #bNew,.top [data-manual-save]{display:none}
   .mbar{display:flex;gap:8px;position:sticky;top:0;z-index:40;margin:0 -10px 10px;padding:8px 10px calc(8px);padding-top:calc(8px + env(safe-area-inset-top,0px));background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
   .mbar .btn{min-height:44px;font-size:15px}
   .mbar #bNav{flex:1;display:flex;align-items:center;gap:10px;text-align:left;min-width:0}
@@ -990,10 +990,11 @@ function render(){
     <div class="kpi"><span class="lbl">Pressupost</span><span class="v num">`)}${money(me.budget)}${_tx(`</span></div>
     <div class="kpi"><span class="lbl">Jornada</span><span class="v num">`)}${Math.min(S.round+1,NROUNDS())}/${NROUNDS()}${_tx(`</span></div>
     <div class="kpi"><span class="lbl">Posició</span><span class="v num">`)}${S.round?ord(pos):"–"}${_tx(`</span></div>
+    `)}<button class="btn" data-manual-save aria-label="${W("Desar partida","Guardar partida")}">💾 ${W("Desar partida","Guardar partida")}</button>${_tx(`
     <button class="btn" id="bMenu" title="Desa i torna al menú principal">Menú</button>
     `)}${ui.match&&ui.match.m&&ui.match.m.live&&view==="partit"?"":S.finished?_tx(`<button class="btn primary" id="bNew">Nova temporada</button>`):`${_tx(`<button class="btn primary" id="bPlay">Jugar jornada `)}${S.round+1} ▸</button>`}
   </header>
-  <div class="mbar"><button class="btn" id="bNav" aria-haspopup="true"><b aria-hidden="true">☰</b><span>${(items.find(x=>x[0]===view)||items[0])[1]}</span>${nOff?`${_tx(`<span class="badge" title="`)}${W(_tx("Ofertes pendents"),_tx("Ofertas pendientes"))}${_tx(`" style="background:var(--bad);color:#fff;border-radius:10px;padding:0 7px;font-size:12px;margin-left:auto">`)}${nOff} ${W("ofertes","ofertas")}</span>`:""}</button>${ui.match&&ui.match.m&&ui.match.m.live&&view==="partit"?"":S.finished?`<button class="btn primary" data-new="1">${W(_tx("Nova temporada"),_tx("Nueva temporada"))}</button>`:`<button class="btn primary" data-play="1">${W(_tx("Jugar"),_tx("Jugar"))} J${S.round+1} ▸</button>`}</div>
+  <div class="mbar"><button class="btn" id="bNav" aria-haspopup="true"><b aria-hidden="true">☰</b><span>${(items.find(x=>x[0]===view)||items[0])[1]}</span>${nOff?`${_tx(`<span class="badge" title="`)}${W(_tx("Ofertes pendents"),_tx("Ofertas pendientes"))}${_tx(`" style="background:var(--bad);color:#fff;border-radius:10px;padding:0 7px;font-size:12px;margin-left:auto">`)}${nOff} ${W("ofertes","ofertas")}</span>`:""}</button><button class="btn" data-manual-save aria-label="${W("Desar partida","Guardar partida")}" title="${W("Desar partida","Guardar partida")}">💾 ${W("Desar","Guardar")}</button>${ui.match&&ui.match.m&&ui.match.m.live&&view==="partit"?"":S.finished?`<button class="btn primary" data-new="1">${W(_tx("Nova temporada"),_tx("Nueva temporada"))}</button>`:`<button class="btn primary" data-play="1">${W(_tx("Jugar"),_tx("Jugar"))} J${S.round+1} ▸</button>`}</div>
   <div class="shell">
     <nav class="menu bevel" aria-label="Menú"><div class="navhead"><b>${W(_tx("Menú"),_tx("Menú"))}${_tx(`</b><button class="btn" id="bNavX" aria-label="`)}${W(_tx("Tanca"),_tx("Cierra"))}">✕</button></div>${items.map(([k,l,b])=>k==="sep"?`<div class="sep"></div>`:`${_tx(`<button data-v="`)}${k}" ${view===k?_tx("aria-current=\"page\""):""}>${l}${b?`<span class="badge">${b}</span>`:""}</button>`).join("")}<div class="navx"><button class="btn" id="bMenu2">${W(_tx("Menú principal"),_tx("Menú principal"))}</button></div></nav>
     <main>${VIEWS[view]?VIEWS[view]():VIEWS.inici()}</main>
@@ -3544,5 +3545,6 @@ window.claude?.hot?.ready?window.claude.hot.ready(start):start(window.claude?.ho
 
 <script src="cloud-manager.js"></script>
 <script src="exit-save.js"></script>
+<script src="manual-save.js"></script>
 </body>
 </html>
