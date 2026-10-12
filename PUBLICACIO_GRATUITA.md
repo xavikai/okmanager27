@@ -47,7 +47,7 @@ El servidor verifica la signatura, l’emissor, la caducitat i el destinatari de
 
 Cada jugador només pot consultar i modificar les seves partides. El servidor selecciona el propietari a partir de la sessió. Les escriptures són atòmiques i comproven la versió anterior per evitar sobreescriure canvis d’un altre dispositiu. Hi ha un màxim de 10 partides al núvol per compte i 1 MB per còpia comprimida. Les fotos i escuts personalitzats continuen sent locals. El joc agrupa còpies automàtiques i deixa desar manualment abans de canviar de dispositiu. Si falla la xarxa o la quota gratuïta, conserva la còpia local.
 
-Mentre GOOGLE_CLIENT_ID no estigui configurat, el botó de Google i la sincronització no estan activats. Cal provar dos comptes reals abans de donar per validada la sincronització completa.
+GOOGLE_CLIENT_ID està configurat a wrangler.jsonc amb l’identificador públic del client «Hoquei Manager 27 · Cloudflare», al projecte Google hoquei-manager-27. No és una clau secreta. L’únic origen autoritzat és https://hoquei-manager27.pages.dev. Cal provar dos comptes reals abans de donar per validada la sincronització completa. La pàgina privacitat.html explica les dades del mànager.
 
 ## Actualitzar la web
 

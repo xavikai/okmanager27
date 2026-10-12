@@ -1,1 +1,12 @@
-{"name":"hoquei-manager27","private":true,"type":"module","dependencies":{"jose":"^6.1.0"},"scripts":{"build":"node scripts/build-site.cjs","test:cloud":"node --test tests/cloud-save.test.mjs tests/cloud-manager.test.mjs"}}
+{
+  "name": "hoquei-manager27",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "jose": "^6.1.0"
+  },
+  "scripts": {
+    "build": "node scripts/build-site.cjs",
+    "test:cloud": "node --test tests/cloud-save.test.mjs tests/cloud-manager.test.mjs tests/service-worker.test.mjs"
+  }
+}

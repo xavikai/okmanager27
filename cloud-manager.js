@@ -47,7 +47,7 @@
     if(CLOUD.mode!=='cf')return previousLogin();
     try{
       await googleReady();loginDialog?.remove();loginDialog=document.createElement('dialog');
-      loginDialog.innerHTML=`<p>${W('Inicia sessió per guardar les teves partides i continuar-les en altres dispositius.','Inicia sesión para guardar tus partidas y continuarlas en otros dispositivos.')}</p><div data-google-button></div><p><button class="btn" data-google-close>${W('Tanca','Cerrar')}</button></p>`;
+      loginDialog.innerHTML=`<p>${W('Inicia sessió per guardar les teves partides i continuar-les en altres dispositius.','Inicia sesión para guardar tus partidas y continuarlas en otros dispositivos.')}</p><div data-google-button></div><p><a href="privacitat.html" target="_blank" rel="noopener">${W('Com es guarden les teves dades','Cómo se guardan tus datos')}</a></p><p><button class="btn" data-google-close>${W('Tanca','Cerrar')}</button></p>`;
       document.body.appendChild(loginDialog);loginDialog.querySelector('[data-google-close]').onclick=()=>{loginDialog.remove();loginDialog=null};loginDialog.showModal();
       google.accounts.id.renderButton(loginDialog.querySelector('[data-google-button]'),{type:'standard',theme:'outline',size:'large',text:'signin_with'});
     }catch{toast(W('Google no està disponible. Comprova la connexió i torna-ho a provar.','Google no está disponible. Comprueba la conexión y vuelve a intentarlo.'))}
