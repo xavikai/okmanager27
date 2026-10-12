@@ -128,8 +128,8 @@ td.r,th.r{text-align:right}
 /* Rink */
 .lineup{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:14px}
 .rinkbox{position:relative;width:100%;max-width:290px;aspect-ratio:1/2;margin:0 auto}
-.rinkbox svg{position:absolute;inset:0;width:100%;height:100%}
-.slot{position:absolute;transform:translate(-50%,-50%);width:122px;max-width:44%;padding:7px 6px;text-align:center;background:var(--panel);color:var(--fg);border:1px solid var(--line2);border-radius:10px;box-shadow:0 4px 14px rgba(0,0,0,.18);display:flex;flex-direction:column;gap:1px;align-items:center}
+.rinkbox>svg{position:absolute;inset:0;width:100%;height:100%}
+.slot{cursor:grab;position:absolute;transform:translate(-50%,-50%);width:122px;max-width:44%;padding:7px 6px;text-align:center;background:var(--panel);color:var(--fg);border:1px solid var(--line2);border-radius:10px;box-shadow:0 4px 14px rgba(0,0,0,.18);display:flex;flex-direction:column;gap:1px;align-items:center}
 .slot.sel{background:var(--accent);color:var(--accent-fg);border-color:transparent}
 .slot.empty{border-style:dashed;opacity:.9}
 .slot small{font-size:11.5px;opacity:.8}
@@ -174,7 +174,7 @@ details summary{list-style:revert}
 .perks{display:grid;gap:6px}.perks label{display:flex;gap:8px;align-items:flex-start;font-size:14px}.perks small{color:var(--dim);display:block}
 .offer{display:grid;gap:10px;border-top:1px solid var(--line);padding-top:12px}
 .offer .f{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}.offer .f label{display:grid;gap:4px;min-width:0}.offer .f input,.offer .f select{width:100%;min-width:0;box-sizing:border-box}
-.flag{vertical-align:-1px;border-radius:2px;box-shadow:0 0 0 1px rgba(0,0,0,.18);flex:0 0 auto}
+.flag{width:16px;height:11px;display:inline-block;vertical-align:-1px;border-radius:2px;box-shadow:0 0 0 1px rgba(0,0,0,.18);flex:0 0 auto}
 .obres{display:grid;gap:0}.obra{display:grid;gap:8px;padding:12px 0;border-top:1px solid var(--line)}.obra:first-child{border-top:0}
 .ht{display:grid;gap:12px;padding:14px;border:1px solid var(--line2);border-radius:12px;background:var(--panel2)}
 .htgrid{display:grid;align-items:start;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}.htgrid label{display:grid;gap:3px;font-size:13px;color:var(--dim)}.htgrid select{width:100%}
@@ -219,6 +219,18 @@ const TEAMS0=[
  {id:"MAC",name:"SHUM Frit Ravich",city:"Maçanet de la Selva",c1:"#ffffff",c2:"#d62828",rep:2,bud:8,arena:"Pavelló Municipal de Maçanet",src:"fecapa",p:[["Jordi Pons","POR",25,79,"ESP",0,["SHUM",0,0,26]],["Àlex Rovira","POR",26,68,"ESP",0,["SHUM",0,0,26]],["Biel Nadal","DEF",20,70,"ESP",0,null],["Josep Hernández","DAV",31,81,"ESP",0,["SHUM",17,1,25]],["Joan Picart","DAV",22,74,"ESP",0,["SHUM",7,0,19]],["Aleix Domènech","DEF",null,74,"ESP",0,["SHUM",4,2,23]],["Sergi Pujol","DEF",27,72,"ESP",0,["SHUM",2,2,25]],["Àlex Grau","DEF",31,76,"ESP",0,["SHUM",0,4,26]],["Lluc Sitjà","DEF",23,76,"ESP",0,null],["Eloi Rodríguez","DAV",17,69,"ESP",0,null],["Biel Mir","DEF",21,69,"ESP",0,null]]}
 ];
 
+/* OK Liga Plata 2026-27 (RFEP, grups Nord i Sud): plantilles, actes i estadístiques de 2025-26. Mitjanes estimades amb la mateixa fórmula; sense data de naixement. */
+const TEAMS_PLATA=[{"id":"PGEG","name":_tx("GEIEG"),"city":_tx("Girona"),"c1":"#d0a040","c2":"#ffffff","rep":2,"bud":5.9,"arena":_tx("Pavelló de Girona"),"src":"plata26","div":"PN","filial":false,"p":[[_tx("Marçal Coll"),"POR",null,70,"ESP",0,[_tx("GEIEG"),0,0,2]],[_tx("Daniel Just"),"POR",null,70,"ESP",0,[_tx("GEIEG"),0,0,1]],[_tx("Pol Formatjé"),"POR",null,68,"ESP",0,[_tx("GEIEG"),0,0,1]],[_tx("Narcis Pijaume"),"DEF",null,68,"ESP",0,[_tx("GEIEG"),3,0,2]],[_tx("Miquel Calero"),"DEF",null,67,"ESP",0,[_tx("GEIEG"),0,0,2]],[_tx("Oriol Costa"),"DEF",null,67,"ESP",0,[_tx("GEIEG"),0,0,1]],[_tx("Pau Nonell"),"DEF",null,66,"ESP",0,[_tx("GEIEG"),0,0,2]],[_tx("Nil Tarres"),"DEF",null,66,"ESP",0,[_tx("GEIEG"),0,1,2]],[_tx("Bru Vilar"),"DEF",null,64,"ESP",0,[_tx("GEIEG"),0,0,1]],[_tx("Jordi Grygoriy Mateos"),"DAV",null,70,"ESP",0,[_tx("GEIEG"),1,1,2]],[_tx("Ian Hidalgo"),"DAV",null,68,"ESP",0,[_tx("GEIEG"),0,0,2]],[_tx("Pau Dickin"),"DAV",null,67,"ESP",0,[_tx("GEIEG"),0,0,2]]]},{"id":"PRCJ","name":_tx("RC Jolaseta"),"city":_tx("Getxo"),"c1":"#f0e010","c2":"#14148c","rep":1,"bud":5.1,"arena":_tx("Pavelló de Getxo"),"src":"plata26","div":"PN","filial":false,"p":[[_tx("Aner Melero"),"POR",null,69,"ESP",0,[_tx("RC Jolaseta"),0,0,2]],[_tx("Antón Uriarte"),"POR",null,69,"ESP",0,[_tx("RC Jolaseta"),0,0,1]],[_tx("Arnau Roquet"),"POR",null,66,"ESP",0,[_tx("RC Jolaseta"),0,0,1]],[_tx("Dario Barneto"),"DEF",null,67,"ESP",0,null],[_tx("Fernando Barea"),"DEF",null,66,"ESP",0,[_tx("RC Jolaseta"),0,0,2]],[_tx("Manuel Martin-Muñio"),"DEF",null,66,"ESP",0,[_tx("RC Jolaseta"),1,0,2]],[_tx("Nicolas Benguria"),"DEF",null,65,"ESP",0,[_tx("RC Jolaseta"),0,0,2]],[_tx("Ignacio Rodrigo"),"DEF",null,65,"ESP",0,[_tx("RC Jolaseta"),1,0,2]],[_tx("Alvaro Serrano"),"DEF",null,65,"ESP",0,[_tx("RC Jolaseta"),1,0,2]],[_tx("Yeray Perez"),"DEF",null,62,"ESP",0,[_tx("RC Jolaseta"),0,0,1]],[_tx("Iñigo Gullon"),"DEF",null,58,"ESP",0,null],[_tx("Jaime Gonzalez"),"DAV",null,70,"ESP",0,[_tx("RC Jolaseta"),2,1,2]],[_tx("Jon Viar"),"DAV",null,69,"ESP",0,[_tx("RC Jolaseta"),0,1,2]]]},{"id":"PACO","name":_tx("Acordes"),"city":_tx("Pontevedra"),"c1":"#1a1a6a","c2":"#ffffff","rep":1,"bud":2.9,"arena":_tx("Pavelló de Pontevedra"),"src":"plata26","div":"PN","filial":false,"p":[[_tx("Ivan Recouso"),"POR",null,66,"ESP",0,[_tx("Acordes"),0,0,2]],[_tx("Hugo Rodriguez"),"POR",null,66,"ESP",0,[_tx("Acordes"),0,0,2]],[_tx("Iván Centoira"),"DEF",null,60,"ESP",0,[_tx("Acordes"),0,0,2]],[_tx("Martin Francos"),"DEF",null,58,"ESP",0,[_tx("Acordes"),0,0,2]],[_tx("Marcos Vieites"),"DEF",null,58,"ESP",0,[_tx("Acordes"),0,0,2]],[_tx("Daniel Botana"),"DEF",null,55,"ESP",0,null],[_tx("Ruben Verea"),"DEF",null,54,"ESP",0,null],[_tx("Marcos Vaamonde"),"DAV",null,66,"ESP",0,[_tx("Acordes"),2,0,2]],[_tx("Aitor Couselo"),"DAV",null,64,"ESP",0,[_tx("Acordes"),1,0,2]],[_tx("Anxo Franqueira"),"DAV",null,64,"ESP",0,[_tx("Acordes"),1,0,2]],[_tx("Hugo Iván Garcia"),"DAV",null,64,"ESP",0,[_tx("Acordes"),2,0,2]],[_tx("Javier Moscoso"),"DAV",null,62,"ESP",0,[_tx("Acordes"),1,0,2]]]},{"id":"POVR","name":_tx("Oviedo Roller HC"),"city":_tx("Oviedo"),"c1":"#101030","c2":"#ffffff","rep":1,"bud":2.9,"arena":_tx("Pavelló de Oviedo"),"src":"plata26","div":"PN","filial":false,"p":[[_tx("Emilio Sánchez"),"POR",null,66,"ESP",0,[_tx("Oviedo Roller HC"),0,0,2]],[_tx("Arian Suero"),"POR",null,66,"ESP",0,[_tx("Oviedo Roller HC"),0,0,1]],[_tx("Luis Emilio Velasco"),"POR",null,66,"ESP",0,[_tx("Oviedo Roller HC"),0,0,1]],[_tx("Alejandro Lopez"),"DEF",null,62,"ESP",0,[_tx("Oviedo Roller HC"),0,0,1]],[_tx("Jorge Fernández"),"DEF",null,60,"ESP",0,[_tx("Oviedo Roller HC"),0,0,2]],[_tx("Mario Agudo"),"DEF",null,58,"ESP",0,[_tx("Oviedo Roller HC"),0,0,1]],[_tx("Cesar Candanedo"),"DEF",null,58,"ESP",0,[_tx("Oviedo Roller HC"),0,0,1]],[_tx("José Ignacio Fernández"),"DEF",null,58,"ESP",0,[_tx("Oviedo Roller HC"),0,0,1]],[_tx("Oriol Llado"),"DEF",null,58,"ESP",0,[_tx("Oviedo Roller HC"),0,0,1]],[_tx("Mikel Navajas"),"DEF",null,58,"ESP",0,[_tx("Oviedo Roller HC"),0,0,1]],[_tx("Íñigo Nicieza"),"DEF",null,54,"ESP",0,null],[_tx("Rodrigo Ramos"),"DAV",null,68,"ESP",0,[_tx("Oviedo Roller HC"),2,0,1]],[_tx("Pelayo Aspra"),"DAV",null,66,"ESP",0,[_tx("Oviedo Roller HC"),1,0,1]],[_tx("Pelayo Alvarez"),"DAV",null,64,"ESP",0,[_tx("Oviedo Roller HC"),1,0,2]],[_tx("Cesar Menéndez"),"DAV",null,62,"ESP",0,[_tx("Oviedo Roller HC"),1,0,2]],[_tx("Nil Pascal"),"DAV",null,62,"ESP",0,[_tx("Oviedo Roller HC"),1,0,2]]]},{"id":"PLUB","name":_tx("Escola Lubiáns"),"city":_tx("Santiago de Compostel·la"),"c1":"#d01010","c2":"#ffffff","rep":1,"bud":2.9,"arena":_tx("Pavelló de Santiago de Compostel·la"),"src":"plata26","div":"PN","filial":false,"p":[[_tx("Rodrigo Ruiz"),"POR",null,77,"ESP",0,[_tx("Escola Lubiáns"),0,0,3]],[_tx("Ramon Martin"),"POR",null,66,"ESP",0,[_tx("Escola Lubiáns"),0,0,3]],[_tx("Antón López"),"DEF",null,63,"ESP",0,[_tx("Escola Lubiáns"),0,0,3]],[_tx("Gorka Oliveira"),"DEF",null,63,"ESP",0,[_tx("Escola Lubiáns"),1,0,3]],[_tx("Alvaro Trigo"),"DEF",null,63,"ESP",0,[_tx("Escola Lubiáns"),1,0,3]],[_tx("Alejandro Novoa"),"DEF",null,60,"ESP",0,[_tx("Escola Lubiáns"),1,0,3]],[_tx("Alejandro Perez"),"DEF",null,60,"ESP",0,[_tx("Escola Lubiáns"),0,0,3]],[_tx("Aitor Corcuera"),"DEF",null,59,"ESP",0,[_tx("Escola Lubiáns"),0,0,3]],[_tx("Markel Muñoz"),"DEF",null,59,"ESP",0,[_tx("Escola Lubiáns"),0,0,3]],[_tx("Mario Mallo"),"DEF",null,56,"ESP",0,null],[_tx("David Sánchez"),"DAV",null,72,"ESP",0,[_tx("Escola Lubiáns"),3,0,3]]]},{"id":"PBAR","name":_tx("Barça Atlètic"),"city":_tx("Barcelona"),"c1":"#a50044","c2":"#004d98","rep":2,"bud":6.6,"arena":_tx("Pavelló de Barcelona"),"src":"plata26","div":"PN","filial":true,"p":[[_tx("Adrià Álvarez"),"POR",null,69,"ESP",0,null],[_tx("Nil Torelló"),"POR",null,68,"ESP",0,null],[_tx("Albert Molera"),"DEF",null,67,"ESP",0,null],[_tx("Alex Vicen"),"DEF",null,67,"ESP",0,null],[_tx("Guim Collado"),"DEF",null,63,"ESP",0,null],[_tx("Biel Moya"),"DEF",null,63,"ESP",0,null],[_tx("Didac Pachedo"),"DEF",null,63,"ESP",0,null],[_tx("Aleix Gutierrez"),"DEF",null,62,"ESP",0,null],[_tx("Bruno Jurado"),"DEF",null,62,"ESP",0,null],[_tx("Borja Marin"),"DEF",null,62,"ESP",0,null],[_tx("Lluc Martin"),"DEF",null,62,"ESP",0,null],[_tx("Daniel Plaza"),"DEF",null,62,"ESP",0,null],[_tx("Guillem Xandri"),"DEF",null,62,"ESP",0,null],[_tx("Arnau Alvarez"),"DEF",null,61,"ESP",0,null],[_tx("Oriol Castro"),"DEF",null,61,"ESP",0,null],[_tx("Marc Feixas"),"DEF",null,61,"ESP",0,null]]},{"id":"PDOM","name":_tx("Dominicos"),"city":_tx("A Coruña"),"c1":"#1d2b6b","c2":"#ffffff","rep":2,"bud":6.5,"arena":_tx("Pavelló A Coruña"),"src":"plata26","div":"PN","filial":false,"p":[[_tx("Gaspar Varela"),"POR",null,72,"ESP",0,[_tx("Dominicos"),0,0,3]],[_tx("Francesc Asnar"),"POR",null,69,"ESP",0,[_tx("Dominicos"),0,0,3]],[_tx("Carlos Alonso"),"DEF",null,67,"ESP",0,[_tx("Dominicos"),1,0,3]],[_tx("Pedro Garcia"),"DEF",null,67,"ESP",0,[_tx("Dominicos"),1,0,3]],[_tx("Diego López"),"DEF",null,61,"ESP",0,null],[_tx("Francisco García"),"DEF",null,60,"ESP",0,null],[_tx("Pablo Cancela"),"DAV",null,74,"ESP",0,[_tx("Dominicos"),1,0,3]],[_tx("Gonzalo Varela"),"DAV",null,72,"ESP",0,[_tx("Dominicos"),0,0,3]],[_tx("Tomas Villares"),"DAV",null,72,"ESP",0,[_tx("Dominicos"),3,0,3]],[_tx("Adrián Candamio"),"DAV",null,70,"ESP",0,[_tx("Dominicos"),0,0,3]],[_tx("Miguel Lopez"),"DAV",null,69,"ESP",0,[_tx("Dominicos"),0,1,3]],[_tx("Gabriel Villares"),"DAV",null,69,"ESP",0,[_tx("Dominicos"),1,0,3]]]},{"id":"PCPT","name":_tx("CP Tordera"),"city":_tx("Tordera"),"c1":"#f0e030","c2":"#10a0e0","rep":2,"bud":6.7,"arena":_tx("Pavelló de Tordera"),"src":"plata26","div":"PN","filial":false,"p":[[_tx("Pau Carbonell"),"POR",null,69,"ESP",0,null],[_tx("Marc Vila"),"POR",null,69,"ESP",0,null],[_tx("Ignasi Fernandez"),"DEF",null,69,"ESP",0,null],[_tx("Pau Muñoz"),"DEF",null,68,"ESP",0,null],[_tx("Xavier Gubau"),"DEF",null,62,"ESP",0,null],[_tx("Roger Haro"),"DEF",null,62,"ESP",0,null],[_tx("Arnau Esteve"),"DEF",null,61,"ESP",0,null],[_tx("Enric Gibert"),"DEF",null,61,"ESP",0,null],[_tx("Albert Amores"),"DAV",null,74,"ESP",0,null],[_tx("Eric Elias"),"DAV",null,71,"ESP",0,null],[_tx("Daniel Treccagnoli"),"DAV",null,71,"ESP",0,null],[_tx("Max Martos"),"DAV",null,70,"ESP",0,null]]},{"id":"PREU","name":_tx("Reus Deportiu B"),"city":_tx("Reus"),"c1":"#c8102e","c2":"#151515","rep":2,"bud":6.1,"arena":_tx("Pavelló de Reus"),"src":"plata26","div":"PN","filial":true,"p":[[_tx("Nil Viña"),"POR",null,74,"ESP",0,null],[_tx("Martí Pallejà"),"POR",null,67,"ESP",0,null],[_tx("Roger Rodriguez"),"DEF",null,67,"ESP",0,null],[_tx("Guifre Santo"),"DEF",null,67,"ESP",0,null],[_tx("Dídac Vallvé"),"DEF",null,67,"ESP",0,null],[_tx("Jan Pere"),"DEF",null,66,"ESP",0,null],[_tx("Pol Ramos"),"DEF",null,62,"ESP",0,null],[_tx("Pau Porta"),"DEF",null,60,"ESP",0,null],[_tx("Jordi Roca"),"DEF",null,60,"ESP",0,null],[_tx("Joel Mila"),"DAV",null,74,"ESP",0,null],[_tx("Pol Mulet"),"DAV",null,70,"ESP",0,null],[_tx("Yeray Roig"),"DAV",null,70,"ESP",0,null]]},{"id":"PCDM","name":_tx("CDM Hockey Patines"),"city":_tx("A Coruña"),"c1":"#105090","c2":"#ffffff","rep":1,"bud":5.6,"arena":_tx("Pavelló A Coruña"),"src":"plata26","div":"PN","filial":false,"p":[[_tx("Juan Francisco Dumont"),"POR",null,70,"ESP",0,[_tx("CDM Hockey Patines"),0,0,1]],[_tx("Mattia Giovanni Taiti"),"POR",null,70,"ITA",0,[_tx("CDM Hockey Patines"),0,0,2]],[_tx("Dany Fuentes"),"POR",null,67,"ESP",0,[_tx("CDM Hockey Patines"),0,0,1]],[_tx("Pablo Del Rio"),"DEF",null,74,"ESP",0,[_tx("CDM Hockey Patines"),0,0,1]],[_tx("Bruno Bologna"),"DEF",null,66,"ESP",0,null],[_tx("Manuel Javier Enrique Drago"),"DEF",null,66,"ITA",0,null],[_tx("Francisco Garcia"),"DEF",null,66,"ESP",0,[_tx("CDM Hockey Patines"),1,0,2]],[_tx("Alejandro Roca"),"DEF",null,66,"ESP",0,[_tx("CDM Hockey Patines"),0,0,2]],[_tx("Aron Torrado"),"DEF",null,65,"ESP",0,[_tx("CDM Hockey Patines"),0,0,2]],[_tx("Samuel Pose"),"DEF",null,63,"ESP",0,[_tx("CDM Hockey Patines"),0,0,1]],[_tx("Ignacio Saenz"),"DAV",null,73,"ESP",0,[_tx("CDM Hockey Patines"),3,0,2]],[_tx("Mirko Tognacca"),"DAV",null,68,"ITA",0,[_tx("CDM Hockey Patines"),1,0,2]],[_tx("Álvaro Barral"),"DAV",null,65,"ESP",0,[_tx("CDM Hockey Patines"),1,0,2]]]},{"id":"PCON","name":_tx("CP Congrés"),"city":_tx("Barcelona"),"c1":"#f0e010","c2":"#151515","rep":2,"bud":6.7,"arena":_tx("Pavelló de Barcelona"),"src":"plata26","div":"PN","filial":false,"p":[[_tx("Héctor Sánchez"),"POR",null,78,"ESP",0,[_tx("CP Congrés"),0,0,3]],[_tx("Eloi Megino"),"POR",null,69,"ESP",0,[_tx("CP Congrés"),0,0,3]],[_tx("Xavier Alonso"),"DEF",null,69,"ESP",0,[_tx("CP Congrés"),1,0,3]],[_tx("Jofre Pons"),"DEF",null,69,"ESP",0,null],[_tx("Gino Damián Passarini"),"DEF",null,68,"ITA",0,[_tx("CP Congrés"),1,0,3]],[_tx("Fermí Calle"),"DEF",null,67,"ESP",0,[_tx("CP Congrés"),1,0,3]],[_tx("Joan Cabrero"),"DEF",null,65,"ESP",0,[_tx("CP Congrés"),0,0,3]],[_tx("Pau Castella"),"DEF",null,62,"ESP",0,null],[_tx("Guillem Muñoz"),"DAV",null,74,"ESP",0,[_tx("CP Congrés"),5,2,3]],[_tx("Àlex Mainer"),"DAV",null,70,"ESP",0,[_tx("CP Congrés"),2,0,3]],[_tx("David Martinez"),"DAV",null,70,"ESP",0,[_tx("CP Congrés"),0,1,3]],[_tx("Max Oliveras"),"DAV",null,68,"ESP",0,[_tx("CP Congrés"),0,1,3]]]},{"id":"PCHO","name":_tx("CH Olot"),"city":_tx("Olot"),"c1":"#1070f0","c2":"#f0e010","rep":2,"bud":6.3,"arena":_tx("Pavelló de Olot"),"src":"plata26","div":"PN","filial":false,"p":[[_tx("Marcel Tremoleda"),"POR",null,71,"ESP",0,[_tx("CH Olot"),0,0,2]],[_tx("Guillem Raurell"),"POR",null,69,"ESP",0,[_tx("CH Olot"),0,0,2]],[_tx("Arnau Saladrigues"),"DEF",null,70,"ESP",0,null],[_tx("Aniol Mangas"),"DEF",null,69,"ESP",0,[_tx("CH Olot"),1,1,2]],[_tx("Tomàs Marcé"),"DEF",null,67,"ESP",0,[_tx("CH Olot"),0,0,2]],[_tx("Jaume Bartés"),"DEF",null,66,"ESP",0,[_tx("CH Olot"),0,0,2]],[_tx("Marti Reñon"),"DEF",null,66,"ESP",0,[_tx("CH Olot"),0,0,2]],[_tx("Marc Prat"),"DAV",null,72,"ESP",0,[_tx("CH Olot"),3,0,2]],[_tx("David Carles"),"DAV",null,70,"ESP",0,[_tx("CH Olot"),1,0,2]],[_tx("Joel Pages"),"DAV",null,70,"ESP",0,[_tx("CH Olot"),1,1,2]],[_tx("Adrià Oliveres"),"DAV",null,67,"ESP",0,[_tx("CH Olot"),0,1,2]]]},{"id":"PCHV","name":_tx("CH Vila-seca"),"city":_tx("Vila-seca"),"c1":"#1050f0","c2":"#ffffff","rep":1,"bud":2.9,"arena":_tx("Pavelló de Vila-seca"),"src":"plata26","div":"PN","filial":false,"p":[[_tx("Xavier Fernandez"),"POR",null,66,"ESP",0,[_tx("CH Vila-seca"),0,0,2]],[_tx("Pol Ferrer"),"POR",null,66,"ESP",0,[_tx("CH Vila-seca"),0,0,2]],[_tx("Pol Jansa"),"DEF",null,65,"ESP",0,[_tx("CH Vila-seca"),0,0,2]],[_tx("Marc Raja"),"DEF",null,60,"ESP",0,[_tx("CH Vila-seca"),0,0,2]],[_tx("Joan Ribas"),"DEF",null,60,"ESP",0,[_tx("CH Vila-seca"),0,0,2]],[_tx("Oscar Bonillo"),"DEF",null,58,"ESP",0,[_tx("CH Vila-seca"),0,0,2]],[_tx("Genís García"),"DEF",null,58,"ESP",0,[_tx("CH Vila-seca"),0,0,1]],[_tx("Thiago Valentin Morales"),"DEF",null,58,"ESP",0,[_tx("CH Vila-seca"),0,0,1]],[_tx("Miquel Portela"),"DEF",null,56,"ESP",0,null],[_tx("Esteve Pujals"),"DEF",null,56,"ESP",0,null],[_tx("Sebastian Nicolas Pascual"),"DAV",null,64,"ARG",0,[_tx("CH Vila-seca"),1,0,2]],[_tx("Albert Querol"),"DAV",null,64,"ESP",0,[_tx("CH Vila-seca"),1,0,2]],[_tx("Alejandro Verdu"),"DAV",null,64,"ESP",0,[_tx("CH Vila-seca"),2,0,2]]]},{"id":"PPSC","name":_tx("PHC Sant Cugat"),"city":_tx("Sant Cugat del Vallès"),"c1":"#e01010","c2":"#151515","rep":2,"bud":5.7,"arena":_tx("Pavelló de Sant Cugat del Vallès"),"src":"plata26","div":"PN","filial":false,"p":[[_tx("Nesredin Cantador"),"POR",null,67,"ESP",0,[_tx("PHC Sant Cugat"),0,0,1]],[_tx("Pol Miro"),"POR",null,67,"ESP",0,[_tx("PHC Sant Cugat"),0,0,1]],[_tx("Alex Arevalo"),"DEF",null,69,"ESP",0,[_tx("PHC Sant Cugat"),0,0,1]],[_tx("Pablo Rodríguez"),"DEF",null,67,"ESP",0,[_tx("PHC Sant Cugat"),0,0,1]],[_tx("Jordi Bosch"),"DEF",null,66,"ESP",0,null],[_tx("Marc Xicola"),"DEF",null,65,"ESP",0,[_tx("PHC Sant Cugat"),0,0,1]],[_tx("Pau Gilabert"),"DAV",null,75,"ESP",0,[_tx("PHC Sant Cugat"),1,0,1]],[_tx("Oriol Llorens"),"DAV",null,71,"ESP",0,[_tx("PHC Sant Cugat"),1,0,1]],[_tx("Pau Roquet"),"DAV",null,69,"ESP",0,[_tx("PHC Sant Cugat"),0,0,1]],[_tx("Lucas Vicen"),"DAV",null,69,"ESP",0,[_tx("PHC Sant Cugat"),1,0,1]],[_tx("Gerard Garces"),"DAV",null,68,"ESP",0,[_tx("PHC Sant Cugat"),0,0,1]]]},{"id":"PPAL","name":_tx("CH Palafrugell"),"city":_tx("Palafrugell"),"c1":"#303030","c2":"#ffffff","rep":2,"bud":6.7,"arena":_tx("Pavelló de Palafrugell"),"src":"plata26","div":"PS","filial":false,"p":[[_tx("Andreu Ramon Muñoz"),"POR",null,70,"ESP",0,[_tx("CH Palafrugell"),0,0,3]],[_tx("Tomas Ramirez"),"POR",null,68,"ESP",0,[_tx("CH Palafrugell"),0,0,3]],[_tx("Octavio Zangheri"),"DEF",null,70,"ITA",0,[_tx("CH Palafrugell"),1,0,3]],[_tx("Mauro Elias Rabiti"),"DEF",null,69,"ARG",0,[_tx("CH Palafrugell"),1,0,3]],[_tx("Roger Sayeras"),"DEF",null,68,"ESP",0,null],[_tx("Alex Torres"),"DEF",null,67,"ESP",0,[_tx("CH Palafrugell"),0,0,3]],[_tx("Biel Dunjo"),"DEF",null,66,"ESP",0,[_tx("CH Palafrugell"),0,0,3]],[_tx("Marti Alberti"),"DEF",null,65,"ESP",0,[_tx("CH Palafrugell"),0,0,1]],[_tx("Felix Castañe"),"DEF",null,65,"ESP",0,[_tx("CH Palafrugell"),0,0,2]],[_tx("Gerard Pujol"),"DAV",null,76,"ESP",0,[_tx("CH Palafrugell"),5,0,3]],[_tx("Pol Sala"),"DAV",null,71,"ESP",0,[_tx("CH Palafrugell"),2,0,3]],[_tx("Jan Aumatell"),"DAV",null,70,"ESP",0,[_tx("CH Palafrugell"),1,0,3]],[_tx("Gerard Aragay"),"DAV",null,69,"ESP",0,null],[_tx("Vicente Daniel Soto"),"DAV",null,68,"CHI",0,null]]},{"id":"PSHA","name":_tx("Sporting Alcoi"),"city":_tx("Alcoi"),"c1":"#107030","c2":"#151515","rep":1,"bud":5.2,"arena":_tx("Pavelló de Alcoi"),"src":"plata26","div":"PS","filial":false,"p":[[_tx("Manuel Monje"),"POR",null,67,"ESP",0,[_tx("Sporting Alcoi"),0,0,3]],[_tx("Sergio Navarro"),"POR",null,67,"ESP",0,[_tx("Sporting Alcoi"),0,0,3]],[_tx("Pablo Beltran"),"DEF",null,65,"ESP",0,[_tx("Sporting Alcoi"),0,0,3]],[_tx("Manuel Ocaña"),"DEF",null,65,"ESP",0,[_tx("Sporting Alcoi"),1,0,3]],[_tx("Angel Jorda"),"DEF",null,64,"ESP",0,[_tx("Sporting Alcoi"),0,0,3]],[_tx("Nicolas Dominguez"),"DEF",null,62,"ESP",0,[_tx("Sporting Alcoi"),0,0,3]],[_tx("Nicolás Segui"),"DEF",null,62,"ESP",0,[_tx("Sporting Alcoi"),0,0,3]],[_tx("Jairo Castañer"),"DEF",null,58,"ESP",0,null],[_tx("Marti Portela"),"DAV",null,71,"ESP",0,[_tx("Sporting Alcoi"),3,0,3]],[_tx("Cels Portela"),"DAV",null,70,"ESP",0,[_tx("Sporting Alcoi"),2,1,3]],[_tx("Vicente Marti"),"DAV",null,68,"ESP",0,[_tx("Sporting Alcoi"),1,1,3]],[_tx("Javier Alos"),"DAV",null,67,"ESP",0,null]]},{"id":"PNOI","name":_tx("CE Noia B"),"city":_tx("Sant Sadurní d'Anoia"),"c1":"#151515","c2":"#d7263d","rep":1,"bud":2.9,"arena":_tx("Pavelló de Sant Sadurní d'Anoia"),"src":"plata26","div":"PS","filial":true,"p":[[_tx("Josep Maria Virgili"),"POR",null,80,"ESP",0,null],[_tx("Jordi Del Amor"),"POR",null,66,"ESP",0,[_tx("CE Noia B"),0,0,1]],[_tx("Miquel Olle"),"POR",null,66,"ESP",0,[_tx("CE Noia B"),0,0,1]],[_tx("Martí Salvadó"),"POR",null,66,"ESP",0,[_tx("CE Noia B"),0,0,2]],[_tx("Xavier Costa"),"DEF",null,76,"ESP",0,null],[_tx("Gerard Monserrat"),"DEF",null,71,"ESP",0,[_tx("CE Noia B"),0,0,2]],[_tx("Oriol Bou"),"DEF",null,67,"ESP",0,[_tx("CE Noia B"),0,0,1]],[_tx("Luca Xaus"),"DEF",null,62,"ESP",0,[_tx("CE Noia B"),0,0,2]],[_tx("Jordi Dasca"),"DEF",null,60,"ESP",0,[_tx("CE Noia B"),0,0,2]],[_tx("Marc Albiol"),"DEF",null,58,"ESP",0,[_tx("CE Noia B"),0,0,1]],[_tx("Marçal Font"),"DEF",null,58,"ESP",0,[_tx("CE Noia B"),0,0,1]],[_tx("Eduard Mata"),"DEF",null,58,"ESP",0,[_tx("CE Noia B"),0,0,1]],[_tx("Gerard Del Amor"),"DEF",null,54,"ESP",0,null],[_tx("Marc Zanon"),"DAV",null,75,"ESP",0,[_tx("CE Noia B"),0,1,1]],[_tx("Guillem Llorens"),"DAV",null,74,"ESP",0,null],[_tx("Pau Andreu"),"DAV",null,72,"ESP",0,[_tx("CE Noia B"),1,0,1]]]},{"id":"PIGU","name":_tx("Igualada HC B"),"city":_tx("Igualada"),"c1":"#004d98","c2":"#a50044","rep":2,"bud":8.8,"arena":_tx("Pavelló de Igualada"),"src":"plata26","div":"PS","filial":true,"p":[[_tx("Oriol Codony"),"POR",null,79,"ESP",0,[_tx("Igualada HC B"),0,0,2]],[_tx("Arnau Marques"),"POR",null,76,"ESP",0,null],[_tx("Dario Tapia"),"POR",null,70,"ESP",0,[_tx("Igualada HC B"),0,0,2]],[_tx("Oriol Carol"),"DEF",null,72,"ESP",0,[_tx("Igualada HC B"),0,0,2]],[_tx("Miguel Angel Bautista"),"DEF",null,71,"ESP",0,[_tx("Igualada HC B"),0,1,2]],[_tx("Jan Berent"),"DEF",null,71,"ESP",0,[_tx("Igualada HC B"),1,0,2]],[_tx("Pol Ticó"),"DEF",null,71,"ESP",0,null],[_tx("Mauro Moltó"),"DEF",null,68,"ESP",0,[_tx("Igualada HC B"),0,0,1]],[_tx("Roger Ventura"),"DEF",null,68,"ESP",0,[_tx("Igualada HC B"),0,0,2]],[_tx("Iu Voisin"),"DEF",null,68,"ESP",0,[_tx("Igualada HC B"),0,0,1]],[_tx("Juan Manuel Carrion"),"DEF",null,66,"ARG",0,null],[_tx("Guillem Tomas"),"DEF",null,66,"ESP",0,null],[_tx("Aleix Guerrero"),"DEF",null,64,"ESP",0,null],[_tx("Arnau Montiel"),"DEF",null,64,"ESP",0,null],[_tx("Pau Berent"),"DAV",null,74,"ESP",0,null],[_tx("Roc Nogareda"),"DAV",null,74,"ESP",0,[_tx("Igualada HC B"),2,1,2]]]},{"id":"PESP","name":_tx("SD Espanyol"),"city":_tx("Barcelona"),"c1":"#1070b0","c2":"#ffffff","rep":2,"bud":6.7,"arena":_tx("Pavelló de Barcelona"),"src":"plata26","div":"PS","filial":false,"p":[[_tx("Pablo Pastor"),"POR",null,70,"ESP",0,[_tx("SD Espanyol"),0,0,2]],[_tx("Arnau Ventura"),"POR",null,70,"ESP",0,[_tx("SD Espanyol"),0,0,2]],[_tx("Gerard Llobet"),"DEF",null,70,"ESP",0,[_tx("SD Espanyol"),2,0,2]],[_tx("Sergi Rojo"),"DEF",null,69,"ESP",0,[_tx("SD Espanyol"),1,0,2]],[_tx("Guillermo De Moya"),"DEF",null,66,"ESP",0,[_tx("SD Espanyol"),0,0,2]],[_tx("Jordi Morales"),"DEF",null,65,"ESP",0,[_tx("SD Espanyol"),0,0,1]],[_tx("Pol Galbas"),"DAV",null,72,"ESP",0,[_tx("SD Espanyol"),1,0,2]],[_tx("Iosu Servent"),"DAV",null,72,"ESP",0,[_tx("SD Espanyol"),0,0,1]],[_tx("Pol Macia"),"DAV",null,71,"ESP",0,[_tx("SD Espanyol"),0,0,2]],[_tx("Alvaro Borja Gimenez"),"DAV",null,70,"ESP",0,[_tx("SD Espanyol"),1,0,2]],[_tx("Didac Llobet"),"DAV",null,69,"ESP",0,[_tx("SD Espanyol"),0,0,2]]]},{"id":"PVIL","name":_tx("CP Vilano"),"city":_tx("Vilano"),"c1":"#e01010","c2":"#f0d010","rep":1,"bud":2.9,"arena":_tx("Pavelló de Vilano"),"src":"plata26","div":"PS","filial":false,"p":[[_tx("Ferran Miravent"),"POR",null,68,"ESP",0,[_tx("CP Vilano"),0,0,2]],[_tx("Carlos Donoso"),"POR",null,66,"ESP",0,[_tx("CP Vilano"),0,0,2]],[_tx("David Lecha"),"DEF",null,62,"ESP",0,[_tx("CP Vilano"),0,0,2]],[_tx("Pau Margarit"),"DEF",null,60,"ESP",0,[_tx("CP Vilano"),0,1,2]],[_tx("Axel Ruiz"),"DEF",null,60,"ESP",0,[_tx("CP Vilano"),0,0,2]],[_tx("Oriol Sebria"),"DEF",null,60,"ESP",0,[_tx("CP Vilano"),0,0,2]],[_tx("Jofre Vila"),"DEF",null,60,"ESP",0,[_tx("CP Vilano"),0,0,2]],[_tx("Marti Arias"),"DEF",null,58,"ESP",0,[_tx("CP Vilano"),0,0,1]],[_tx("Pau Gonzalvez"),"DEF",null,58,"ESP",0,[_tx("CP Vilano"),0,0,1]],[_tx("Bernat Asensio"),"DEF",null,57,"ESP",0,null],[_tx("Sergi Ramirez"),"DEF",null,57,"ESP",0,null],[_tx("Asier Arroniz"),"DEF",null,55,"ESP",0,null],[_tx("Pablo Rafael Torres"),"DAV",null,68,"ESP",0,[_tx("CP Vilano"),1,0,2]],[_tx("Jose Lopez"),"DAV",null,62,"ESP",0,[_tx("CP Vilano"),1,0,2]]]},{"id":"PMOL","name":_tx("CH Mollerussa"),"city":_tx("Mollerussa"),"c1":"#e01010","c2":"#151515","rep":1,"bud":2.9,"arena":_tx("Pavelló de Mollerussa"),"src":"plata26","div":"PS","filial":false,"p":[[_tx("Ricard Casals"),"POR",null,66,"ESP",0,[_tx("CH Mollerussa"),0,0,2]],[_tx("Ferran Mañe"),"POR",null,66,"ESP",0,[_tx("CH Mollerussa"),0,0,2]],[_tx("Adrià Blanch"),"DEF",null,62,"ESP",0,[_tx("CH Mollerussa"),0,0,2]],[_tx("Joan Ramon Serret"),"DEF",null,62,"ESP",0,[_tx("CH Mollerussa"),0,0,2]],[_tx("Julen Rodriguez"),"DEF",null,60,"ESP",0,[_tx("CH Mollerussa"),0,0,2]],[_tx("Jordi Cervelló"),"DEF",null,58,"ESP",0,[_tx("CH Mollerussa"),0,0,2]],[_tx("Ot Gregori"),"DEF",null,58,"ESP",0,[_tx("CH Mollerussa"),0,0,2]],[_tx("Joan Marc Pujol"),"DEF",null,58,"ESP",0,[_tx("CH Mollerussa"),0,0,2]],[_tx("Marc Llaçera"),"DEF",null,55,"ESP",0,null],[_tx("Miquel Serret"),"DAV",null,64,"ESP",0,[_tx("CH Mollerussa"),1,0,2]],[_tx("Eduard Piñol"),"DAV",null,62,"ESP",0,[_tx("CH Mollerussa"),1,0,2]]]},{"id":"PMAT","name":_tx("CH Mataró"),"city":_tx("Mataró"),"c1":"#1050b0","c2":"#f0d030","rep":2,"bud":7.2,"arena":_tx("Pavelló de Mataró"),"src":"plata26","div":"PS","filial":false,"p":[[_tx("Gerard Garro"),"POR",null,70,"ESP",0,[_tx("CH Mataró"),0,0,2]],[_tx("Sergi Grané"),"POR",null,70,"ESP",0,[_tx("CH Mataró"),0,0,2]],[_tx("Guillem Carbonell"),"DEF",null,70,"ESP",0,[_tx("CH Mataró"),1,0,2]],[_tx("Àlex Cruz"),"DEF",null,66,"ESP",0,[_tx("CH Mataró"),0,0,1]],[_tx("Santi Sala"),"DEF",null,66,"ESP",0,[_tx("CH Mataró"),0,0,2]],[_tx("Blai Gispert"),"DEF",null,61,"ESP",0,null],[_tx("Oriol Llenas"),"DAV",null,77,"ESP",0,[_tx("CH Mataró"),0,0,2]],[_tx("Guillem Belarte"),"DAV",null,72,"ESP",0,[_tx("CH Mataró"),0,0,2]],[_tx("Miquel Grau"),"DAV",null,72,"ESP",0,[_tx("CH Mataró"),2,0,2]],[_tx("Guim Floriach"),"DAV",null,71,"ESP",0,[_tx("CH Mataró"),2,0,2]],[_tx("David Ramírez"),"DAV",null,71,"ESP",0,[_tx("CH Mataró"),1,0,2]]]},{"id":"PVIC","name":_tx("Patí Vic"),"city":_tx("Vic"),"c1":"#d01010","c2":"#ffffff","rep":2,"bud":7.1,"arena":_tx("Pavelló de Vic"),"src":"plata26","div":"PS","filial":false,"p":[[_tx("Martí Clusella"),"POR",null,72,"ESP",0,[_tx("Patí Vic"),0,0,1]],[_tx("Marçal Grau"),"POR",null,72,"ESP",0,[_tx("Patí Vic"),0,0,1]],[_tx("Xavier Puigbi"),"POR",null,70,"ESP",0,[_tx("Patí Vic"),0,0,2]],[_tx("Arnau Parcerisas"),"DEF",null,69,"ESP",0,[_tx("Patí Vic"),0,0,2]],[_tx("Albert Benito"),"DEF",null,68,"ESP",0,[_tx("Patí Vic"),0,0,2]],[_tx("Nicolás Manuel Torres"),"DEF",null,68,"ESP",0,[_tx("Patí Vic"),1,0,2]],[_tx("Guillem Aguilar"),"DEF",null,67,"ESP",0,[_tx("Patí Vic"),0,0,2]],[_tx("Ferran Borrallo"),"DEF",null,65,"ESP",0,null],[_tx("Gabriel Cairo"),"DEF",null,65,"ESP",0,[_tx("Patí Vic"),0,0,2]],[_tx("Èric Rotllant"),"DEF",null,65,"ESP",0,[_tx("Patí Vic"),0,0,2]],[_tx("Ferran Castells"),"DEF",null,63,"ESP",0,null],[_tx("Marc Grima"),"DEF",null,62,"ESP",0,null],[_tx("Joan Bartomeu"),"DEF",null,61,"ESP",0,null],[_tx("Gil Canal"),"DAV",null,74,"ESP",0,[_tx("Patí Vic"),1,0,2]],[_tx("Moises Aguirre"),"DAV",null,68,"ESP",0,[_tx("Patí Vic"),1,0,2]]]},{"id":"PSJU","name":_tx("HC Sant Just"),"city":_tx("Sant Just Desvern"),"c1":"#103070","c2":"#f0d010","rep":2,"bud":6.8,"arena":_tx("Pavelló de Sant Just Desvern"),"src":"plata26","div":"PS","filial":false,"p":[[_tx("Gerard Camps"),"POR",null,79,"ESP",0,[_tx("HC Sant Just"),0,0,2]],[_tx("Adrian Galan"),"POR",null,79,"ESP",0,[_tx("HC Sant Just"),0,0,2]],[_tx("Gerard Miquel"),"DEF",null,76,"AND",0,[_tx("HC Sant Just"),0,0,2]],[_tx("Cesar Vives"),"DEF",null,74,"ESP",0,[_tx("HC Sant Just"),0,0,2]],[_tx("Dalmau Corominas"),"DEF",null,73,"ESP",0,[_tx("HC Sant Just"),0,0,2]],[_tx("Hugo Carbonell"),"DEF",null,65,"ESP",0,[_tx("HC Sant Just"),0,0,2]],[_tx("Pau Beal"),"DEF",null,63,"AND",0,null],[_tx("Mario Saborit"),"DEF",null,63,"ESP",0,null],[_tx("Marc Gonzalez"),"DAV",null,76,"ESP",0,[_tx("HC Sant Just"),2,1,2]],[_tx("Sergi Torné"),"DAV",null,76,"ESP",0,[_tx("HC Sant Just"),3,1,2]],[_tx("Xavier Crespo"),"DAV",null,75,"ESP",0,[_tx("HC Sant Just"),2,0,2]],[_tx("Marc Caceres"),"DAV",null,72,"ESP",0,[_tx("HC Sant Just"),1,0,2]]]},{"id":"PALB","name":_tx("CP Alcobendas"),"city":_tx("Alcobendas"),"c1":"#107050","c2":"#151515","rep":2,"bud":7.3,"arena":_tx("Pavelló de Alcobendas"),"src":"plata26","div":"PS","filial":false,"p":[[_tx("Alvaro Gullon"),"POR",null,70,"ESP",0,[_tx("CP Alcobendas"),0,0,2]],[_tx("Andros Vera"),"POR",null,70,"ESP",0,[_tx("CP Alcobendas"),0,0,1]],[_tx("Noan Oliviero"),"POR",null,69,"FRA",0,[_tx("CP Alcobendas"),0,0,1]],[_tx("Sergio Alegre"),"DEF",null,70,"ESP",0,[_tx("CP Alcobendas"),0,0,1]],[_tx("Adam Gussinyer"),"DEF",null,69,"ESP",0,[_tx("CP Alcobendas"),0,0,2]],[_tx("Javier Minaya"),"DEF",null,69,"ESP",0,[_tx("CP Alcobendas"),0,0,1]],[_tx("Hugo Escudero"),"DEF",null,68,"ESP",0,[_tx("CP Alcobendas"),1,0,2]],[_tx("Daniel Garea"),"DEF",null,68,"ESP",0,[_tx("CP Alcobendas"),1,0,2]],[_tx("Raul Regueiro"),"DEF",null,63,"ESP",0,null],[_tx("Alonso Martin"),"DAV",null,74,"ESP",0,[_tx("CP Alcobendas"),2,0,2]],[_tx("Pol Cabré"),"DAV",null,72,"ESP",0,[_tx("CP Alcobendas"),1,0,2]],[_tx("Jorge Lopez"),"DAV",null,71,"ESP",0,[_tx("CP Alcobendas"),1,0,2]],[_tx("Guillem Monserrat"),"DAV",null,71,"ESP",0,[_tx("CP Alcobendas"),0,0,2]]]},{"id":"PCER","name":_tx("Cerdanyola CH"),"city":_tx("Cerdanyola del Vallès"),"c1":"#109010","c2":"#151515","rep":2,"bud":6.8,"arena":_tx("Pavelló de Cerdanyola del Vallès"),"src":"plata26","div":"PS","filial":false,"p":[[_tx("Iker Jimenez"),"POR",null,79,"ESP",0,[_tx("Cerdanyola CH"),0,0,2]],[_tx("Gerard Perez"),"POR",null,79,"ESP",0,[_tx("Cerdanyola CH"),0,0,2]],[_tx("Marc Coy"),"DEF",null,76,"ESP",0,[_tx("Cerdanyola CH"),0,0,2]],[_tx("Sergio Miras"),"DEF",null,76,"ESP",0,[_tx("Cerdanyola CH"),0,0,2]],[_tx("Agustí Ripolles"),"DEF",null,70,"ESP",0,[_tx("Cerdanyola CH"),0,1,2]],[_tx("Jaume Masclans"),"DEF",null,66,"ESP",0,[_tx("Cerdanyola CH"),0,0,2]],[_tx("Noah Choblet"),"DEF",null,65,"FRA",0,[_tx("Cerdanyola CH"),0,0,1]],[_tx("Cesc Delgado"),"DEF",null,65,"ESP",0,[_tx("Cerdanyola CH"),0,0,1]],[_tx("Gerard Aroca"),"DEF",null,63,"ESP",0,null],[_tx("Xavier Rovira"),"DAV",null,77,"ESP",0,[_tx("Cerdanyola CH"),4,1,2]],[_tx("Marc Puigvert"),"DAV",null,76,"ESP",0,[_tx("Cerdanyola CH"),1,0,2]],[_tx("Joel Borras"),"DAV",null,70,"ESP",0,[_tx("Cerdanyola CH"),1,1,2]]]},{"id":"PMAN","name":_tx("CP Manlleu"),"city":_tx("Manlleu"),"c1":"#f0e010","c2":"#e01010","rep":2,"bud":8.1,"arena":_tx("Pavelló de Manlleu"),"src":"plata26","div":"PS","filial":false,"p":[[_tx("Ignasi Creus"),"POR",null,74,"ESP",0,[_tx("CP Manlleu"),0,0,2]],[_tx("Marc Panella"),"POR",null,72,"ESP",0,[_tx("CP Manlleu"),0,0,2]],[_tx("Rubén Martín"),"DEF",null,71,"ESP",0,[_tx("CP Manlleu"),2,0,2]],[_tx("Carlos Paneque"),"DEF",null,71,"ESP",0,null],[_tx("Ramon Camps"),"DEF",null,67,"ESP",0,[_tx("CP Manlleu"),0,0,2]],[_tx("Iu López"),"DEF",null,65,"ESP",0,null],[_tx("Genís Costa"),"DEF",null,64,"ESP",0,null],[_tx("Pol Parés"),"DEF",null,64,"ESP",0,null],[_tx("Xavier Armengol"),"DAV",null,75,"ESP",0,[_tx("CP Manlleu"),2,2,2]],[_tx("Biel Humà"),"DAV",null,74,"ESP",0,[_tx("CP Manlleu"),1,1,2]],[_tx("Nil López"),"DAV",null,74,"ESP",0,[_tx("CP Manlleu"),2,0,2]],[_tx("Enric Casanovas"),"DAV",null,73,"ESP",0,[_tx("CP Manlleu"),1,0,1]],[_tx("Roger Codinach"),"DAV",null,73,"ESP",0,[_tx("CP Manlleu"),1,0,2]],[_tx("Jordi Gurt"),"DAV",null,73,"ESP",0,[_tx("CP Manlleu"),0,0,2]],[_tx("Bernat Picanyol"),"DAV",null,73,"AND",0,null]]},{"id":"PVEN","name":_tx("CE Vendrell"),"city":_tx("El Vendrell"),"c1":"#107010","c2":"#ffffff","rep":2,"bud":6.9,"arena":_tx("Pavelló El Vendrell"),"src":"plata26","div":"PS","filial":false,"p":[[_tx("Adria Mancini"),"POR",null,72,"ESP",0,[_tx("CE Vendrell"),0,0,2]],[_tx("Xavier Arcas"),"POR",null,70,"ESP",0,[_tx("CE Vendrell"),0,0,2]],[_tx("Jon Borrego"),"DEF",null,68,"ESP",0,[_tx("CE Vendrell"),0,1,2]],[_tx("Marc Nadal"),"DEF",null,68,"ESP",0,[_tx("CE Vendrell"),0,0,2]],[_tx("Joan Nin"),"DEF",null,66,"ESP",0,[_tx("CE Vendrell"),0,0,2]],[_tx("Pere Urpí"),"DEF",null,65,"ESP",0,[_tx("CE Vendrell"),0,0,2]],[_tx("Jordi Ferrer"),"DAV",null,73,"ESP",0,[_tx("CE Vendrell"),5,0,2]],[_tx("Lluis Ferrer"),"DAV",null,73,"ESP",0,[_tx("CE Vendrell"),3,1,2]],[_tx("Magí Prats"),"DAV",null,73,"ESP",0,[_tx("CE Vendrell"),0,2,2]],[_tx("Marc Palau"),"DAV",null,71,"ESP",0,[_tx("CE Vendrell"),0,0,2]]]}];
+const PLATA_ABBR={"PGEG":"GEG","PRCJ":"RCJ","PACO":"ACO","POVR":"OVR","PLUB":"LUB","PBAR":"FCB","PDOM":"DOM","PCPT":"CPT","PREU":"RD","PCDM":"CDM","PCON":"CON","PCHO":"CHO","PCHV":"CHVS","PPSC":"PHSC","PPAL":"CHP","PSHA":"SHA","PNOI":"NOIA","PIGU":"IHC","PESP":"ESP","PVIL":"VIL","PMOL":"CHMO","PMAT":"CHM","PVIC":"VIC","PSJU":"HCSJ","PALB":"CPA","PCER":"CCH","PMAN":"CPM","PVEN":"CEV"};
+const ALLTEAMS=TEAMS0.concat(TEAMS_PLATA);
+const PLATA_IDS=new Set(TEAMS_PLATA.map(t=>t.id));
+const DIVS={OK:_tx("OK Liga"),PN:_tx("OK Liga Plata Nord"),PS:_tx("OK Liga Plata Sud")};
+const divOf=tid=>(S&&S.div&&S.div[tid])||"OK";
+const myDiv=()=>divOf(S.user);
+const FX=d=>S.fx?(S.fx[d]||[]):S.fixtures;
+const divList=()=>S.fx?Object.keys(S.fx):["OK"];
+const roundAll=r=>[].concat(...divList().map(d=>FX(d)[r]||[]));
+const NROUNDS=()=>FX(myDiv()).length;
 /* ============ UTILITATS ============ */
 const $=s=>document.querySelector(s);
 function hash(s){let h=2166136261;for(const c of s)h=Math.imul(h^c.charCodeAt(0),16777619);return h>>>0}
@@ -228,8 +240,8 @@ const ri=(a,b,r=R)=>Math.floor(r()*(b-a+1))+a;
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const money=k=>Math.abs(k)>=1000?(k/1000).toFixed(2).replace(".",",")+" M€":(Math.round(k*1000/10)*10).toLocaleString("ca-ES")+" €";
-const eurMes=p=>p.age<18?"—":monthlyOf(p).toLocaleString("ca-ES")+_tx(" €/mes");
-const edat=p=>p.age<18?"<18":p.age;
+const eurMes=p=>p.age<18||p.noAge?"—":monthlyOf(p).toLocaleString("ca-ES")+_tx(" €/mes");
+const edat=p=>p.noAge?"–":p.age<18?"<18":p.age;
 const monthlyOf=p=>Math.round(p.salary*1000/10/10)*10;
 function poisson(l){let L=Math.exp(-l),k=0,p=1;do{k++;p*=R()}while(p>L);return k-1}
 function pickW(arr,w){const s=w.reduce((a,b)=>a+b,0);let x=R()*s;for(let i=0;i<arr.length;i++){x-=w[i];if(x<=0)return arr[i]}return arr[arr.length-1]}
@@ -243,7 +255,7 @@ function makePlayer(a,team,id){
   else at={xut:med+v(1,6),tec:med+v(0,5),pat:med+v(-2,3),def:med+v(-13,-5),fis:med+v(-5,2),ref:20,col:20};
   for(const k in at)at[k]=clamp(at[k],20,99);
   const p={id,name,team,pos,age,nat:nat||"ESP",a:at,s:a[6]||null,energy:100,morale:70,inj:inj||0,goals:0,apps:0,cards:0,forSale:false};
-  p.salary=salaryOf(med,age,team);p.contract=2027+(hash(name)%3);
+  p.salary=salaryOf(med,age,team);p.contract=2027+(hash(name)%3);if(!age0&&PLATA_IDS.has(team))p.noAge=true;
   return p;
 }
 function ovr(p){const a=p.a;
@@ -253,8 +265,8 @@ function ovr(p){const a=p.a;
 /* Sous (estimats): els clubs grans (Barça, Liceo, Noia) paguen 1.000-3.000 €/mes als titulars;
    la resta, menys. Internament el sou es guarda en k€ per temporada (10 mensualitats). */
 const TIER={BAR:"A",LIC:"A",NOI:"A",IGU:"B",REU:"B",CAL:"B",VOL:"B",LLE:"B"};
-const tierOf=tid=>TIER[tid]||"C";
-function monthly(m,age,tier){const x=Math.pow(clamp((m-68)/24,0,1),1.6);const [f,k]=tier==="A"?[300,2700]:tier==="B"?[150,1350]:[50,650];let v=f+k*x;if(age>32)v*=.9;if(age<20)v*=.6;return Math.round(v/10)*10}
+const tierOf=tid=>TIER[tid]||(PLATA_IDS.has(tid)?"D":"C");
+function monthly(m,age,tier){const x=Math.pow(clamp((m-68)/24,0,1),1.6);const [f,k]=tier==="A"?[300,2700]:tier==="B"?[150,1350]:tier==="D"?[0,320]:[50,650];let v=f+k*x;if(age>32)v*=.9;if(age<20)v*=.6;return Math.round(v/10)*10}
 function salaryOf(m,age,tid){return monthly(m,age,tierOf(tid))*10/1000}
 const perMonth=p=>Math.round(p.salary*100)*1;
 function valueOf(p){const m=ovr(p);const ag=p.age<=23?1.4:p.age<=27?1.15:p.age<=30?1:p.age<=33?.6:.3;return Math.max(.3,Math.round(monthly(m,p.age,"B")*6*ag/100)/10)}
@@ -268,11 +280,13 @@ let S=null, view="inici", ui={selSlot:null,mPos:"TOT",mQ:"",eqTeam:null,match:nu
 function newGame(teamId){
   R=Math.random;
   const st={ver:1,season:2026,user:teamId,round:0,teams:{},players:{},news:[],ledger:[],offers:[],pending:[],nextId:1};
-  for(const t of TEAMS0){
-    st.teams[t.id]={id:t.id,name:t.name,city:t.city,c1:t.c1,c2:t.c2,rep:t.rep,budget:t.bud,arena:t.arena,lineup:[],tactic:{style:"EQU",press:"MIG"}};
+  st.div={};
+  for(const t of ALLTEAMS){
+    st.div[t.id]=t.div||"OK";
+    st.teams[t.id]={id:t.id,name:t.name,city:t.city,c1:t.c1,c2:t.c2,rep:t.rep,budget:t.bud,arena:t.arena,filial:!!t.filial,lineup:[],tactic:{style:"EQU",press:"MIG"}};
     for(const a of t.p){const id="p"+(st.nextId++);st.players[id]=makePlayer(a,t.id,id)}
   }
-  st.fixtures=makeFixtures(TEAMS0.map(t=>t.id),hash(teamId+Date.now()));
+  const sd=hash(teamId+Date.now());st.fx={};for(const d of ["OK","PN","PS"])st.fx[d]=makeFixtures(ALLTEAMS.filter(t=>(t.div||"OK")===d).map(t=>t.id),sd+d.length*7+d.charCodeAt(1));
   S=st;
   for(const id in S.teams)autoLineup(id);
   S.club=newClub();
@@ -370,9 +384,9 @@ function finances(rd){
 }
 
 /* ============ CLASSIFICACIÓ ============ */
-function table(){
-  const T={};for(const id in S.teams)T[id]={id,pj:0,g:0,e:0,p:0,gf:0,gc:0,pts:0,last:[]};
-  for(const rd of S.fixtures)for(const m of rd){if(!m.res)continue;const h=T[m.h],a=T[m.a],x=m.res.gh,y=m.res.ga;
+function table(div){
+  div=div||myDiv();const T={};for(const id in S.teams)if(divOf(id)===div)T[id]={id,pj:0,g:0,e:0,p:0,gf:0,gc:0,pts:0,last:[]};
+  for(const rd of FX(div))for(const m of rd){if(!T[m.h]||!T[m.a])continue;if(!m.res)continue;const h=T[m.h],a=T[m.a],x=m.res.gh,y=m.res.ga;
     h.pj++;a.pj++;h.gf+=x;h.gc+=y;a.gf+=y;a.gc+=x;
     if(x>y){h.g++;a.p++;h.pts+=3;h.last.push("V");a.last.push("D")}else if(x<y){a.g++;h.p++;a.pts+=3;h.last.push("D");a.last.push("V")}else{h.e++;a.e++;h.pts++;a.pts++;h.last.push("E");a.last.push("E")}}
   return Object.values(T).sort((a,b)=>b.pts-a.pts||(b.gf-b.gc)-(a.gf-a.gc)||b.gf-a.gf);
@@ -383,7 +397,26 @@ function endSeason(){
   clubSeasonEnd();
   boardSeasonEnd();
   pushNews(`${_tx(`Final de temporada! Campió: `)}${S.teams[tb[0].id].name}. ${S.teams[S.user].name}${_tx(` acaba `)}${ord(pos)}.`,true);
-  tb.forEach((r,i)=>{S.teams[r.id].budget+=Math.round((14-i)*.8*10)/10});
+  for(const d of divList()){const t2=table(d);const k=d==="OK"?.8:.25;t2.forEach((r,i)=>{S.teams[r.id].budget+=Math.round((14-i)*k*10)/10});
+    if(d!==myDiv())pushNews(`${DIVS[d]}${_tx(`: campió `)}${S.teams[t2[0].id].name}.`)}
+  S.moves=seasonMoves();
+  if(S.moves){const {up,down}=S.moves;pushNews(`${_tx(`ASCENSOS: `)}${up.map(id=>S.teams[id].name).join(" i ")}${_tx(` pugen a l'OK Liga. Baixen `)}${down.map(id=>S.teams[id].name).join(" i ")}.`,true)}
+}
+/* Ascensos i descensos: el campió de cada grup de Plata (que no sigui filial) puja; els dos últims de l'OK Liga baixen */
+function seasonMoves(){
+  if(!S.fx||!S.fx.PN)return null;
+  const ok=table("OK");const down=[ok[ok.length-2].id,ok[ok.length-1].id];
+  const up=["PN","PS"].map(g=>{const t=table(g).find(r=>!S.teams[r.id].filial);return t&&t.id}).filter(Boolean);
+  return {up,down};
+}
+function applyMoves(){
+  const M=S.moves;S.moves=null;if(!M)return;
+  const groups=M.up.map(id=>divOf(id));
+  M.up.forEach(id=>{S.div[id]="OK";const t=S.teams[id];t.rep=Math.max(t.rep,2);t.budget+=6;t.inc=null});
+  const down=M.down.slice().sort((a,b)=>(a==="LIC"?-1:0)-(b==="LIC"?-1:0));
+  down.forEach((id,i)=>{const g=id==="LIC"?"PN":groups[i]||"PS";S.div[id]=g;const t=S.teams[id];t.rep=Math.max(1,t.rep-1);t.inc=null});
+  if(M.up.includes(S.user)){board().conf=clamp(board().conf+25,0,100);pushNews(W(_tx("Comença una nova etapa a l'OK Liga!"),_tx("¡Empieza una nueva etapa en la OK Liga!")),true)}
+  if(M.down.includes(S.user)){board().conf=50;pushNews(W(`${_tx(`L'equip juga aquesta temporada a l'`)}${DIVS[S.div[S.user]]}.`,`${_tx(`El equipo juega esta temporada en la `)}${DIVS[S.div[S.user]]}.`),true)}
 }
 function newSeason(){
   S.season++;S.round=0;S.finished=false;S.offers=[];
@@ -395,7 +428,9 @@ function newSeason(){
   }
   openWindow();
   clubNewSeason();
-  S.fixtures=makeFixtures(Object.keys(S.teams),hash("s"+S.season+S.user));
+  applyMoves();
+  if(S.fx){for(const d of divList())S.fx[d]=makeFixtures(Object.keys(S.teams).filter(id=>divOf(id)===d),hash("s"+S.season+S.user+d))}
+  else S.fixtures=makeFixtures(Object.keys(S.teams),hash("s"+S.season+S.user));
   for(const id in S.teams)autoLineup(id);
   pushNews(`${_tx(`Comença la temporada `)}${S.season}-${(S.season+1)%100}${_tx(`. Els jugadors han envellit un any i han evolucionat.`)}`,true);
   save();
@@ -529,7 +564,7 @@ function promises(){
       if(p.morale<40&&!p.warned){p.warned=true;pushNews(`${p.name}${_tx(` recorda que li vas prometre ser titular. Està molest.`)}`,true)}}
     else{p.morale=Math.min(100,p.morale+1);if(p.morale>=55)p.warned=false}}
 }
-function migrate(st){if(st){st.pending=st.pending||[];st.board=st.board||{conf:60,warned:false};if(!st.club){const prev=S;S=st;st.club=newClub();S=prev}}return st}
+function migrate(st){if(st){if(st.fixtures&&!st.fx){st.fx={OK:st.fixtures};delete st.fixtures;st.div=st.div||{}}st.pending=st.pending||[];st.board=st.board||{conf:60,warned:false};if(!st.club){const prev=S;S=st;st.club=newClub();S=prev}}return st}
 
 /* ============ CLUB I PAVELLÓ ============
    Només per al club de l'usuari (S.club). Imports en k€, com la resta del joc.
@@ -749,6 +784,7 @@ function issueAct(pid,a){
 /* Distintiu genèric (no és l'escut real): rodella amb els dos colors del club i l'abreviatura de la RFEP */
 const ABBR={BAR:"BAR",IGU:"IHC",LIC:"HCL",REU:"REUS",CAL:"CPC",NOI:"NOIA",LLE:"LLEI",VOL:"VOL",CLD:"CHC",LLO:"LLO",ALC:"PAS",RIV:"RIV",VIL:"CPV",MAC:"SHUM"};
 function lum(hex){const h=hex.replace("#","");const n=h.length===3?h.split("").map(c=>c+c).join(""):h;const [r,g,b]=[0,2,4].map(i=>parseInt(n.slice(i,i+2),16)/255).map(c=>c<=.03928?c/12.92:Math.pow((c+.055)/1.055,2.4));return .2126*r+.7152*g+.0722*b}
+Object.assign(ABBR,PLATA_ABBR);
 function shield(t,size=40){
   const ab=ABBR[t.id]||t.id,c1=t.c1,c2=t.c2,uid="sh"+t.id+size;
   const ink=lum(c1)>.45?"#10161f":"#ffffff";
@@ -781,7 +817,7 @@ function render(){
   <header class="top bevel">
     <div class="club">${shield(me,34)}<div><b>${esc(me.name)}</b><div class="muted">${esc(me.arena)}${_tx(` · Temporada `)}${S.season}-${String((S.season+1)%100).padStart(2,"0")}${_tx(`</div></div></div>
     <div class="kpi"><span class="lbl">Pressupost</span><span class="v num">`)}${money(me.budget)}${_tx(`</span></div>
-    <div class="kpi"><span class="lbl">Jornada</span><span class="v num">`)}${Math.min(S.round+1,S.fixtures.length)}/${S.fixtures.length}${_tx(`</span></div>
+    <div class="kpi"><span class="lbl">Jornada</span><span class="v num">`)}${Math.min(S.round+1,NROUNDS())}/${NROUNDS()}${_tx(`</span></div>
     <div class="kpi"><span class="lbl">Posició</span><span class="v num">`)}${S.round?ord(pos):"–"}${_tx(`</span></div>
     <button class="btn" id="bMenu" title="Desa i torna al menú principal">Menú</button>
     `)}${ui.match&&ui.match.m&&ui.match.m.live&&view==="partit"?"":S.finished?_tx(`<button class="btn primary" id="bNew">Nova temporada</button>`):`${_tx(`<button class="btn primary" id="bPlay">Jugar jornada `)}${S.round+1} ▸</button>`}
@@ -806,10 +842,12 @@ function startScreen(){
   if(startStep==="pick")return `${_tx(`<div class="start">
   <div class="bevel panel">
     <div class="row" style="justify-content:space-between"><h2>Tria el teu club</h2><button class="btn" data-step="menu">← Menú principal</button></div>
-    <p class="muted" style="margin:0;max-width:70ch">Les estrelles indiquen la mida del club i els ingressos.`)}${saved?_tx(` <span class="warn">Començar una partida nova substituirà la que tens desada.</span>`):""}</p>
-    <div class="teamgrid">${TEAMS0.map(t=>`${_tx(`<button class="btn teamcard" data-pick="`)}${t.id}">${shield(t,38)}<span class="t"><b>${esc(t.name)}</b><span class="stars">${stars(t.rep)}</span><span class="muted">${esc(t.city)} · ${money(t.bud)}</span></span></button>`).join("")}</div>
+    <p class="muted" style="margin:0;max-width:70ch">Les estrelles indiquen la mida del club i els ingressos.`)}${saved?_tx(` <span class="warn">Començar una partida nova substituirà la que tens desada.</span>`):""}${_tx(`</p>
+    <span class="lbl">OK Liga</span><div class="teamgrid">`)}${TEAMS0.map(t=>`${_tx(`<button class="btn teamcard" data-pick="`)}${t.id}">${shield(t,38)}<span class="t"><b>${esc(t.name)}</b><span class="stars">${stars(t.rep)}</span><span class="muted">${esc(t.city)} · ${money(t.bud)}</span></span></button>`).join("")}${_tx(`</div>
+    <span class="lbl">OK Liga Plata Nord</span><div class="teamgrid">`)}${TEAMS_PLATA.filter(t=>t.div==="PN").map(t=>`${_tx(`<button class="btn teamcard" data-pick="`)}${t.id}">${shield(t,38)}<span class="t"><b>${esc(t.name)}</b><span class="stars">${stars(t.rep)}</span><span class="muted">${esc(t.city)} · ${money(t.bud)}</span></span></button>`).join("")}${_tx(`</div>
+    <span class="lbl">OK Liga Plata Sud</span><div class="teamgrid">`)}${TEAMS_PLATA.filter(t=>t.div==="PS").map(t=>`${_tx(`<button class="btn teamcard" data-pick="`)}${t.id}">${shield(t,38)}<span class="t"><b>${esc(t.name)}</b><span class="stars">${stars(t.rep)}</span><span class="muted">${esc(t.city)} · ${money(t.bud)}</span></span></button>`).join("")}</div>
   </div></div>`;
-  if(startStep==="confirm"&&pickId){const t=TEAMS0.find(x=>x.id===pickId);
+  if(startStep==="confirm"&&pickId){const t=ALLTEAMS.find(x=>x.id===pickId);
     const top=t.p.slice().sort((a,b)=>b[3]-a[3]).slice(0,4);
     return `<div class="start" style="max-width:760px;margin:0 auto"><div class="bevel panel">
     <div class="row" style="flex-wrap:nowrap">${shield(t,72)}<div style="min-width:0"><h2 style="font-size:34px">${esc(t.name)}</h2><span class="muted">${esc(t.city)} · ${esc(t.arena)}</span><div class="stars">${stars(t.rep)}${_tx(`</div></div></div>
@@ -845,13 +883,13 @@ const VIEWS={
 club(){return clubView()},
 entrenament(){return trainView()},
 inici(){
-  const me=S.user,rd=S.fixtures[S.round];const m=rd&&rd.find(x=>x.h===me||x.a===me);
+  const me=S.user,rd=FX(myDiv())[S.round];const m=rd&&rd.find(x=>x.h===me||x.a===me);
   const tb=table().slice(0,6);
   const next=m?`<div class="vs"><div class="side">${shield(S.teams[m.h],46)}<b>${esc(S.teams[m.h].name)}${_tx(`</b><span class="muted">Mitjana `)}${teamOvr(m.h)}${_tx(`</span></div><div class="mid">VS</div><div class="side">`)}${shield(S.teams[m.a],46)}<b>${esc(S.teams[m.a].name)}${_tx(`</b><span class="muted">Mitjana `)}${teamOvr(m.a)}</span></div></div>
    <p class="muted" style="margin:0;text-align:center">${m.h===me?_tx("Juguem a casa, a ")+esc(S.teams[me].arena):_tx("Juguem a fora")}${_tx(` · 2 parts de 25 minuts</p>`)}`:_tx(`<p>La temporada ha acabat. Consulta la classificació i comença la nova temporada.</p>`);
   const tired=squad(me).filter(p=>p.energy<55&&S.teams[me].lineup.includes(p.id));
   return `${_tx(`<div class="grid2">
-   <section class="bevel panel"><h2>Proper partit · J`)}${Math.min(S.round+1,S.fixtures.length)}</h2>${next}
+   <section class="bevel panel"><h2>Proper partit · J`)}${Math.min(S.round+1,NROUNDS())}</h2>${next}
     ${tired.length?`${_tx(`<p class="warn" style="margin:0">⚠ Titulars cansats: `)}${tired.map(p=>esc(p.name)).join(", ")}${_tx(`. Revisa l'alineació.</p>`)}`:""}
     ${(()=>{const b=board(),c=Math.round(b.conf);return `<div><span class="lbl">${W(_tx("Confiança de la directiva"),_tx("Confianza de la directiva"))}</span><div class="row" style="gap:8px;flex-wrap:nowrap">${bar(c,c>=60?"var(--good)":c>=35?"var(--warn)":"var(--bad)")}<b class="num">${c}</b></div><span class="muted">${W(_tx("Objectiu"),_tx("Objetivo"))}: ${targetText(TARGET(S.teams[S.user].rep))}</span></div>`})()}${_tx(`
     <div class="row"><button class="btn" data-v="alineacio">Alineació</button><button class="btn" data-v="plantilla">Plantilla</button>`)}${S.round===0?_tx(`<button class="btn" id="bSwitch">Canviar d'equip</button>`):""}${_tx(`</div></section>
@@ -875,7 +913,7 @@ alineacio(){
   return `${_tx(`<div class="lineup">
    <section class="bevel panel"><div class="row" style="justify-content:space-between"><h2>Cinc inicial</h2><span class="muted">Mitjana `)}${teamOvr(S.user)}</span></div>
     <div class="rinkbox">${rinkSVG()}${slots}${_tx(`</div>
-    <p class="muted" style="margin:0">Clica una posició i després un jugador de la banqueta per canviar-los.</p></section>
+    <p class="muted" style="margin:0">Arrossega un jugador de la banqueta a la pista, o clica una posició i després el jugador que hi vols posar. Clicant dues posicions de la pista s'intercanvien.</p></section>
    <section class="bevel panel">
     <h2>Tàctica</h2>
     <div class="row"><label class="lbl" for="tStyle">Estil</label><select id="tStyle">`)}${opt("style","DEF",_tx("Defensiu"))}${opt("style","EQU",_tx("Equilibrat"))}${opt("style","ATA",_tx("Ofensiu"))}${_tx(`</select>
@@ -891,16 +929,16 @@ alineacio(){
    </section></div>`;
 },
 calendari(){
-  return `${_tx(`<section class="bevel panel"><h2>Calendari OK Liga</h2><div class="grid2">`)}${S.fixtures.map((rd,i)=>`${_tx(`
+  return `${_tx(`<section class="bevel panel"><h2>Calendari · `)}${DIVS[myDiv()]}</h2><div class="grid2">${FX(myDiv()).map((rd,i)=>`${_tx(`
    <div class="bevel" style="padding:10px;background:var(--panel2)"><div class="row" style="justify-content:space-between"><h3>Jornada `)}${i+1}</h3>${i===S.round&&!S.finished?_tx(`<span class="tag sale">PROPERA</span>`):""}</div>
    <table><tbody>${rd.map(m=>`${_tx(`<tr class="`)}${m.h===S.user||m.a===S.user?"me":""}"><td style="white-space:normal">${esc(S.teams[m.h].name)}</td><td class="r num" style="width:52px"><b>${m.res?m.res.gh+"–"+m.res.ga:"·"}</b></td><td style="white-space:normal">${esc(S.teams[m.a].name)}</td></tr>`).join("")}</tbody></table></div>`).join("")}</div></section>`;
 },
 classificacio(){
-  const tb=table();
-  const sc=Object.values(S.players).filter(p=>p.goals>0).sort((a,b)=>b.goals-a.goals).slice(0,12);
-  return `${_tx(`<section class="bevel panel"><h2>Classificació</h2><div class="scroll"><table><thead><tr><th>#</th><th>Equip</th><th class="r">PJ</th><th class="r">G</th><th class="r">E</th><th class="r">P</th><th class="r">GF</th><th class="r">GC</th><th class="r">DG</th><th class="r">Pts</th><th>Ratxa</th></tr></thead><tbody>
-  `)}${tb.map((r,i)=>`${_tx(`<tr class="`)}${r.id===S.user?"me":""} ${i<4?"zone-top":i>=tb.length-2?"zone-bot":""}"><td class="num">${i+1}</td><td><span class="row" style="gap:8px;flex-wrap:nowrap">${shield(S.teams[r.id],18)}${esc(S.teams[r.id].name)}</span></td><td class="r">${r.pj}</td><td class="r">${r.g}</td><td class="r">${r.e}</td><td class="r">${r.p}</td><td class="r">${r.gf}</td><td class="r">${r.gc}</td><td class="r">${r.gf-r.gc>0?"+":""}${r.gf-r.gc}</td><td class="r"><b class="acc">${r.pts}</b></td><td>${r.last.slice(-5).map(x=>`${_tx(`<span class="`)}${x==="V"?"good":x==="D"?"bad":"muted"}">${x}</span>`).join(" ")}</td></tr>`).join("")}${_tx(`
-  </tbody></table></div><p class="muted" style="margin:0"><span class="good">▌</span> Places europees (WSE Champions) · <span class="bad">▌</span> Descens a OK Liga Plata</p></section>
+  const dv=ui.tbDiv&&divList().includes(ui.tbDiv)?ui.tbDiv:myDiv();const tb=table(dv);const pl=dv!=="OK";
+  const sc=Object.values(S.players).filter(p=>p.goals>0&&divOf(p.team)===dv).sort((a,b)=>b.goals-a.goals).slice(0,12);
+  return `${_tx(`<section class="bevel panel"><div class="row" style="justify-content:space-between"><h2>Classificació</h2>`)}${divList().length>1?`<div class="row" style="gap:6px">${divList().map(d=>`${_tx(`<button class="btn small `)}${d===dv?"primary":""}${_tx(`" data-tbdiv="`)}${d}">${DIVS[d]}</button>`).join("")}</div>`:""}${_tx(`</div><div class="scroll"><table><thead><tr><th>#</th><th>Equip</th><th class="r">PJ</th><th class="r">G</th><th class="r">E</th><th class="r">P</th><th class="r">GF</th><th class="r">GC</th><th class="r">DG</th><th class="r">Pts</th><th>Ratxa</th></tr></thead><tbody>
+  `)}${tb.map((r,i)=>`${_tx(`<tr class="`)}${r.id===S.user?"me":""} ${pl?(r.id===(tb.find(x=>!S.teams[x.id].filial)||{}).id?"zone-top":""):i<4?"zone-top":i>=tb.length-2?"zone-bot":""}"><td class="num">${i+1}</td><td><span class="row" style="gap:8px;flex-wrap:nowrap">${shield(S.teams[r.id],18)}${esc(S.teams[r.id].name)}</span></td><td class="r">${r.pj}</td><td class="r">${r.g}</td><td class="r">${r.e}</td><td class="r">${r.p}</td><td class="r">${r.gf}</td><td class="r">${r.gc}</td><td class="r">${r.gf-r.gc>0?"+":""}${r.gf-r.gc}</td><td class="r"><b class="acc">${r.pts}</b></td><td>${r.last.slice(-5).map(x=>`${_tx(`<span class="`)}${x==="V"?"good":x==="D"?"bad":"muted"}">${x}</span>`).join(" ")}</td></tr>`).join("")}
+  </tbody></table></div><p class="muted" style="margin:0">${pl?_tx(`<span class="good">▌</span> Ascens a l'OK Liga (els filials no poden pujar)`):_tx(`<span class="good">▌</span> Places europees (WSE Champions) · <span class="bad">▌</span> Descens a OK Liga Plata`)}${_tx(`</p></section>
   <section class="bevel panel"><h2>Màxims golejadors</h2>`)}${sc.length?`${_tx(`<div class="scroll"><table><thead><tr><th>#</th><th>Jugador</th><th>Equip</th><th class="r">PJ</th><th class="r">Gols</th></tr></thead><tbody>`)}${sc.map((p,i)=>`${_tx(`<tr class="`)}${p.team===S.user?"me":""}"><td>${i+1}</td><td>${esc(p.name)}</td><td>${esc(S.teams[p.team].name)}</td><td class="r">${p.apps}</td><td class="r"><b class="acc">${p.goals}</b></td></tr>`).join("")}</tbody></table></div>`:_tx(`<p class="muted" style="margin:0">Encara no s'ha jugat cap jornada.</p>`)}</section>`;
 },
 mercat(){
@@ -928,7 +966,7 @@ equips(){
   const sq=squad(tid).sort((a,b)=>_tx("PORDEFDAV").indexOf(a.pos)-_tx("PORDEFDAV").indexOf(b.pos)||ovr(b)-ovr(a));
   return `${_tx(`<section class="bevel panel"><h2>Equips i editor de plantilles</h2>
   <p class="muted" style="margin:0;max-width:75ch">Noms: plantilles inscrites a la Lliga Catalana 2026-27 (FECAPA). Liceo i Rivas porten la plantilla de l'OK Liga 2025-26 fins que la RFEP publiqui la nova. Els porters surten de les actes dels partits. Dels menors d'edat no se'n mostra l'edat ni el sou. Mitjanes: calculades amb les tres darreres temporades d'OK Liga (gols, assistències, partits, titularitats i nivell de l'equip on jugava cada jugador). Les mitjanes, els sous i els valors són estimacions del joc, no dades reals. Clica un jugador per veure'n les dades o corregir-lo.</p>
-  <p style="margin:0">`)}${({"2025":_tx("<span class=\"tag sale\">PLANTILLA 2025-26 (RFEP)</span>"),"plata":_tx("<span class=\"tag\" style=\"background:var(--data);color:#fff\">VE DE L'OK LIGA PLATA</span>")})[TEAMS0.find(x=>x.id===tid)?.src]||_tx("<span class=\"tag\" style=\"background:var(--good);color:#fff\">NOMS FECAPA 2026-27</span>")}${_tx(`</p>
+  <p style="margin:0">`)}${({"2025":_tx("<span class=\"tag sale\">PLANTILLA 2025-26 (RFEP)</span>"),"plata":_tx("<span class=\"tag\" style=\"background:var(--data);color:#fff\">VE DE L'OK LIGA PLATA</span>"),"plata26":_tx("<span class=\"tag\" style=\"background:var(--data);color:#fff\">OK LIGA PLATA 2026-27 (RFEP)</span>")})[ALLTEAMS.find(x=>x.id===tid)?.src]||_tx("<span class=\"tag\" style=\"background:var(--good);color:#fff\">NOMS FECAPA 2026-27</span>")}${_tx(`</p>
   <div class="row"><label class="lbl" for="eqSel">Equip</label><select id="eqSel">`)}${Object.values(S.teams).map(x=>`${_tx(`<option value="`)}${x.id}" ${x.id===tid?"selected":""}>${esc(x.name)}</option>`).join("")}</select>
   <span class="muted">${esc(t.city)} · ${esc(t.arena)} · <span class="stars">${stars(t.rep)}</span> · ${money(t.budget)}${_tx(` · Mitjana `)}${teamOvr(tid)}</span></div>
   <div class="row">${shield(t,52)}${_tx(`<label class="lbl" for="eqC1">Color principal</label><input type="color" id="eqC1" value="`)}${t.c1}${_tx(`" style="width:48px;height:36px;padding:2px">
@@ -949,12 +987,12 @@ finances(){
 opcions(){
   return `${_tx(`<section class="bevel panel"><h2>Partida</h2><p style="margin:0">La partida es desa automàticament en aquest navegador després de cada jornada.</p>
   <div class="row"><button class="btn" id="bSave">Desar ara</button><button class="btn" id="bQuit">Tornar al menú principal</button><button class="btn" id="bReset">Esborrar partida…</button></div>
-  <span class="lbl">Música</span><div class="row">`)}${[_tx("Pols"),_tx("Estratègia"),_tx("Vestidor")].map((n,i)=>`${_tx(`<button class="btn small `)}${MZ.track===i&&MZ.on?"primary":""}${_tx(`" data-mtrack="`)}${i}">${n}</button>`).join("")}${_tx(`<button class="btn small `)}${!MZ.on?"primary":""}${_tx(`" onclick="musSet(false);render()">Sense música</button></div>
+  <span class="lbl">Música</span><div class="row">`)}${[_tx("Bateria tranquil·la"),_tx("Només bateria"),_tx("D&B de fons"),_tx("Drum&bass"),_tx("D&B fosc"),_tx("D&B atmosfèric"),_tx("Pols"),_tx("Estratègia"),_tx("Vestidor")].map((n,i)=>`${_tx(`<button class="btn small `)}${MZ.track===i&&MZ.on?"primary":""}${_tx(`" data-mtrack="`)}${i}">${n}</button>`).join("")}${_tx(`<button class="btn small `)}${!MZ.on?"primary":""}${_tx(`" onclick="musSet(false);render()">Sense música</button></div>
   <div id="resetConfirm" hidden class="row"><span class="warn">Segur? Es perdrà tot el progrés.</span><button class="btn small primary" id="bResetYes">Sí, esborra-la</button><button class="btn small" id="bResetNo">Cancel·la</button></div></section>`)}`;
 },
 partit(){
   const {m}=ui.match;const r=m.res;
-  const others=S.fixtures[ui.match.round-1].filter(x=>x!==m);
+  const others=FX(myDiv())[ui.match.round-1].filter(x=>x!==m);
   return `${_tx(`<section class="bevel panel"><h2>Jornada `)}${ui.match.round}</h2>
   <div class="board" aria-live="polite"><div class="tn">${esc(S.teams[m.h].name)}</div><div><div class="sc num" id="sc">0–0</div><div class="clk num" id="clk">0'</div></div><div class="tn">${esc(S.teams[m.a].name)}${_tx(`</div></div>
   <div class="row"><button class="btn" id="bPause">⏸ Pausa i canvis</button><button class="btn" id="bSkip">Avançar</button><button class="btn primary" id="bBack">Tornar al despatx</button></div>
@@ -1039,12 +1077,11 @@ function playerModal(pid){
    ${mine&&p.issue?`${_tx(`<div class="win" style="display:grid;gap:8px"><span><b>Problema personal:</b> `)}${esc(p.issue.t)}${_tx(`. Rendeix menys i perd moral cada jornada.</span><div class="row" style="gap:6px"><button class="btn small" data-iss="talk">Parlar-hi</button><button class="btn small" data-iss="rest">Donar-li festa la propera jornada</button></div></div>`)}`:""}
    ${mine?`<div class="row"><button class="btn" id="mSale">${p.forSale?_tx("Treure de la venda"):_tx("Posar a la venda")}</button></div>`:
    offerForm(p)}${_tx(`
-   <details><summary class="lbl" style="cursor:pointer">Editar dades del jugador</summary>
+   <details><summary class="lbl" style="cursor:pointer">Corregir dades del jugador</summary>
+    <p class="muted" style="margin:6px 0 0">Només es poden corregir el nom, la posició i la nacionalitat. Les mitjanes i l'edat no es poden tocar durant la partida.</p>
     <div class="row" style="margin-top:8px"><input id="eName" value="`)}${esc(p.name)}${_tx(`" aria-label="Nom" style="flex:1;min-width:160px">
      <select id="ePos" aria-label="Posició">`)}${["POR","DEF","DAV"].map(x=>`${_tx(`<option `)}${p.pos===x?"selected":""}>${x}</option>`).join("")}</select>
-     ${p.age<18?"":`${_tx(`<input id="eAge" type="number" min="18" max="45" value="`)}${p.age}${_tx(`" aria-label="Edat" style="width:70px">`)}`}
      <select id="eNat" aria-label="Nacionalitat">${Object.keys(NATN).map(k=>`${_tx(`<option value="`)}${k}" ${p.nat===k?"selected":""}>${NATN[k]}</option>`).join("")}${_tx(`</select>
-     <input id="eOvr" type="number" min="40" max="99" value="`)}${ovr(p)}${_tx(`" aria-label="Mitjana" style="width:70px">
      <button class="btn small" id="eSave">Desar canvis</button></div></details>
    <div class="row" style="justify-content:flex-end"><button class="btn" id="mClose">Tancar</button></div></div>`)}`;
   document.body.appendChild(d);
@@ -1058,7 +1095,7 @@ function playerModal(pid){
   else bindOffer(d,p,close);
   d.querySelector("#eSave").onclick=()=>{
     const nm=d.querySelector("#eName").value.trim();if(nm)p.name=nm;
-    const np=d.querySelector("#ePos").value,na=d.querySelector("#eAge")?clamp(+d.querySelector("#eAge").value||p.age,18,45):p.age,no=clamp(+d.querySelector("#eOvr").value||ovr(p),40,99);
+    const np=d.querySelector("#ePos").value,na=p.age,no=ovr(p);
     p.nat=d.querySelector("#eNat").value;p.age=na;if(np!==p.pos||no!==ovr(p)){const fresh=makePlayer([p.name,np,na,no,p.nat],p.team,p.id);p.pos=np;p.a=fresh.a;p.salary=fresh.salary}
     autoFix(p.team);save();toast(_tx("Dades desades"));close()};
 }
@@ -1111,7 +1148,7 @@ function aiTactic(tid){const t=tac(tid);const o=teamOvr(tid);t.style=o>=81?"ATA"
 function aiHalftime(tid,diff){const t=tac(tid);if(diff<=-2){t.style="ATA";t.ritme="RAP";t.talk="exig"}else if(diff>=2){t.style="DEF";t.ritme="PAU";t.talk="calma"}}
 /* ---- Jornada en dues fases ---- */
 function finishRound(um){
-  const me=S.user,rd=S.fixtures[S.round];
+  const me=S.user,rd=roundAll(S.round);
   for(const m of rd){applyResult(m);rateMatch(m)}
   for(const p of Object.values(S.players))if(p.inj>0)p.inj--;
   finances(rd);
@@ -1129,7 +1166,7 @@ function finishRound(um){
   for(const p of squad(me))if(p.inj>0&&um.res.ev.some(e=>e.t==="inj"&&e.pid===p.id))pushNews(`${p.name}${_tx(` estarà `)}${p.inj}${_tx(` setmanes de baixa.`)}`);
   autoFix(me);
   for(const tid in S.teams)if(tid!==me)autoLineup(tid);
-  if(S.round>=S.fixtures.length)endSeason();
+  if(S.round>=NROUNDS())endSeason();
   save();
 }
 /* ============ ENTRENAMENT ============
@@ -1177,8 +1214,8 @@ function trainView(){
 }
 
 /* ============ DIRECTIVA, RODA DE PREMSA I FORMA ============ */
-const TARGET=rep=>rep>=5?2:rep===4?4:rep===3?8:12;
-const targetText=pos=>pos<=2?W(`${_tx(`acabar entre els `)}${pos}${_tx(` primers i lluitar pel títol`)}`,`${_tx(`acabar entre los `)}${pos}${_tx(` primeros y luchar por el título`)}`):pos<=8?W(`${_tx(`acabar entre els `)}${pos}${_tx(` primers`)}`,`${_tx(`acabar entre los `)}${pos}${_tx(` primeros`)}`):W(_tx("no baixar de categoria"),_tx("no bajar de categoría"));
+const TARGET=rep=>S&&myDiv()!=="OK"?(rep>=2?2:7):rep>=5?2:rep===4?4:rep===3?8:12;
+const targetText=pos=>S&&myDiv()!=="OK"?(pos<=2?W(_tx("lluitar per l'ascens"),_tx("luchar por el ascenso")):W(`${_tx(`acabar entre els `)}${pos}${_tx(` primers del grup`)}`,`${_tx(`acabar entre los `)}${pos}${_tx(` primeros del grupo`)}`)):pos<=2?W(`${_tx(`acabar entre els `)}${pos}${_tx(` primers i lluitar pel títol`)}`,`${_tx(`acabar entre los `)}${pos}${_tx(` primeros y luchar por el título`)}`):pos<=8?W(`${_tx(`acabar entre els `)}${pos}${_tx(` primers`)}`,`${_tx(`acabar entre los `)}${pos}${_tx(` primeros`)}`):W(_tx("no baixar de categoria"),_tx("no bajar de categoría"));
 function board(){if(!S.board)S.board={conf:60,warned:false};return S.board}
 /* Nota de cada jugador al partit (sobre 10) i efecte en la forma, la moral i les mitjanes */
 function rateMatch(m){
@@ -1211,7 +1248,7 @@ function boardAfter(m){
   b.conf=clamp(Math.round(b.conf*10)/10,0,100);
   if(b.conf<35&&!b.warned){b.warned=true;pushNews(W(_tx("DIRECTIVA: el president diu que «la situació preocupa» i que espera una reacció immediata."),_tx("DIRECTIVA: el presidente dice que «la situación preocupa» y que espera una reacción inmediata.")),true)}
   if(b.conf>=45)b.warned=false;
-  if(b.conf<12&&S.round>=8&&S.round<S.fixtures.length){S.fired=true;pushNews(W(`${_tx(`CESSAMENT: la directiva del `)}${S.teams[me].name}${_tx(` prescindeix de l'entrenador.`)}`,`${_tx(`DESTITUCIÓN: la directiva del `)}${S.teams[me].name}${_tx(` prescinde del entrenador.`)}`),true)}
+  if(b.conf<12&&S.round>=8&&S.round<NROUNDS()){S.fired=true;pushNews(W(`${_tx(`CESSAMENT: la directiva del `)}${S.teams[me].name}${_tx(` prescindeix de l'entrenador.`)}`,`${_tx(`DESTITUCIÓN: la directiva del `)}${S.teams[me].name}${_tx(` prescinde del entrenador.`)}`),true)}
 }
 function boardSeasonEnd(){
   const b=board(),me=S.user,pos=table().findIndex(x=>x.id===me)+1,tg=TARGET(S.teams[me].rep);
@@ -1289,8 +1326,8 @@ function liveSeg(from,to){
   L.ev.sort((x,y)=>x.m-y.m);lh.forEach(x=>L.lh.add(x));la.forEach(x=>L.la.add(x));L.simTo=to;
 }
 function playRound(){
-  if(S.round>=S.fixtures.length)return;
-  const me=S.user,rd=S.fixtures[S.round];
+  if(S.round>=NROUNDS())return;
+  const me=S.user,rd=roundAll(S.round);
   for(const tid in S.teams)if(tid!==me)aiTactic(tid);
   tac(me).talk=null;
   const um=rd.find(m=>m.h===me||m.a===me);
@@ -1320,39 +1357,67 @@ function liveFinish(){
   finishRound(um);
 }
 function playRoundFast(){playRound();liveHalftime();liveSeg(26,50);liveFinish()}
-/* ---- Panell de canvis (descans o pausa) ---- */
+/* ---- Panell de canvis (descans o pausa): la mateixa pista i banqueta de l'alineació ---- */
 function changesPanel(min){
-  const um=ui.match.m,me=S.user,L=um.live;const t=tac(me);
-  const gm=goalsOf(L.ev,me,min),go=goalsOf(L.ev,um.h===me?um.a:um.h,min);
-  const sq=squad(me).filter(avail).sort((a,b)=>_tx("PORDEFDAV").indexOf(a.pos)-_tx("PORDEFDAV").indexOf(b.pos)||ovr(b)-ovr(a));
-  const cur=S.teams[me].lineup;
-  const sel=(i)=>`${_tx(`<select data-ht="`)}${i}${_tx(`" aria-label="`)}${i===0?W(_tx("Porter"),_tx("Portero")):W(_tx("Jugador de pista "),_tx("Jugador de pista "))+i}">${sq.filter(p=>i===0?p.pos==="POR":p.pos!=="POR").map(p=>`${_tx(`<option value="`)}${p.id}" ${cur[i]===p.id?"selected":""}>${esc(p.name)} · ${p.pos} · ${ovr(p)} · ${p.energy}%</option>`).join("")}</select>`;
+  const um=ui.match.m,me=S.user,Lv=um.live;const t=tac(me);
+  const gm=goalsOf(Lv.ev,me,min),go=goalsOf(Lv.ev,um.h===me?um.a:um.h,min);
+  const L=S.teams[me].lineup,ht=min===25;
+  const coords=[[50,87,"POR"],[26,66,"DEF"],[74,66,"DEF"],[26,36,"DAV"],[74,36,"DAV"]];
+  const slots=coords.map(([x,y,r],i)=>{const p=L[i]&&S.players[L[i]];const bad=p&&!avail(p);
+    return `${_tx(`<button class="slot `)}${ui.hsel===i?"sel":""} ${p?"":"empty"}${_tx(`" style="left:`)}${x}${_tx(`%;top:`)}${y}%${bad?_tx(";border-color:var(--bad)"):""}${_tx(`" data-hslot="`)}${i}">${p?`<span class="nm">${esc(p.name)}</span><small>${p.pos} · ${ovr(p)} · ${p.energy}%${bad?_tx(" · LES"):""}</small>`:`<span class="nm">${W(_tx("Buit"),_tx("Vacío"))}</span><small>${r}</small>`}</button>`}).join("");
+  const bench=squad(me).filter(p=>!L.includes(p.id)).sort((a,b)=>_tx("PORDEFDAV").indexOf(a.pos)-_tx("PORDEFDAV").indexOf(b.pos)||ovr(b)-ovr(a));
   const o=(k,v,l)=>`${_tx(`<option value="`)}${v}" ${t[k]===v?"selected":""}>${l}</option>`;
-  const shooters=sq.filter(p=>p.pos!=="POR").sort((a,b)=>b.a.xut-a.a.xut);
-  const out=cur.map(id=>S.players[id]).filter(p=>p&&!avail(p)).map(p=>p.name);
-  const ht=min===25;
+  const shooters=squad(me).filter(p=>p.pos!=="POR"&&avail(p)).sort((a,b)=>b.a.xut-a.a.xut);
+  const out=L.map(id=>S.players[id]).filter(p=>p&&!avail(p)).map(p=>p.name);
   return `<div class="ht"><h3 style="margin:0">${ht?W(_tx("Descans"),_tx("Descanso")):W(`${_tx(`Pausa · minut `)}${min}`,`${_tx(`Pausa · minuto `)}${min}`)} · ${gm>go?W("guanyem","ganamos"):gm<go?W("perdem","perdemos"):W("empatem","empatamos")} ${gm}–${go}</h3>
-   ${out.length?`<p class="bad" style="margin:0">${out.map(esc).join(", ")} ${W(_tx("no pot continuar per lesió."),_tx("no puede continuar por lesión."))}</p>`:""}
-   <div class="htgrid"><div style="display:grid;gap:6px"><span class="lbl">${W(_tx("Jugadors a la pista"),_tx("Jugadores en pista"))}</span>${[0,1,2,3,4].map(sel).join("")}${_tx(`</div>
-   <div style="display:grid;gap:6px"><span class="lbl">Tàctica</span>
-    <label>Estil <select id="hStyle">`)}${o("style","DEF",_tx("Defensiu"))}${o("style","EQU",_tx("Equilibrat"))}${o("style","ATA",_tx("Ofensiu"))}${_tx(`</select></label>
-    <label>Pressió <select id="hPress">`)}${o("press","BAI",_tx("Baixa"))}${o("press","MIG",_tx("Mitjana"))}${o("press","ALT",_tx("Alta"))}${_tx(`</select></label>
-    <label>Ritme <select id="hRitme">`)}${o("ritme","PAU",_tx("Pausat (menys gols)"))}${o("ritme","NOR",_tx("Normal"))}${o("ritme","RAP",_tx("Ràpid (contraatac)"))}${_tx(`</select></label>
-    <label>Defensa <select id="hMarca">`)}${o("marca","ZON",_tx("Zona"))}${o("marca","IND",_tx("Individual"))}${o("marca","MIX",_tx("Mixta: marcar el seu millor jugador"))}${_tx(`</select></label>
-    <label>Llançador <select id="hShoot"><option value="">Automàtic</option>`)}${shooters.map(p=>`${_tx(`<option value="`)}${p.id}" ${t.shooter===p.id?"selected":""}>${esc(p.name)}${_tx(` (xut `)}${p.a.xut})</option>`).join("")}</select></label>
-    ${ht?_tx(`<label>Xerrada <select id="hTalk"><option value="">Cap</option><option value="calma">Calma: ordre i defensa</option><option value="exig">Exigir més: a per ells</option><option value="anim">Animar l'equip (+moral)</option></select></label>`):""}
-   </div></div>
+   ${out.length?`<p class="bad" style="margin:0">${out.map(esc).join(", ")} ${W(_tx("no pot continuar per lesió: fes el canvi."),_tx("no puede continuar por lesión: haz el cambio."))}</p>`:""}
+   <div class="htgrid"><div style="display:grid;gap:8px">
+     <div class="rinkbox" style="max-width:240px">${rinkSVG()}${slots}</div>
+     <p class="muted" style="margin:0;font-size:12.5px">${W(_tx("Arrossega un jugador de la banqueta a la pista, o clica una posició i després el jugador."),_tx("Arrastra un jugador del banquillo a la pista, o haz clic en una posición y después en el jugador."))}</p></div>
+    <div style="display:grid;gap:8px;align-content:start"><span class="lbl">${W(_tx("Banqueta"),_tx("Banquillo"))}</span>
+     <div class="scroll"><table><tbody>${bench.map(p=>`${_tx(`<tr class="click" data-hbench="`)}${p.id}${_tx(`" tabindex="0"><td>`)}${pos(p.pos)}</td><td>${esc(p.name)}${p.inj>0?_tx(` <span class="tag inj">LES</span>`):""}${_tx(`</td><td class="r"><span class="ovr" style="color:`)}${ovrCol(ovr(p))}">${ovr(p)}</span></td><td>${bar(p.energy)}</td></tr>`).join("")}${_tx(`</tbody></table></div>
+     <span class="lbl">Tàctica</span>
+     <label>Estil <select data-ht="style">`)}${o("style","DEF",_tx("Defensiu"))}${o("style","EQU",_tx("Equilibrat"))}${o("style","ATA",_tx("Ofensiu"))}${_tx(`</select></label>
+     <label>Pressió <select data-ht="press">`)}${o("press","BAI",_tx("Baixa"))}${o("press","MIG",_tx("Mitjana"))}${o("press","ALT",_tx("Alta"))}${_tx(`</select></label>
+     <label>Ritme <select data-ht="ritme">`)}${o("ritme","PAU",_tx("Pausat (menys gols)"))}${o("ritme","NOR",_tx("Normal"))}${o("ritme","RAP",_tx("Ràpid (contraatac)"))}${_tx(`</select></label>
+     <label>Defensa <select data-ht="marca">`)}${o("marca","ZON",_tx("Zona"))}${o("marca","IND",_tx("Individual"))}${o("marca","MIX",_tx("Mixta: marcar el seu millor jugador"))}${_tx(`</select></label>
+     <label>Llançador <select data-ht="shooter"><option value="">Automàtic</option>`)}${shooters.map(p=>`${_tx(`<option value="`)}${p.id}" ${t.shooter===p.id?"selected":""}>${esc(p.name)}${_tx(` (xut `)}${p.a.xut})</option>`).join("")}</select></label>
+     ${ht?`${_tx(`<label>Xerrada <select id="hTalk"><option value="">Cap</option><option value="calma" `)}${ui.htalk==="calma"?"selected":""}${_tx(`>Calma: ordre i defensa</option><option value="exig" `)}${ui.htalk==="exig"?"selected":""}${_tx(`>Exigir més: a per ells</option><option value="anim" `)}${ui.htalk==="anim"?"selected":""}${_tx(`>Animar l'equip (+moral)</option></select></label>`)}`:""}
+    </div></div>
    <p class="bad" id="hErr" style="margin:0"></p>
    <div class="row"><button class="btn primary" id="bH2">${ht?W(_tx("Començar la segona part ▸"),_tx("Empezar la segunda parte ▸")):W(_tx("Reprendre el partit ▸"),_tx("Reanudar el partido ▸"))}</button></div></div>`;
 }
-function applyHalftime(){
-  const me=S.user,ids=[...document.querySelectorAll("[data-ht]")].sort((a,b)=>a.dataset.ht-b.dataset.ht).map(s=>s.value);
-  if(new Set(ids).size<5||ids.some(x=>!x)){$("#hErr").textContent=W(_tx("Hi ha un jugador repetit a l'alineació."),_tx("Hay un jugador repetido en la alineación."));sfx("no");return false}
-  S.teams[me].lineup=ids;const t=tac(me);
-  t.style=$("#hStyle").value;t.press=$("#hPress").value;t.ritme=$("#hRitme").value;t.marca=$("#hMarca").value;t.shooter=$("#hShoot").value||null;
-  const tk=$("#hTalk");if(tk){const talk=tk.value;t.talk=talk==="anim"?null:talk;if(talk==="anim")for(const id of ids){const p=S.players[id];p.morale=clamp(p.morale+6,20,100)}}
-  return true;
+/* Pinta el panell i hi connecta la pista, la banqueta i la tàctica; onGo es crida en reprendre */
+function htMount(min,onGo){
+  const box=$("#ht");box.innerHTML=changesPanel(min);
+  const me=S.user,LU=()=>S.teams[me].lineup,okAt=(i,p)=>p&&(i===0?p.pos==="POR":p.pos!=="POR");
+  const redraw=()=>htMount(min,onGo);
+  const put=(i,pid)=>{const p=S.players[pid];if(!avail(p)){toast(`${p.name}${_tx(` està lesionat`)}`);return}
+    if(!okAt(i,p)){toast(i===0?_tx("A la porteria hi ha d'anar un porter"):_tx("Un porter no pot jugar de jugador de pista"));return}
+    LU()[i]=p.id;ui.hsel=null;redraw()};
+  const swap=(i,j)=>{const L=LU(),a=S.players[L[i]],b=S.players[L[j]];
+    if((a&&!okAt(j,a))||(b&&!okAt(i,b))){toast(_tx("El porter només pot anar a la porteria"));ui.hsel=null;redraw();return}
+    [L[i],L[j]]=[L[j],L[i]];ui.hsel=null;redraw()};
+  box.querySelectorAll("[data-hslot]").forEach(b=>{const i=+b.dataset.hslot;
+    b.onclick=()=>{if(ui.hsel!=null&&ui.hsel!==i){swap(ui.hsel,i);return}ui.hsel=ui.hsel===i?null:i;redraw()};
+    b.draggable=true;b.ondragstart=e=>e.dataTransfer.setData("text/plain",_tx("slot:")+i);b.ondragover=e=>e.preventDefault();
+    b.ondrop=e=>{e.preventDefault();const d=e.dataTransfer.getData("text/plain");if(d.startsWith("slot:")){const j=+d.slice(5);if(j!==i)swap(j,i)}else if(d.startsWith("pl:"))put(i,d.slice(3))}});
+  box.querySelectorAll("[data-hbench]").forEach(r=>{r.draggable=true;r.ondragstart=e=>e.dataTransfer.setData("text/plain",_tx("pl:")+r.dataset.hbench);
+    r.onclick=()=>{if(ui.hsel==null){toast(_tx("Primer tria una posició a la pista"));return}put(ui.hsel,r.dataset.hbench)}});
+  box.querySelectorAll("select[data-ht]").forEach(s=>s.onchange=()=>{tac(me)[s.dataset.ht]=s.value||null});
+  const tk=$("#hTalk");if(tk)tk.onchange=()=>{ui.htalk=tk.value};
+  $("#bH2").onclick=()=>{if(!applyHalftime(min===25))return;box.hidden=true;box.innerHTML="";ui.hsel=null;onGo()};
 }
+function applyHalftime(isHT){
+  const me=S.user,L=S.teams[me].lineup,ps=L.map(id=>S.players[id]);
+  const err=m=>{$("#hErr").textContent=m;sfx("no");return false};
+  if(ps.some(p=>!p)||new Set(L).size<5)return err(W(_tx("Falten jugadors a la pista."),_tx("Faltan jugadores en la pista.")));
+  if(ps.some(p=>!avail(p)))return err(W(_tx("Hi ha un jugador lesionat a la pista: canvia'l."),_tx("Hay un jugador lesionado en la pista: cámbialo.")));
+  if(ps[0].pos!=="POR"||ps.slice(1).some(p=>p.pos==="POR"))return err(W(_tx("El porter ha d'anar a la porteria."),_tx("El portero tiene que ir en la portería.")));
+  if(isHT){const talk=ui.htalk||"";const t=tac(me);t.talk=talk==="anim"?null:(talk||null);if(talk==="anim")for(const p of ps)p.morale=clamp(p.morale+6,20,100)}
+  ui.htalk=null;return true;
+}
+
 function runMatchView(){
   const um=ui.match.m;const feed=$("#feed"),sc=$("#sc"),clk=$("#clk");if(!feed)return;
   const reduce=window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -1365,8 +1430,7 @@ function runMatchView(){
   const note=(m,t)=>{const li=document.createElement("li");li.innerHTML=`<span class="m">${m}'</span><span><b>${t}</b></span>`;feed.prepend(li)};
   const stop=()=>{if(ticker){clearInterval(ticker);ticker=null}};
   const ctl=on=>{sk.disabled=!on;bp.disabled=!on};
-  const panel=(min,onGo)=>{stop();ctl(false);paused=true;ht.innerHTML=changesPanel(min);ht.hidden=false;ht.scrollIntoView({behavior:"smooth",block:"nearest"});
-    $("#bH2").onclick=()=>{if(!applyHalftime())return;ht.hidden=true;ht.innerHTML="";paused=false;onGo()}};
+  const panel=(min,onGo)=>{stop();ctl(false);paused=true;ht.hidden=false;ui.hsel=null;htMount(min,()=>{paused=false;onGo()});ht.scrollIntoView({behavior:"smooth",block:"nearest"})};
   const step=quiet=>{minute++;clk.textContent=minute+"'";let pz=false;const L=um.live;
     while(idx<L.ev.length&&L.ev[idx].m<=minute){if(show(L.ev[idx++],quiet)==="pause")pz=true}
     if(minute===25){stop();clk.textContent=_tx("DESCANS");sfx("whistle2");note(25,"Descans.");liveHalftime();
@@ -1481,6 +1545,64 @@ function kick(t,v,B){tone(130,t,.22,{v,to:42,glide:.12,cut:600,dest:B})}
 function hat(t,v,B){noise(t,.03,{type:"highpass",f:8000,q:.4,v,dest:B})}
 function clap(t,v,B){noise(t,.12,{f:1500,q:.9,v,dest:B,wet:true});noise(t+.012,.08,{f:2200,q:1,v:v*.7,dest:B})}
 const TRACKS=[
+ {id:"bateria2",bpm:86,bars:4,step(st,t,B){ // Bateria tranquil·la i atmosfèrica: mig temps, escombretes, aro, shaker i timbals greus amb molta sala
+   const bar=Math.floor(st/16)%4,b=st%16;
+   if(b===0||(b===10&&bar%2===1))tone(80,t,.4,{v:.08,to:42,glide:.25,cut:220,dest:B,wet:true});
+   if(b===8){noise(t,.45,{f:1100,q:.4,v:.03,at:.02,dest:B,wet:true});noise(t,.08,{f:2600,q:1.6,v:.012,dest:B})}
+   if(b===4||b===12)noise(t,.06,{f:3200,q:3,v:.01,dest:B,wet:true});
+   noise(t+(b%2?MST*.22:0),.07,{type:"highpass",f:7000,q:.3,v:b%4===2?.007:.004,at:.015,dest:B});
+   if(b%8===6)noise(t,.3,{f:900,q:.3,v:.009,at:.08,dest:B,wet:true});
+   if(bar===3&&(b===13||b===14||b===15))tone([150,120,96][b-13],t,.35,{v:.035,to:[120,96,80][b-13],cut:600,dest:B,wet:true});
+   if(b===0&&bar===0)noise(t,2.5,{type:"highpass",f:6000,q:.3,v:.007,at:.4,dest:B,wet:true});
+ }},
+ {id:"bateria",bpm:172,bars:4,step(st,t,B){ // Només bateria: break de drum&bass sec, sense baix ni sintetitzadors
+   const bar=Math.floor(st/16)%4,b=st%16,fill=bar===3&&b>=12;
+   if(b===0||b===10||(bar%2===1&&b===7))kick(t,b===7?.07:.12,B);
+   if((b===4||b===12)&&!fill){noise(t,.13,{f:1800,q:.8,v:.05,dest:B,wet:true});tone(200,t,.07,{v:.035,to:160,cut:1500,dest:B})}
+   if(b===9||b===15&&bar!==3)noise(t,.05,{f:2000,q:1,v:.012,dest:B});
+   if(fill)noise(t,.08,{f:1500+(b-12)*250,q:.9,v:.02+(b-12)*.006,dest:B});
+   if(b%2===0)hat(t,b%4===2?.014:.008,B);else hat(t+MST*.1,.004,B);
+   if(b===0&&bar===0)noise(t,1.2,{type:"highpass",f:6500,q:.4,v:.012,dest:B,wet:true});
+ }},
+ {id:"fons",bpm:170,bars:4,step(st,t,B){ // Drum&bass de fons: sense melodia, bateria apagada i filtrada, baix suau i acords llargs
+   const bar=Math.floor(st/16)%4,b=st%16,[R0,iv]=[[45,[0,3,7,10,14]],[41,[0,4,7,11,14]],[43,[0,4,7,10,14]],[40,[0,3,7,10]]][bar];
+   if(b===0||b===10)tone(95,t,.18,{v:.06,to:45,glide:.1,cut:300,dest:B});
+   if(b===4||b===12)noise(t,.09,{f:1400,q:.6,v:.016,dest:B});
+   if(b%2===0)noise(t,.02,{type:"bandpass",f:6000,q:.8,v:b%4===2?.006:.0035,dest:B});
+   if(b===0){subb(mtof(R0-12),t,MST*15,.045,B,"sine");pad(R0,iv,t,MST*16,B)}
+ }},
+ {id:"dnb",bpm:172,bars:4,step(st,t,B){ // Drum&bass liquid: break de dos temps, baix reese suau, coixí atmosfèric i motiu de 4 notes
+   const bar=Math.floor(st/16)%4,b=st%16,[R0,iv]=[[45,[0,3,7,10]],[41,[0,4,7,11]],[48,[0,4,7,11]],[43,[0,4,7,10]]][bar],sec=Math.floor(st/64)%4;
+   if(b===0||b===10)kick(t,.12,B);
+   if(b===4||b===12){noise(t,.16,{f:1900,q:.7,v:.05,dest:B,wet:true});tone(190,t,.09,{v:.04,to:150,cut:1200,dest:B})}
+   if(b===7&&bar%2===1)noise(t,.08,{f:2100,q:.8,v:.018,dest:B});
+   if(b%2===0)hat(t,b%4===2?.016:.009,B);else if(sec>0)hat(t,.005,B);
+   if(b===0){const c=SND.ctx;for(const det of [-9,9]){const o=c.createOscillator(),g=c.createGain(),fl=c.createBiquadFilter();o.type="sawtooth";o.frequency.value=mtof(R0-12);o.detune.value=det;
+     fl.type="lowpass";fl.frequency.setValueAtTime(180,t);fl.frequency.linearRampToValueAtTime(420,t+MST*8);fl.frequency.linearRampToValueAtTime(200,t+MST*16);
+     g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(.045,t+.03);g.gain.setValueAtTime(.045,t+MST*15);g.gain.linearRampToValueAtTime(0,t+MST*16);o.connect(fl);fl.connect(g);g.connect(B);o.start(t);o.stop(t+MST*16+.05)}}
+   if(b===0&&bar%2===0)pad(R0+12,iv,t,MST*32,B);
+   if(sec>=1)for(const [s,n] of [[0,76],[3,79],[6,81],[11,79]])if(s===b&&bar!==3)ep(mtof(n-(bar===1?2:bar===2?-3:0)),t,1.2,.02,B);
+ }},
+ {id:"rollers",bpm:174,bars:4,step(st,t,B){ // Drum&bass «rollers»: fosc i minimalista, sub-baix rodant en corxeres, hats amb swing
+   const bar=Math.floor(st/16)%4,b=st%16,R0=[41,41,44,39][bar];
+   if(b===0||b===10)kick(t,.13,B);
+   if(b===4||b===12){noise(t,.12,{f:2300,q:1.2,v:.045,dest:B});noise(t,.05,{type:"highpass",f:5000,q:.5,v:.02,dest:B})}
+   if(b===14&&bar===3)noise(t,.06,{f:2600,q:1.4,v:.02,dest:B});
+   hat(t+(b%2?MST*.18:0),b%2?.007:.012,B);
+   if(b%2===0&&!(b===6||b===14)){const c=SND.ctx,o=c.createOscillator(),g=c.createGain();o.type="sine";o.frequency.value=mtof(R0-12+(b===8?7:0));
+     g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(.09,t+.01);g.gain.exponentialRampToValueAtTime(.0001,t+MST*1.8);o.connect(g);g.connect(B);o.start(t);o.stop(t+MST*2)}
+   if(b===0&&bar%2===0)pad(R0+12,[0,3,7],t,MST*32,B);
+   if(b===2&&bar===1)for(const i of [0,3,7])pluck(mtof(R0+24+i),t,.25,.01,B,1400);
+ }},
+ {id:"atmos",bpm:170,bars:4,step(st,t,B){ // Drum&bass atmosfèric: ritme a mig temps, campanetes en arpegi i coixins llargs
+   const bar=Math.floor(st/16)%4,b=st%16,[R0,iv]=[[50,[0,3,7,10]],[46,[0,4,7,11]],[53,[0,4,7,9]],[48,[0,4,7,11]]][bar];
+   if(b===0||(b===11&&bar%2===1))kick(t,.11,B);
+   if(b===8)clap(t,.035,B);
+   if(b%4===2)hat(t,.012,B);if(b%2===1)hat(t,.004,B);
+   if(b===0)pad(R0,iv,t,MST*16,B);
+   if(b===0)subb(mtof(R0-12),t,MST*12,.07,B,"sine");
+   if(b%3===0&&b<15)ep(mtof(R0+24+iv[(b/3+bar)%4]),t,.9,.016,B);
+ }},
  {id:"pols",bpm:108,bars:4,step(st,t,B){ // Pols de retransmissió esportiva: baix en corxeres, bombo constant, motiu de 4 notes
    const bar=Math.floor(st/16)%4,b=st%16,R0=[50,46,53,48][bar];
    if(b%2===0)subb(mtof(R0-12+(b%4===2?12:0)),t,MST*1.7,.05,B);
@@ -1540,13 +1662,23 @@ function bind(){
   const bn=$("#bNew");if(bn)bn.onclick=()=>{newSeason();view="inici";render()};
   const bb=$("#bBack");if(bb)bb.onclick=()=>{if(ticker){clearInterval(ticker);ticker=null}view="inici";render()};
   document.querySelectorAll("[data-pl]").forEach(r=>{r.onclick=()=>playerModal(r.dataset.pl);r.onkeydown=e=>{if(e.key==="Enter")playerModal(r.dataset.pl)}});
-  document.querySelectorAll("[data-slot]").forEach(b=>b.onclick=()=>{const i=+b.dataset.slot;ui.selSlot=ui.selSlot===i?null:i;render()});
+  const LU=()=>S.teams[S.user].lineup;
+  const okAt=(i,p)=>p&&(i===0?p.pos==="POR":p.pos!=="POR");
+  const putBench=(i,pid)=>{const p=S.players[pid];if(!avail(p)){toast(`${p.name}${_tx(` està lesionat`)}`);return}
+    if(!okAt(i,p)){toast(i===0?_tx("A la porteria hi ha d'anar un porter"):_tx("Un porter no pot jugar de jugador de pista"));return}
+    LU()[i]=p.id;ui.selSlot=null;save();render()};
+  const swapSlots=(i,j)=>{const L=LU(),a=S.players[L[i]],b=S.players[L[j]];
+    if((a&&!okAt(j,a))||(b&&!okAt(i,b))){toast(_tx("El porter només pot anar a la porteria"));ui.selSlot=null;render();return}
+    [L[i],L[j]]=[L[j],L[i]];ui.selSlot=null;save();render()};
+  document.querySelectorAll("[data-slot]").forEach(b=>{const i=+b.dataset.slot;
+    b.onclick=()=>{if(ui.selSlot!=null&&ui.selSlot!==i){swapSlots(ui.selSlot,i);return}ui.selSlot=ui.selSlot===i?null:i;render()};
+    b.draggable=true;b.ondragstart=e=>{e.dataTransfer.setData("text/plain",_tx("slot:")+i)};
+    b.ondragover=e=>e.preventDefault();
+    b.ondrop=e=>{e.preventDefault();const d=e.dataTransfer.getData("text/plain");if(d.startsWith("slot:")){const j=+d.slice(5);if(j!==i)swapSlots(j,i)}else if(d.startsWith("pl:"))putBench(i,d.slice(3))}});
+  document.querySelectorAll("[data-bench]").forEach(r=>{r.draggable=true;r.ondragstart=e=>{e.dataTransfer.setData("text/plain",_tx("pl:")+r.dataset.bench)}});
   document.querySelectorAll("[data-bench]").forEach(r=>{const go=()=>{
     if(ui.selSlot==null){toast(_tx("Primer tria una posició a la pista"));return}
-    const p=S.players[r.dataset.bench];if(!avail(p)){toast(`${p.name}${_tx(` està lesionat`)}`);return}
-    if(ui.selSlot===0&&p.pos!=="POR"){toast(_tx("A la porteria hi ha d'anar un porter"));return}
-    if(ui.selSlot>0&&p.pos==="POR"){toast(_tx("Un porter no pot jugar de jugador de pista"));return}
-    S.teams[S.user].lineup[ui.selSlot]=p.id;ui.selSlot=null;save();render()};r.onclick=go;r.onkeydown=e=>{if(e.key==="Enter")go()}});
+    putBench(ui.selSlot,r.dataset.bench)};r.onclick=go;r.onkeydown=e=>{if(e.key==="Enter")go()}});
   const ts=$("#tStyle");if(ts)ts.onchange=()=>{S.teams[S.user].tactic.style=ts.value;save()};
   const tp=$("#tPress");if(tp)tp.onchange=()=>{S.teams[S.user].tactic.press=tp.value;save()};
   for(const [id,k] of [["#tRitme","ritme"],["#tMarca","marca"],["#tShoot","shooter"]]){const el=$(id);if(el)el.onchange=()=>{S.teams[S.user].tactic[k]=el.value||null;save()}}
@@ -1559,6 +1691,7 @@ function bind(){
   document.querySelectorAll("[data-canc]").forEach(b=>b.onclick=()=>cancelPending(b.dataset.canc));
   document.querySelectorAll("[data-rej]").forEach(b=>b.onclick=()=>rejectOffer(b.dataset.rej));
   document.querySelectorAll("[data-conv]").forEach(b=>b.onclick=()=>convince(b.dataset.conv,b.dataset.how));
+  document.querySelectorAll("[data-tbdiv]").forEach(b=>b.onclick=()=>{ui.tbDiv=b.dataset.tbdiv;render()});
   document.querySelectorAll("[data-tr]").forEach(b=>b.onclick=()=>{trainPlan()[b.dataset.tr]=b.dataset.k;save();render()});
   document.querySelectorAll("[data-tind]").forEach(el=>el.onchange=()=>{const T=trainPlan();if(el.value)T.ind[el.dataset.tind]=el.value;else delete T.ind[el.dataset.tind];save();render()});
   document.querySelectorAll("[data-mtrack]").forEach(b=>b.onclick=()=>{musTrack(+b.dataset.mtrack);if(!MZ.on)musSet(true);render()});
