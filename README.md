@@ -70,9 +70,10 @@ Les mitges, els preus i els sous són estimacions del joc. No són dades oficial
 ## Avís legal
 
 - Joc **no oficial**: no té cap relació amb la RFEP, la FECAPA, la competició ni els clubs. No fa servir escuts, logotips ni imatges.
-- Els noms dels clubs i dels jugadors només s'hi fan servir per identificar-los. Les **mitjanes, els sous, els valors i els preus són estimacions inventades pel joc** i no corresponen a dades reals de ningú.
+- Inclou l'OK Liga, l'OK Liga Plata i l'OK Liga Femenina. Les joves promeses surten de les plantilles de les federacions catalana, gallega, madrilenya i valenciana.
+- Els noms dels clubs, dels jugadors, de les jugadores i dels entrenadors només s'hi fan servir per identificar-los. Les **mitjanes, les qualitats dels tècnics, els sous, els valors i els preus són estimacions inventades pel joc** i no corresponen a dades reals de ningú.
 - Dels jugadors menors d'edat no se'n mostra l'edat (surt «<18») ni el sou. El repositori no conté dates de naixement.
 - Els resultats i estadístiques provenen de les webs públiques de la RFEP i la FECAPA, que se citen com a font.
 - Fantasy: només es guarda un identificador del compte de Google, el nom de pila i els equips de cada usuari. No es guarda el correu. Cada usuari pot esborrar les seves dades des del mateix joc.
 - És gratuït, sense publicitat i sense premis en diners.
-- Si ets jugador o representes un club i vols que es corregeixi o es retiri alguna dada, obre una *issue* en aquest repositori.
+- Si ets jugador o entrenador, o representes un club i vols que es corregeixi o es retiri alguna dada, obre una *issue* en aquest repositori.
