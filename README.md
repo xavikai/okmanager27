@@ -15,14 +15,19 @@ Un fantasy d'hoquei patins de la lliga masculina de màxima categoria (temporada
 ## Modes de joc
 
 - **Fantasy:** lligues amb amics. Cada mànager té 35 M per fer una plantilla de 8 jugadors (2 porters i 6 de pista), alinea cinc titulars i un capità cada jornada, i suma punts segons el que fan els jugadors als partits reals o simulats.
-- **Mànager:** portes un club de l'OK Liga o de l'OK Liga Plata (grups Nord i Sud, amb ascensos i descensos), amb alineacions, tàctica, fitxatges i finances. El mercat és obert tota la temporada i els fitxatges s'incorporen a l'instant. Les ofertes inclouen traspàs, sou, anys de contracte i condicions com feina a la ciutat, pis pagat, cotxe, estudis o promesa de titularitat. La partida es desa al navegador.
+- **Mànager:** portes un club de l'OK Liga o de l'OK Liga Plata (grups Nord i Sud, amb ascensos i descensos), amb alineacions, tàctica, fitxatges i finances. El mercat és obert tota la temporada i els fitxatges s'incorporen a l'instant. Les ofertes inclouen traspàs, sou, anys de contracte i condicions com feina a la ciutat, pis pagat, cotxe, estudis o promesa de titularitat. Es poden tenir diverses partides alhora; es desen al navegador i, si s'inicia sessió amb Google (Firebase), també al núvol per continuar-les des de qualsevol dispositiu.
+  - **Competicions:** Supercopa d'Espanya, Copa del Rei, Lliga Europea (WSE Champions League) i Copa de la CERS (WSE Cup); a la femenina, Supercopa, Copa de la Reina i Lliga Europea femenina. Es juguen entre jornades.
+  - **Pedrera:** els juvenils no poden pujar al primer equip d'entrada. Es poden cedir a Tercera, Segona o Primera Catalana i fer tecnificacions especialitzades (porters, tir, defensa, patinatge).
+  - **Retirades:** a partir dels 37 anys els jugadors es poden retirar (se'ls pot convèncer). Des de la J18 es poden repescar exjugadors.
+  - **Altres:** primes per guanyar, jugadors que volen sortir del seu club, filtres de mercat (preu i mitjana), destitucions, ofertes d'altres clubs a final de temporada i roda de premsa amb crònica del partit.
+  - **Escut i fotos:** cada usuari pot posar l'escut del club i fotos dels jugadors. Només es guarden al seu navegador: no van a la partida, ni a l'exportació, ni al núvol.
 
 ## Posar-lo en marxa
 
 ### 1. GitHub Pages
 Settings → Pages → Source: *Deploy from a branch* → branca `main`, carpeta `/ (root)`. El joc queda a `https://<usuari>.github.io/<repositori>/`.
 
-### 2. Firebase (només per al Fantasy)
+### 2. Firebase (Fantasy i partides del mànager al núvol)
 1. A <https://console.firebase.google.com> crea un projecte (per exemple, `hoqueimanager27`). No cal Google Analytics.
 2. **Authentication** → *Sign-in method* → activa **Google**. A *Settings → Authorized domains*, afegeix `<usuari>.github.io`.
 3. **Firestore Database** → *Create database* (mode producció, regió `europe-west`). A la pestanya *Rules*, enganxa el contingut de `firestore.rules` i publica-les.
