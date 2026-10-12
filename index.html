@@ -1558,11 +1558,14 @@ function coachBase([nm,club,kind]){
   const role=kind==="E"?((h>>>8)%5===0?"youth":"ass"):["ass","gk","youth"][(h>>>8)%3];
   return {nm,club,role,q,h};
 }
+function coachKey(name){return String(name||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().replace(/[^a-z0-9]/g,"")}
 function genCoaches(){
-  const all=COACHES_REAL.filter(x=>x[1]!==S.user).map(coachBase),out=[];
+  const hired=new Set(Object.values(S.club&&S.club.coaches||{}).filter(Boolean).map(c=>coachKey(c.name)));
+  const all=COACHES_REAL.filter(x=>x[1]!==S.user&&!hired.has(coachKey(x[0]))).map(coachBase),out=[];
   for(const role of ["ass","ass","ass","gk","gk","youth","youth"]){
-    let cand=all.filter(c=>c.role===role&&!out.some(o=>o.name===c.nm));
-    if(!cand.length)cand=all.filter(c=>!out.some(o=>o.name===c.nm));
+    let cand=all.filter(c=>c.role===role&&!out.some(o=>coachKey(o.name)===coachKey(c.nm)));
+    if(!cand.length)cand=all.filter(c=>!out.some(o=>coachKey(o.name)===coachKey(c.nm)));
+    if(!cand.length)break;
     const b=cand[ri(0,cand.length-1)],q=clamp(b.q+ri(-2,2),50,95);
     const c={id:"c"+hash(b.nm+S.season+role),name:b.nm,club:b.club,role,q,real:1};
     if(role==="ass"){c.tac=clamp(q+((b.h>>>4)%13)-6,50,95);c.mot=clamp(q+((b.h>>>12)%21)-10,50,95)}
@@ -1573,16 +1576,23 @@ function genCoaches(){
   }
   return out;
 }
-function coaches(){const C=S.club;if(!C)return {};if(!C.coaches)C.coaches={};if(!C.coachPool||C.coachPool.some(c=>!c.real))C.coachPool=genCoaches();return C.coaches}
+function coaches(){
+  const C=S.club;if(!C)return {};if(!C.coaches)C.coaches={};
+  if(!C.coachPool||C.coachPool.some(c=>!c||!c.real))C.coachPool=genCoaches();
+  // La mateixa persona no pot estar contractada i disponible, ni en dos anuncis.
+  const used=new Set(Object.values(C.coaches).filter(Boolean).map(c=>coachKey(c.name)));
+  C.coachPool=C.coachPool.filter(c=>{const key=coachKey(c.name);if(!key||used.has(key))return false;used.add(key);return true});
+  return C.coaches;
+}
 const coachOf=(tid,role)=>tid===S.user&&S.club&&S.club.coaches?S.club.coaches[role]:null;
 function coachCost(){return Object.values(coaches()).reduce((s,c)=>s+(c?c.cost:0),0)}
 function hireCoach(id){
-  const C=S.club,c=C.coachPool.find(x=>x.id===id);if(!c)return;
-  const old=coaches()[c.role];C.coaches[c.role]=c;C.coachPool=C.coachPool.filter(x=>x.id!==id);if(old)C.coachPool.push(old);
+  const H=coaches(),C=S.club;if(!C)return;const c=C.coachPool.find(x=>x.id===id);if(!c)return;
+  const old=H[c.role];C.coaches[c.role]=c;C.coachPool=C.coachPool.filter(x=>coachKey(x.name)!==coachKey(c.name));if(old)C.coachPool.push(old);coaches();
   pushNews(W(`${_tx(`COS TÈCNIC: `)}${c.name}${_tx(` és el nou `)}${CROLES[c.role].l.toLowerCase()}${_tx(` de l'equip.`)}`,`${_tx(`CUERPO TÉCNICO: `)}${c.name}${_tx(` es el nuevo `)}${c.role==="ass"?_tx("segundo entrenador"):c.role==="gk"?_tx("entrenador de porteros"):_tx("entrenador de formación")}${_tx(` del equipo.`)}`),true);
   toast(W(`${c.name}${_tx(` fitxat`)}`,`${c.name}${_tx(` fichado`)}`));save();render();
 }
-function fireCoach(role){const C=S.club,c=coaches()[role];if(!c)return;delete C.coaches[role];C.coachPool.push(c);
+function fireCoach(role){const C=S.club,c=coaches()[role];if(!c)return;delete C.coaches[role];C.coachPool.push(c);coaches();
   const pay=Math.round(c.cost*4*10)/10;S.teams[S.user].budget-=pay;C.oneoff-=pay;
   pushNews(W(`${_tx(`COS TÈCNIC: el club prescindeix de `)}${c.name}${_tx(`. Indemnització: `)}${money(pay)}.`,`${_tx(`CUERPO TÉCNICO: el club prescinde de `)}${c.name}${_tx(`. Indemnización: `)}${money(pay)}.`),true);save();render()}
 function coachView(){
