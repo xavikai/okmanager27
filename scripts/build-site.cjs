@@ -1,7 +1,7 @@
 const fs=require('node:fs'),path=require('node:path');
 const root=path.resolve(__dirname,'..'),out=path.join(root,'dist');
 fs.mkdirSync(out,{recursive:true});
-const files=['index.html','install.js','installation-stats.js','firebase-config.js','manifest.webmanifest','sw.js','contacte.html','gracies.html','_routes.json','_headers'];
+const files=['index.html','install.js','installation-stats.js','cloud-manager.js','firebase-config.js','manifest.webmanifest','sw.js','contacte.html','gracies.html','_routes.json','_headers'];
 for(const name of files)fs.copyFileSync(path.join(root,name),path.join(out,name));
 for(const name of ['icons','data','img'])if(fs.existsSync(path.join(root,name)))fs.cpSync(path.join(root,name),path.join(out,name),{recursive:true});
 // La documentació, les regles de servidor i les metadades de Git no són fitxers públics del joc.

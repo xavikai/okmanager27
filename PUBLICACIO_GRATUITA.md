@@ -37,11 +37,17 @@ SELECT created_at,name,email,message FROM contact_messages ORDER BY created_at D
 
 No s’ha creat una pàgina pública d’administració ni notificacions de correu. Abans de retirar Netlify es va comprovar que no hi havia missatges al seu formulari de contacte. Les dades de contacte s’han d’utilitzar únicament per gestionar els avisos rebuts.
 
-## Desar les partides al núvol
+## Desar les partides del mànager al núvol
 
-Firebase encara no està configurat: `window.FIREBASE_CONFIG` és `null`. Aquesta migració no activa el Fantasy ni la sincronització de partides. El mànager desa les partides al dispositiu i les pot exportar.
+Les partides del mànager utilitzen Cloudflare D1 i Google Identity Services. Firebase no és necessari per a aquest desament. El Fantasy encara utilitza el seu codi Firebase i no queda activat per aquest canvi.
 
-Per activar Google i Firestore, crea Firebase amb el pla Spark sense vincular facturació, registra l’app web i afegeix la seva configuració a `firebase-config.js`. Activa Google a Authentication i afegeix `hoquei-manager27.pages.dev` als dominis autoritzats. Crea Firestore Standard en mode producció, en una regió europea, i publica-hi `firestore.rules`. Pujar aquest fitxer a GitHub no desplega les regles a Firebase. Prova l’accés amb dos comptes abans de donar el núvol per activat. Spark limita l’ús quan s’esgoten les quotes i no activa facturació per excés: https://firebase.google.com/docs/projects/billing/firebase-pricing-plans.
+Per activar l’accés, crea un client OAuth de tipus Web a Google Cloud / Google Auth Platform i autoritza l’origen https://hoquei-manager27.pages.dev. Configura GOOGLE_CLIENT_ID a Cloudflare Pages, a les variables de producció, amb l’identificador públic acabat en .apps.googleusercontent.com, i torna a desplegar. No cal cap secret de client per al botó de Google. Documentació: https://developers.google.com/identity/gsi/web/guides/get-google-api-clientid.
+
+El servidor verifica la signatura, l’emissor, la caducitat i el destinatari del token de Google. Guarda l’identificador estable del compte i el nom de pila; no guarda el correu ni el token de Google. La sessió usa una galeta segura HttpOnly de 30 dies; a D1 només hi ha el hash del token de sessió. Tancar sessió revoca aquella sessió sense esborrar partides locals.
+
+Cada jugador només pot consultar i modificar les seves partides. El servidor selecciona el propietari a partir de la sessió. Les escriptures són atòmiques i comproven la versió anterior per evitar sobreescriure canvis d’un altre dispositiu. Hi ha un màxim de 10 partides al núvol per compte i 1 MB per còpia comprimida. Les fotos i escuts personalitzats continuen sent locals. El joc agrupa còpies automàtiques i deixa desar manualment abans de canviar de dispositiu. Si falla la xarxa o la quota gratuïta, conserva la còpia local.
+
+Mentre GOOGLE_CLIENT_ID no estigui configurat, el botó de Google i la sincronització no estan activats. Cal provar dos comptes reals abans de donar per validada la sincronització completa.
 
 ## Actualitzar la web
 

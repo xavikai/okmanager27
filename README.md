@@ -15,7 +15,7 @@ Un fantasy d'hoquei patins de la lliga masculina de màxima categoria (temporada
 ## Modes de joc
 
 - **Fantasy:** lligues amb amics. Cada mànager té 35 M per fer una plantilla de 8 jugadors (2 porters i 6 de pista), alinea cinc titulars i un capità cada jornada, i suma punts segons el que fan els jugadors als partits reals o simulats.
-- **Mànager:** portes un club de l'OK Liga o de l'OK Liga Plata (grups Nord i Sud, amb ascensos i descensos), amb alineacions, tàctica, fitxatges i finances. El mercat és obert tota la temporada i els fitxatges s'incorporen a l'instant. Les ofertes inclouen traspàs, sou, anys de contracte i condicions com feina a la ciutat, pis pagat, cotxe, estudis o promesa de titularitat. Es poden tenir diverses partides alhora; es desen al navegador i, si s'inicia sessió amb Google (Firebase), també al núvol per continuar-les des de qualsevol dispositiu.
+- **Mànager:** portes un club de l'OK Liga o de l'OK Liga Plata (grups Nord i Sud, amb ascensos i descensos), amb alineacions, tàctica, fitxatges i finances. El mercat és obert tota la temporada i els fitxatges s'incorporen a l'instant. Les ofertes inclouen traspàs, sou, anys de contracte i condicions com feina a la ciutat, pis pagat, cotxe, estudis o promesa de titularitat. Es poden tenir diverses partides alhora; es desen al navegador i, si s'inicia sessió amb Google (Cloudflare D1), també al núvol per continuar-les des de qualsevol dispositiu.
   - **Competicions:** Supercopa d'Espanya, Copa del Rei, Lliga Europea (WSE Champions League) i Copa de la CERS (WSE Cup); a la femenina, Supercopa, Copa de la Reina i Lliga Europea femenina. Es juguen entre jornades.
   - **Pedrera:** els juvenils no poden pujar al primer equip d'entrada. Es poden cedir a Tercera, Segona o Primera Catalana i fer tecnificacions especialitzades (porters, tir, defensa, patinatge).
   - **Retirades:** a partir dels 37 anys els jugadors es poden retirar (se'ls pot convèncer). Des de la J18 es poden repescar exjugadors.
@@ -28,7 +28,10 @@ Un fantasy d'hoquei patins de la lliga masculina de màxima categoria (temporada
 ### 1. Cloudflare Pages (web principal)
 `node scripts/build-site.cjs` prepara `dist/`. Publica-la amb `wrangler pages deploy dist --project-name hoquei-manager27 --branch main`; no publiquis l’arrel del repositori. Vegeu PUBLICACIO_GRATUITA.md.
 
-### 2. Firebase (Fantasy i partides del mànager al núvol)
+### 2. Partides del mànager al núvol (Cloudflare D1)
+Configura Google Identity Services i `GOOGLE_CLIENT_ID` a Cloudflare Pages, com explica PUBLICACIO_GRATUITA.md. Les partides utilitzen D1; Firebase no és necessari per al mànager.
+
+### 3. Firebase (Fantasy)
 1. A <https://console.firebase.google.com> crea un projecte (per exemple, `hoqueimanager27`). No cal Google Analytics.
 2. **Authentication** → *Sign-in method* → activa **Google**. A *Settings → Authorized domains*, afegeix `hoquei-manager27.pages.dev`.
 3. **Firestore Database** → *Create database* (mode producció, regió `europe-west`). A la pestanya *Rules*, enganxa el contingut de `firestore.rules` i publica-les.
@@ -88,4 +91,4 @@ Les mitges, els preus i els sous són estimacions del joc. No són dades oficial
 
 Web principal: https://hoquei-manager27.pages.dev/. Consulta [PUBLICACIO_GRATUITA.md](PUBLICACIO_GRATUITA.md) per activar Firebase Spark sense facturació, instal·lar la PWA i entendre els límits gratuïts.
 
-El contacte i el recompte privat d’instal·lacions utilitzen D1. Vegeu PUBLICACIO_GRATUITA.md per consultar-los al panell Cloudflare. El joc es publica únicament a Cloudflare; Netlify està retirat i l’antiga adreça de GitHub Pages només redirigeix a Cloudflare. El núvol de partides Firebase encara està pendent de configurar.
+El contacte i el recompte privat d’instal·lacions utilitzen D1. Vegeu PUBLICACIO_GRATUITA.md per consultar-los al panell Cloudflare. El joc es publica únicament a Cloudflare; Netlify està retirat i l’antiga adreça de GitHub Pages només redirigeix a Cloudflare. El desament del mànager a D1 està implementat; cal configurar `GOOGLE_CLIENT_ID` per activar Google. El Fantasy Firebase continua pendent de configurar.
