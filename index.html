@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="ca">
 <head>
-<meta name="hm27-version" content="hm27-v31">
+<meta name="hm27-version" content="hm27-v32">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="Hoquei Manager 27: fantasy d'hoquei patins gratuït i no oficial, amb un mode mànager.">
@@ -19,6 +19,27 @@
 <link rel="icon" href="icons/icon-192.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <script>if("serviceWorker" in navigator)addEventListener("load",()=>navigator.serviceWorker.register("sw.js"));</script>
+<style>
+.home{max-width:860px;margin:0 auto;gap:14px}
+.homehero{min-height:174px;justify-content:center;background-size:cover;background-position:center;padding:30px 28px}
+.homehero .lbl{color:#fff;opacity:.7}.homehero .big{font-size:clamp(32px,6.6vw,66px);position:relative;z-index:1}
+.homemodes{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.homemode{display:flex;align-items:center;gap:18px;min-height:126px;padding:24px;text-align:left;border:1px solid color-mix(in srgb,var(--hc) 45%,var(--line));border-radius:16px;background:linear-gradient(135deg,color-mix(in srgb,var(--hc) 20%,var(--panel)),var(--panel));color:var(--fg);box-shadow:var(--shadow);transition:transform .15s,border-color .15s}
+.homemode:hover{transform:translateY(-2px);border-color:var(--hc)}.homemode.fantasy{--hc:#4c8dff}.homemode.manager{--hc:#21b887}
+.homemodeicon{display:grid;place-items:center;flex-shrink:0;width:58px;height:58px;border-radius:14px;background:color-mix(in srgb,var(--hc) 16%,transparent);color:var(--hc)}.homemodeicon svg{width:42px;height:42px}
+.homemodetitle{font-family:var(--f-display);font-size:clamp(24px,3.4vw,34px);font-weight:800;text-transform:uppercase;line-height:1.05}.homearrow{margin-left:auto;font-size:24px;opacity:.6;flex-shrink:0}
+.homegoogle,.homeaccount{display:flex;align-items:center;gap:12px;padding:13px 18px;border:1px solid var(--line2);border-radius:12px;background:var(--panel);color:var(--fg);font-weight:600;box-shadow:var(--shadow)}.homegoogle{width:100%;text-align:left}.homegoogle:hover{border-color:var(--accent)}.homegoogle:disabled{opacity:.55;cursor:wait}
+.googlemark{font:bold 23px Arial,sans-serif;color:#4285f4;background:#fff;border:1px solid #dce2ed;width:34px;height:34px;border-radius:50%;display:grid;place-items:center;flex-shrink:0}
+.homeavatar{width:36px;height:36px;background:var(--accent);color:var(--accent-fg);border-radius:50%;display:grid;place-items:center;flex-shrink:0}.homeidentity{display:flex;flex-direction:column;gap:2px;flex:1;min-width:0}.homeidentity .muted{font-size:12px;font-weight:400}.homeaccount{flex-wrap:wrap}
+.homesaves{padding:18px;display:grid;gap:14px}.homesaveshead{display:flex;justify-content:space-between;align-items:center;gap:12px}.homesaveshead h2{font-size:23px;display:flex;align-items:center;gap:9px}.homecount{font:600 12px var(--f-body);background:var(--panel2);border:1px solid var(--line);border-radius:20px;padding:3px 8px;color:var(--dim)}
+.homesavelist{display:grid;gap:9px}.homesaves .slotc{background:var(--panel2);border-color:var(--line)}.homeempty{display:flex;align-items:center;justify-content:center;gap:10px;padding:15px;color:var(--dim)}.homeempty>span{font-size:30px}.homeempty p{margin:0;font-size:14px}
+.homecloud{border-top:1px solid var(--line);padding-top:12px}.homecloud summary{cursor:pointer;font-size:14px;font-weight:600}.homecloud .homesavelist{margin-top:12px}.homecloudslot{display:flex;align-items:center;gap:12px;padding:12px;flex-wrap:wrap}.homecloudslot>div{flex:1;min-width:130px;display:flex;flex-direction:column}.homecloudslot .muted{font-size:13px}
+.homefooter{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:1px 2px}.homelanguages,.homeutilities{display:flex;gap:6px;align-items:center;flex-wrap:wrap}.homelanguages>span{font-size:22px;color:var(--dim);margin-right:3px}.homefooter .btn{background:var(--panel);padding:6px 11px}.homefooter .btn.primary{background:var(--accent)}
+.homelegal{color:var(--dim);font-size:12px;text-align:center}.homelegal summary{cursor:pointer;display:inline-block}.homelegal .legal{margin:10px 0 0;text-align:left}
+@media(max-width:600px){.homehero{min-height:136px;padding:24px 20px}.homemodes{gap:10px}.homemode{min-height:142px;padding:16px;flex-direction:column;align-items:flex-start;gap:10px;position:relative}.homemodeicon{width:44px;height:44px;border-radius:11px}.homemodeicon svg{width:32px;height:32px}.homemodetitle{font-size:25px}.homemode .homearrow{position:absolute;right:15px;top:21px;font-size:21px}.homesaves{padding:14px}.homesaveshead h2{font-size:20px}.homefooter{justify-content:center}.homeutilities{justify-content:center}.homegoogle{font-size:14px;padding:12px 14px}.homeempty{padding:12px 0}.homeaccount{padding:12px}}
+@media(prefers-reduced-motion:reduce){.homemode{transition:none}.homemode:hover{transform:none}}
+
+</style>
 </head>
 <body>
 <title>Hoquei Manager 27</title>
@@ -3261,20 +3282,31 @@ function cloudBlock(){
   return `<p class="muted" style="margin:0;font-size:13px">☁ ${CLOUD.mode==="fb"?W(`Sessió iniciada${CLOUD.name?" com a "+esc(CLOUD.name):""}. `,`Sesión iniciada${CLOUD.name?" como "+esc(CLOUD.name):""}. `):""}${W("Les partides es desen al dispositiu i se’n fan còpies periòdiques al núvol. Abans de canviar de dispositiu, prem «Desar al núvol ara».","Las partidas se guardan en el dispositivo y se hacen copias periódicas en la nube. Antes de cambiar de dispositivo, pulsa «Guardar en la nube ahora».")}${CLOUD.msg?" <span class='warn'>"+esc(CLOUD.msg)+"</span>":""}</p>
    <div><button class="btn small" data-cloudsave ${CLOUD.busy||!CLOUD.idx?"disabled":""}>${W("Desar al núvol ara","Guardar en la nube ahora")}</button></div>
    ${cl.length?`<span class="lbl">${W("Al núvol (més noves que les d'aquest dispositiu)","En la nube (más nuevas que las de este dispositivo)")}</span>${cl.map(m=>`<div class="bevel" style="display:flex;gap:10px;align-items:center;padding:10px 12px;box-shadow:none">${shield(S0team(m),36)}<div style="flex:1"><b>${esc(m.name)}</b><div class="muted" style="font-size:13px">${m.season}-${String((m.season+1)%100).padStart(2,"0")} · J${(m.round||0)+1}</div></div><button class="btn primary" data-cloudget="${m.id}">☁ ${W("Continuar","Continuar")}</button></div>`).join("")}`:""}`}
+function menuAccount(){
+  if(!CLOUD.uid)return `<button class="homegoogle" data-cloudin="1" ${!CLOUD.mode?'disabled':''}><span class="googlemark" aria-hidden="true">G</span>${W("Inicia sessió amb Google","Inicia sesión con Google")}<span class="homearrow" aria-hidden="true">↗</span></button>`;
+  return `<div class="homeaccount"><span class="homeavatar" aria-hidden="true">${esc((CLOUD.name||"G").slice(0,1).toUpperCase())}</span><div class="homeidentity"><b>${esc(CLOUD.name||"Google")}</b><span class="muted" data-cloud-menu-status role="status">${CLOUD.msg?esc(CLOUD.msg):W("Connectat amb Google","Conectado con Google")}</span></div><button class="btn small" data-cloudrefresh ${CLOUD.busy?'disabled':''} aria-label="${W("Actualitza les còpies del núvol","Actualiza las copias de la nube")}" title="${W("Actualitza les còpies del núvol","Actualiza las copias de la nube")}">↻</button><button class="btn small" data-cloudlogout ${CLOUD.busy?'disabled':''}>${W("Tanca sessió","Cerrar sesión")}</button></div>`;
+}
 function menuScreen(){
   const L=slotsList().slice().sort((a,b)=>(b.upd||0)-(a.upd||0));
-  const hero=`<div class="logo" style="background-image:linear-gradient(90deg,rgba(6,10,20,.92) 0%,rgba(6,10,20,.6) 55%,rgba(6,10,20,.2) 100%),url(${IMG.portada});background-size:cover;background-position:center"><span class="lbl" style="color:inherit;opacity:.7">${W("Hoquei patins · temporada 2026-27","Hockey patines · temporada 2026-27")}</span><span class="big">Hoquei<em>Manager</em>27</span><span class="sub">${W("El fantasy d'hoquei patins amb els jugadors de la màxima categoria. Fes el teu equip, competeix amb els amics o porta un club com a mànager.","El fantasy de hockey patines con los jugadores de la máxima categoría. Haz tu equipo, compite con los amigos o lleva un club como mánager.")}</span></div>`;
-  return `<div class="start" style="max-width:760px;margin:0 auto">${hero}${installPanel()}
-  <div class="bevel panel" style="gap:10px">
-    <span class="lbl">Fantasy</span>
-    <button class="btn primary teamcard" data-mode="fantasy" style="padding:14px 16px"><span class="t"><b>${W("Fantasy d'hoquei patins","Fantasy de hockey patines")}</b><span style="opacity:.85">${W("Crea o entra en una lliga amb amics · partits reals o simulats","Crea o entra en una liga con amigos · partidos reales o simulados")}</span></span></button>
-    <span class="lbl" style="margin-top:6px">${W("Mode mànager · les teves partides","Modo mánager · tus partidas")}</span>
-    ${L.length?L.map(slotCard).join(""):`<p class="muted" style="margin:0">${W("Encara no tens cap partida.","Aún no tienes ninguna partida.")}</p>`}
-    ${cloudBlock()}
-    <button class="btn teamcard" data-step="pick" style="padding:14px 16px"><span class="t"><b>＋ ${W("Nova partida de mànager","Nueva partida de mánager")}</b><span class="muted">${W("Pots tenir diverses partides alhora, amb equips diferents.","Puedes tener varias partidas a la vez, con equipos distintos.")}</span></span></button>
-    <button class="btn teamcard" id="bImportStart" style="padding:12px 16px"><span class="t"><b>⬆ ${W("Importar partida","Importar partida")}</b><span class="muted">${W("Recupera una partida exportada a un fitxer","Recupera una partida exportada a un archivo")}</span></span></button>
-    <button class="btn teamcard" data-step="help" style="padding:14px 16px"><span class="t"><b>${W("Com es juga al mode mànager","Cómo se juega al modo mánager")}</b><span class="muted">${W("Normes, tàctica, mercat i finances","Normas, táctica, mercado y finanzas")}</span></span></button>
-  </div><div class="row" style="justify-content:center;gap:6px"><span class="lbl">${W("Idioma","Idioma")}</span><button class="btn small ${LANG!=="es"?"primary":""}" data-lang="ca">Català</button><button class="btn small ${LANG==="es"?"primary":""}" data-lang="es">Castellano</button></div>${CLUBBTN()}${LEGAL}</div>`}
+  const cloud=Object.values(CLOUD.idx?.slots||{}).slice().sort((a,b)=>(b.upd||0)-(a.upd||0));
+  const trophy='<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 8h18v13c0 8-18 8-18 0V8Z M15 11H8v5c0 6 7 7 7 7 M33 11h7v5c0 6-7 7-7 7 M24 28v9 M16 40h16 M19 37h10"/><path d="m24 12 1.8 3.8 4.2.6-3 3 .7 4.2-3.7-2-3.7 2 .7-4.2-3-3 4.2-.6Z" fill="currentColor" stroke="none"/></svg>';
+  const rink='<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><rect x="6" y="9" width="36" height="30" rx="7"/><path d="M24 9v30 M6 24h6 M36 24h6"/><circle cx="24" cy="24" r="6"/><path d="M6 18h6v12H6 M42 18h-6v12h6"/></svg>';
+  const hero=`<header class="logo homehero" style="background-image:linear-gradient(90deg,rgba(6,10,20,.93),rgba(6,10,20,.24)),url(${IMG.portada})"><span class="lbl">${W("Hoquei patins · temporada 2026-27","Hockey patines · temporada 2026-27")}</span><h1 class="big">Hoquei<em>Manager</em>27</h1></header>`;
+  return `<div class="start home">${hero}
+    <div class="homemodes">
+      <button class="homemode fantasy" data-mode="fantasy"><span class="homemodeicon">${trophy}</span><span class="homemodetitle">${W("Lliga Fantasy","Liga Fantasy")}</span><span class="homearrow" aria-hidden="true">↗</span></button>
+      <button class="homemode manager" data-step="pick"><span class="homemodeicon">${rink}</span><span class="homemodetitle">${W("Lliga mànager","Liga mánager")}</span><span class="homearrow" aria-hidden="true">↗</span></button>
+    </div>
+    ${menuAccount()}
+    <section class="bevel homesaves" aria-labelledby="home-saves-title"><div class="homesaveshead"><h2 id="home-saves-title">${W("Partides guardades","Partidas guardadas")} <span class="homecount">${L.length}</span></h2><button class="btn small" id="bImportStart">↥ ${W("Importar","Importar")}</button></div>
+      ${L.length?`<div class="homesavelist">${L.map(slotCard).join("")}</div>`:`<div class="homeempty"><span aria-hidden="true">▱</span><p>${W("Encara no tens cap partida guardada","Aún no tienes ninguna partida guardada")}</p></div>`}
+      ${CLOUD.uid&&cloud.length?`<details class="homecloud"><summary>☁ ${W("Partides al núvol","Partidas en la nube")} <span class="homecount">${cloud.length}</span></summary><div class="homesavelist">${cloud.map(m=>`<div class="bevel homecloudslot">${shield(S0team(m),36)}<div><b>${esc(m.name)}</b><span class="muted">${m.season}-${String((m.season+1)%100).padStart(2,"0")} · J${(m.round||0)+1}</span></div><button class="btn primary" data-cloudget="${esc(m.id)}">${W("Continuar","Continuar")}</button></div>`).join("")}</div></details>`:""}
+    </section>
+    <footer class="homefooter"><div class="homelanguages" role="group" aria-label="${W("Idioma","Idioma")}"><span aria-hidden="true">◎</span><button class="btn small ${LANG!=="es"?"primary":""}" data-lang="ca" aria-pressed="${LANG!=="es"}">Català</button><button class="btn small ${LANG==="es"?"primary":""}" data-lang="es" aria-pressed="${LANG==="es"}">Castellano</button></div><div class="homeutilities"><button class="btn small" data-fed>↻ ${W("Federacions","Federaciones")}</button><button class="btn small" data-contact>✉ ${W("Contacte","Contacto")}</button><button class="btn small" data-step="help" aria-label="${W("Com es juga","Cómo se juega")}" title="${W("Com es juga","Cómo se juega")}">?</button>${typeof installPrompt!=="undefined"&&installPrompt?`<button class="btn small" data-install-game>↓ ${W("Instal·lar","Instalar")}</button>`:""}</div></footer>
+    <details class="homelegal"><summary>${W("Sobre el joc","Sobre el juego")}</summary>${LEGAL}</details>
+  </div>`;
+}
+
 function pickScreen(){const g=ui.pickG||"M";
   const card=t=>`<button class="btn teamcard" data-pick="${t.id}">${shield(t,38)}<span class="t"><b>${esc(t.name)}</b><span class="stars">${stars(t.rep)}</span><span class="muted">${esc(t.city)} · ${money(t.bud)}</span></span></button>`;
   const sec=(l,arr,sub)=>`<div style="display:flex;flex-direction:column;gap:8px"><div class="row" style="justify-content:space-between;border-bottom:2px solid var(--line2);padding-bottom:4px"><h3 style="color:var(--fg)">${l}</h3><span class="muted" style="font-size:13px">${sub||""}</span></div><div class="teamgrid">${arr.map(card).join("")}</div></div>`;
