@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="ca">
 <head>
-<meta name="hm27-version" content="hm27-v34">
+<meta name="hm27-version" content="hm27-v35">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="Hoquei Manager 27: fantasy d'hoquei patins gratuït i no oficial, amb un mode mànager.">
@@ -2504,17 +2504,7 @@ function fStartFirebase(){
     F.db.doc(_tx("teams/")+F.uid).onSnapshot(s=>{F.me=s.exists?s.data():null;F.loading=false;subLeagues();render()},e=>{F.loading=false;F.err=_tx("fb:")+(e&&e.code);render()});
   });
 }
-async function fInit(){
-  if(F.started)return;F.started=true;
-  if(window.FIREBASE_CONFIG&&window.firebase){fStartFirebase();return}
-  try{if(window.claude&&window.claude.use){F.db=await window.claude.use("db");F.user=await window.claude.use("user")}}catch(e){}
-  if(!F.db||!F.user){F.loading=false;F.err="nodb";render();return}
-  F.uid=await F.user.id();
-  if(!F.uid){F.loading=false;F.err="noid";render();return}
-  F.db.doc(_tx("teams/")+F.uid).onSnapshot(s=>{F.me=s.exists?s.data():null;F.loading=false;subLeagues();render()},e=>{F.loading=false;F.err=e.code;render()});
-  F.db.collection("pts").onSnapshot(q=>{const o={};q.docs.forEach(d=>{o[d.id]=d.data()});F.pts=o;render()},()=>{});
-  F.db.doc("config/season").onSnapshot(s=>{F.cfg=s.exists?s.data():null;render()},()=>{});
-}
+async function fInit(){F.loading=false;F.err=null;render()}
 function subLeagues(){for(const c of (F.me&&F.me.codes)||[])if(!F.lsub[c]){F.lsub[c]=1;F.db.doc(_tx("leagues/")+c).onSnapshot(s=>{if(s.exists)F.leagues[c]=s.data();else delete F.leagues[c];render()},()=>{})}}
 function subBoard(code){if(F.bsub[code])return;F.bsub[code]=1;F.db.collection("teams").where("codes","array-contains",code).onSnapshot(q=>{F.board[code]=q.docs.map(d=>({uid:d.id,mgr:d.data().mgr||"",rec:(d.data().leagues||{})[code]})).filter(x=>x.rec);render();resolveNames(F.board[code].map(x=>x.uid))},()=>{})}
 async function resolveNames(ids){if(F.backend==="firebase"){for(const x of F.board[F.code]||[])F.names[x.uid]=x.mgr||"";render();return}if(!F.user||!ids.length)return;try{const ps=await F.user.profiles(ids);for(const id of ids)F.names[id]=(ps[id]&&ps[id].name)||"";render()}catch(e){}}
@@ -2568,18 +2558,7 @@ function draftFor(rec,L){const j=openJ(L);if(F.draft&&F.draft.code===F.code&&F.d
 function fShell(inner){return `${_tx(`<header class="top bevel"><div class="club"><div><b>HoqueiManager27</b><div class="muted">Fantasy · hoquei patins 2026-27</div></div></div>
   `)}${F.backend==="firebase"&&F.uid?`<span class="muted">${esc(F.myName||"")}${_tx(`</span><button class="btn" id="fLogout">Surt</button>`)}`:""}${_tx(`<button class="btn" id="fMenu">Menú principal</button></header>`)}${inner}`}
 function fantasyScreen(){
-  if(F.loading&&!F.err)return fShell(_tx(`<section class="bevel panel"><p class="muted" style="margin:0">Connectant amb les lligues…</p></section>`));
-  if(F.err==="login")return fShell(_tx(`<section class="bevel panel" style="max-width:640px"><h2>Entra per jugar</h2>
-    <p style="margin:0">Les lligues es guarden al núvol perquè tots els membres vegin el mateix. Entra amb el teu compte de Google per crear o unir-te a una lliga.</p>
-    <p class="legal" style="padding:0"><b>Privacitat:</b> només guardem un identificador del teu compte, el teu nom de pila (perquè els rivals de la lliga sàpiguen qui ets) i els equips i alineacions que facis. No guardem el correu, no fem servir les dades per a res més i no les compartim amb ningú. Les pots esborrar quan vulguis des de la pantalla de les teves lligues.</p>
-    <button class="btn primary" id="fLogin" style="align-self:flex-start">Entra amb Google</button></section>`));
-  if(F.err&&String(F.err).startsWith("fb:"))return fShell(`${_tx(`<section class="bevel panel"><p class="bad" style="margin:0">No s'han pogut carregar les dades (`)}${esc(F.err.slice(3))}${_tx(`). Revisa la connexió i torna-ho a provar.</p></section>`)}`);
-  if(F.err==="nodb"||F.err==="noid")return fShell(`${_tx(`<section class="bevel panel" style="max-width:720px"><h2>Cal iniciar sessió</h2>
-    <p style="margin:0">Les lligues del Fantasy es guarden al núvol perquè tots els membres vegin el mateix. `)}${window.FIREBASE_CONFIG===null?W(_tx("Falta configurar Firebase: omple el fitxer firebase-config.js (mira el README)."),_tx("Falta configurar Firebase: rellena el archivo firebase-config.js (mira el README).")):W(_tx("Obre aquesta pàgina des de claude.ai amb la sessió iniciada."),_tx("Abre esta página desde claude.ai con la sesión iniciada."))}${_tx(`</p>
-    <p class="muted" style="margin:0">Si t'hi ha convidat algú, demana-li que et convidi per correu com a <b>editor</b> de la pàgina.</p></section>`)}`);
-  if(F.err)return fShell(`<section class="bevel panel"><p class="bad" style="margin:0">${esc(ERRMSG[F.err]||_tx("No s'han pogut carregar les lligues."))}</p></section>`);
-  if(!F.code||!lg()||!myRec())return fShell(fHome());
-  return fShell(fLeague());
+  return fShell(`<section class="bevel panel" style="max-width:720px"><h2>${W("Lliga Fantasy","Liga Fantasy")}</h2><p style="margin:0">${W("La Lliga Fantasy de moment no està disponible. Ho estarà properament.","La Liga Fantasy de momento no está disponible. Estará disponible próximamente.")}</p></section>`);
 }
 function fHome(){
   const codes=(F.me&&F.me.codes)||[];
