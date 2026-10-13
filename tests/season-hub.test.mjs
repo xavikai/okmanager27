@@ -25,7 +25,7 @@ test('grouped menu keeps every original section and shows tabs only inside multi
  const tabs=run(c,`view="exjug";hubTabs(__items)`);
  for(const k of ['mercat','exjug','oficina'])assert.match(tabs,new RegExp(`data-v="${k}"`));
  assert.match(run(c,`hubNav(__items)`),/class="hubsubs"/);
- assert.match(run(c,`view="classificacio";hubLabel(__items)`),/📊/);
+ assert.match(run(c,`view="classificacio";hubLabel(__items)`),/data-ui-icon="ranking"/);
 });
 test('alerts list injuries, bans, personal problems, offers, unhappy players and coaches; seen items are no longer new',()=>{
  const c=setup();run(c,`Math.random=rng(11);newGame('PCPT');`);
