@@ -1,6 +1,6 @@
 /* Service worker: el joc funciona sense connexió un cop instal·lat. Les dades de les jornades (data/) es demanen primer a la xarxa. */
-const CACHE="hm27-v30";
-const CORE=["./","index.html","firebase-config.js","install.js","installation-stats.js","cloud-manager.js","exit-save.js","manual-save.js","app-updates.js","travel-costs.js","manifest.webmanifest","icons/icon-192.png","icons/icon-512.png","icons/icon-maskable-512.png","icons/apple-touch-icon.png","data/config.json","data/pts/index.json"];
+const CACHE="hm27-v31";
+const CORE=["./","index.html","firebase-config.js","install.js","installation-stats.js","cloud-manager.js","exit-save.js","manual-save.js","app-updates.js","travel-costs.js","manifest.webmanifest","audio/ice-management.mp3","icons/icon-192.png","icons/icon-512.png","icons/icon-maskable-512.png","icons/apple-touch-icon.png","data/config.json","data/pts/index.json"];
 self.addEventListener("install",e=>{e.waitUntil(caches.open(CACHE).then(c=>c.addAll(CORE)).then(()=>self.skipWaiting()))});
 self.addEventListener("activate",e=>{e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim()))});
 self.addEventListener("fetch",e=>{

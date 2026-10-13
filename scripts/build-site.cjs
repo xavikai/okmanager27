@@ -4,7 +4,7 @@ fs.mkdirSync(out,{recursive:true});
 if(!fs.readFileSync(path.join(root,'index.html'),'utf8').includes('src="cloud-manager.js"'))throw Error('Cloud save script missing from game page');
 const files=['index.html','install.js','installation-stats.js','cloud-manager.js','exit-save.js','manual-save.js','app-updates.js','travel-costs.js','firebase-config.js','manifest.webmanifest','sw.js','contacte.html','privacitat.html','gracies.html','_routes.json','_headers'];
 for(const name of files)fs.copyFileSync(path.join(root,name),path.join(out,name));
-for(const name of ['icons','data','img'])if(fs.existsSync(path.join(root,name)))fs.cpSync(path.join(root,name),path.join(out,name),{recursive:true});
+for(const name of ['icons','data','img','audio'])if(fs.existsSync(path.join(root,name)))fs.cpSync(path.join(root,name),path.join(out,name),{recursive:true});
 // La documentació, les regles de servidor i les metadades de Git no són fitxers públics del joc.
 for(const name of files){const text=fs.readFileSync(path.join(out,name),'utf8');if(/xavikai|github\.com\/|github\.io/i.test(text))throw Error('Public file exposes GitHub: '+name)}
 console.log('Static game ready in dist/; GitHub references excluded.');

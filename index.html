@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="ca">
 <head>
-<meta name="hm27-version" content="hm27-v30">
+<meta name="hm27-version" content="hm27-v31">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="Hoquei Manager 27: fantasy d'hoquei patins gratuït i no oficial, amb un mode mànager.">
@@ -1237,7 +1237,6 @@ opcions(){
   <p class="muted" style="margin:0">${W(_tx("Exporta la partida a un fitxer per guardar-la a la carpeta de baixades del mòbil, a Drive o on vulguis, o per passar-la a un altre dispositiu. Després la pots tornar a importar."),_tx("Exporta la partida a un archivo para guardarla en la carpeta de descargas del móvil, en Drive o donde quieras, o para pasarla a otro dispositivo. Después la puedes volver a importar."))}</p>
   <div class="row"><button class="btn primary" id="bExport">⬇ ${W(_tx("Exportar partida"),_tx("Exportar partida"))}</button><button class="btn" id="bImport">⬆ ${W(_tx("Importar partida"),_tx("Importar partida"))}${_tx(`</button></div>
   <p class="muted" id="persistInfo" style="margin:0"></p>
-  <span class="lbl">Música</span><div class="row">`)}${[_tx("Bateria tranquil·la"),_tx("Només bateria"),_tx("D&B de fons"),_tx("Drum&bass"),_tx("D&B fosc"),_tx("D&B atmosfèric"),_tx("Pols"),_tx("Estratègia"),_tx("Vestidor")].map((n,i)=>`${_tx(`<button class="btn small `)}${MZ.track===i&&MZ.on?"primary":""}${_tx(`" data-mtrack="`)}${i}">${n}</button>`).join("")}${_tx(`<button class="btn small `)}${!MZ.on?"primary":""}${_tx(`" onclick="musSet(false);render()">Sense música</button></div>
   <div id="resetConfirm" hidden class="row"><span class="warn">Segur? Es perdrà tot el progrés.</span><button class="btn small primary" id="bResetYes">Sí, esborra-la</button><button class="btn small" id="bResetNo">Cancel·la</button></div></section>`)}`;
 },
 partit(){
@@ -2249,130 +2248,33 @@ function sndBtn(){
   b.setAttribute("aria-label",SND.on?_tx("Silencia el so"):_tx("Activa el so"));b.title=b.getAttribute("aria-label");
   b.innerHTML=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9z" fill="currentColor"/>${SND.on?'<path d="M16 9a4 4 0 0 1 0 6M18.5 6.5a8 8 0 0 1 0 11"/>':'<path d="M17 9l5 6M22 9l-5 6"/>'}</svg>`;
 }
-/* ============ MÚSICA DE FONS ============
-   Tema propi, discret i en bucle: piano elèctric amb un motiu de 4 notes, coixí d'acords, baix i percussió suau.
-   88 bpm, progressió Am7 – Fmaj7 – C – G. Baixa de volum durant els partits. */
-const MZ={on:true,bus:null,timer:null,step:0,next:0,lvl:0,track:0};
-try{MZ.track=+(localStorage.getItem("hm27-mtrack")||0)||0}catch(e){}
+/* ============ MÚSICA DEL MENÚ ============
+   Ice Management (Suno), proporcionada per l'usuari. Només al menú principal. */
+const MZ={on:true,audio:null};
 try{MZ.on=localStorage.getItem("hm27-music")!=="0"}catch(e){}
-let MST=60/108/4;
-const MPROG=[[57,[0,3,7,10]],[53,[0,4,7,11]],[48,[0,4,7,14]],[55,[0,4,7,10]]]; // Am7 Fmaj7 Cadd9 G7
-const MOTIF=[[0,76],[3,79],[6,81],[10,79]]; // Mi Sol La Sol: 4 notes que es repeteixen
-const MOTIF2=[[0,77],[3,76],[6,72],[10,74]];
-function mbus(){const c=actx();if(!c)return null;if(!MZ.bus){const g=c.createGain();g.gain.value=0;const lp=c.createBiquadFilter();lp.type="lowpass";lp.frequency.value=2600;g.connect(lp);lp.connect(SND.master);lp.connect(SND.wet);MZ.bus=g}return MZ.bus}
-function ep(f,t,d,v,B){const c=SND.ctx;// piano elèctric: fonamental + harmònic que s'apaga ràpid
-  for(const [mul,gv,dd] of [[1,v,d],[2,v*.35,d*.35],[3.01,v*.08,d*.2]]){const o=c.createOscillator(),g=c.createGain();o.type="sine";o.frequency.value=f*mul;
-    g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(gv,t+.006);g.gain.exponentialRampToValueAtTime(.0001,t+dd);o.connect(g);g.connect(B);o.start(t);o.stop(t+dd+.05)}}
-function pad(root,iv,t,d,B){const c=SND.ctx;for(const i of iv){for(const det of [-4,4]){const o=c.createOscillator(),g=c.createGain();o.type="triangle";o.frequency.value=mtof(root+12+i);o.detune.value=det;
-  g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(.008,t+.5);g.gain.setValueAtTime(.008,t+d-.4);g.gain.linearRampToValueAtTime(0,t+d);o.connect(g);g.connect(B);o.start(t);o.stop(t+d+.05)}}}
-/* Temes de música (tots propis i sintetitzats). Cada tema defineix bpm i un pas de 16a. */
-function pluck(f,t,d,v,B,cut){const c=SND.ctx,o=c.createOscillator(),o2=c.createOscillator(),g=c.createGain(),fl=c.createBiquadFilter();
-  o.type="sawtooth";o2.type="square";o.frequency.value=f;o2.frequency.value=f*1.003;fl.type="lowpass";fl.Q.value=4;
-  fl.frequency.setValueAtTime(cut||2400,t);fl.frequency.exponentialRampToValueAtTime(300,t+d);
-  g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(v,t+.004);g.gain.exponentialRampToValueAtTime(.0001,t+d);
-  o.connect(fl);o2.connect(fl);fl.connect(g);g.connect(B);o.start(t);o2.start(t);o.stop(t+d+.05);o2.stop(t+d+.05)}
-function subb(f,t,d,v,B,type){const c=SND.ctx,o=c.createOscillator(),g=c.createGain(),fl=c.createBiquadFilter();o.type=type||"sawtooth";o.frequency.value=f;fl.type="lowpass";fl.frequency.value=420;
-  g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(v,t+.008);g.gain.setValueAtTime(v,t+d*.6);g.gain.exponentialRampToValueAtTime(.0001,t+d);o.connect(fl);fl.connect(g);g.connect(B);o.start(t);o.stop(t+d+.05)}
-function kick(t,v,B){tone(130,t,.22,{v,to:42,glide:.12,cut:600,dest:B})}
-function hat(t,v,B){noise(t,.03,{type:"highpass",f:8000,q:.4,v,dest:B})}
-function clap(t,v,B){noise(t,.12,{f:1500,q:.9,v,dest:B,wet:true});noise(t+.012,.08,{f:2200,q:1,v:v*.7,dest:B})}
-const TRACKS=[
- {id:"bateria2",bpm:86,bars:4,step(st,t,B){ // Bateria tranquil·la i atmosfèrica: mig temps, escombretes, aro, shaker i timbals greus amb molta sala
-   const bar=Math.floor(st/16)%4,b=st%16;
-   if(b===0||(b===10&&bar%2===1))tone(80,t,.4,{v:.08,to:42,glide:.25,cut:220,dest:B,wet:true});
-   if(b===8){noise(t,.45,{f:1100,q:.4,v:.03,at:.02,dest:B,wet:true});noise(t,.08,{f:2600,q:1.6,v:.012,dest:B})}
-   if(b===4||b===12)noise(t,.06,{f:3200,q:3,v:.01,dest:B,wet:true});
-   noise(t+(b%2?MST*.22:0),.07,{type:"highpass",f:7000,q:.3,v:b%4===2?.007:.004,at:.015,dest:B});
-   if(b%8===6)noise(t,.3,{f:900,q:.3,v:.009,at:.08,dest:B,wet:true});
-   if(bar===3&&(b===13||b===14||b===15))tone([150,120,96][b-13],t,.35,{v:.035,to:[120,96,80][b-13],cut:600,dest:B,wet:true});
-   if(b===0&&bar===0)noise(t,2.5,{type:"highpass",f:6000,q:.3,v:.007,at:.4,dest:B,wet:true});
- }},
- {id:"bateria",bpm:172,bars:4,step(st,t,B){ // Només bateria: break de drum&bass sec, sense baix ni sintetitzadors
-   const bar=Math.floor(st/16)%4,b=st%16,fill=bar===3&&b>=12;
-   if(b===0||b===10||(bar%2===1&&b===7))kick(t,b===7?.07:.12,B);
-   if((b===4||b===12)&&!fill){noise(t,.13,{f:1800,q:.8,v:.05,dest:B,wet:true});tone(200,t,.07,{v:.035,to:160,cut:1500,dest:B})}
-   if(b===9||b===15&&bar!==3)noise(t,.05,{f:2000,q:1,v:.012,dest:B});
-   if(fill)noise(t,.08,{f:1500+(b-12)*250,q:.9,v:.02+(b-12)*.006,dest:B});
-   if(b%2===0)hat(t,b%4===2?.014:.008,B);else hat(t+MST*.1,.004,B);
-   if(b===0&&bar===0)noise(t,1.2,{type:"highpass",f:6500,q:.4,v:.012,dest:B,wet:true});
- }},
- {id:"fons",bpm:170,bars:4,step(st,t,B){ // Drum&bass de fons: sense melodia, bateria apagada i filtrada, baix suau i acords llargs
-   const bar=Math.floor(st/16)%4,b=st%16,[R0,iv]=[[45,[0,3,7,10,14]],[41,[0,4,7,11,14]],[43,[0,4,7,10,14]],[40,[0,3,7,10]]][bar];
-   if(b===0||b===10)tone(95,t,.18,{v:.06,to:45,glide:.1,cut:300,dest:B});
-   if(b===4||b===12)noise(t,.09,{f:1400,q:.6,v:.016,dest:B});
-   if(b%2===0)noise(t,.02,{type:"bandpass",f:6000,q:.8,v:b%4===2?.006:.0035,dest:B});
-   if(b===0){subb(mtof(R0-12),t,MST*15,.045,B,"sine");pad(R0,iv,t,MST*16,B)}
- }},
- {id:"dnb",bpm:172,bars:4,step(st,t,B){ // Drum&bass liquid: break de dos temps, baix reese suau, coixí atmosfèric i motiu de 4 notes
-   const bar=Math.floor(st/16)%4,b=st%16,[R0,iv]=[[45,[0,3,7,10]],[41,[0,4,7,11]],[48,[0,4,7,11]],[43,[0,4,7,10]]][bar],sec=Math.floor(st/64)%4;
-   if(b===0||b===10)kick(t,.12,B);
-   if(b===4||b===12){noise(t,.16,{f:1900,q:.7,v:.05,dest:B,wet:true});tone(190,t,.09,{v:.04,to:150,cut:1200,dest:B})}
-   if(b===7&&bar%2===1)noise(t,.08,{f:2100,q:.8,v:.018,dest:B});
-   if(b%2===0)hat(t,b%4===2?.016:.009,B);else if(sec>0)hat(t,.005,B);
-   if(b===0){const c=SND.ctx;for(const det of [-9,9]){const o=c.createOscillator(),g=c.createGain(),fl=c.createBiquadFilter();o.type="sawtooth";o.frequency.value=mtof(R0-12);o.detune.value=det;
-     fl.type="lowpass";fl.frequency.setValueAtTime(180,t);fl.frequency.linearRampToValueAtTime(420,t+MST*8);fl.frequency.linearRampToValueAtTime(200,t+MST*16);
-     g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(.045,t+.03);g.gain.setValueAtTime(.045,t+MST*15);g.gain.linearRampToValueAtTime(0,t+MST*16);o.connect(fl);fl.connect(g);g.connect(B);o.start(t);o.stop(t+MST*16+.05)}}
-   if(b===0&&bar%2===0)pad(R0+12,iv,t,MST*32,B);
-   if(sec>=1)for(const [s,n] of [[0,76],[3,79],[6,81],[11,79]])if(s===b&&bar!==3)ep(mtof(n-(bar===1?2:bar===2?-3:0)),t,1.2,.02,B);
- }},
- {id:"rollers",bpm:174,bars:4,step(st,t,B){ // Drum&bass «rollers»: fosc i minimalista, sub-baix rodant en corxeres, hats amb swing
-   const bar=Math.floor(st/16)%4,b=st%16,R0=[41,41,44,39][bar];
-   if(b===0||b===10)kick(t,.13,B);
-   if(b===4||b===12){noise(t,.12,{f:2300,q:1.2,v:.045,dest:B});noise(t,.05,{type:"highpass",f:5000,q:.5,v:.02,dest:B})}
-   if(b===14&&bar===3)noise(t,.06,{f:2600,q:1.4,v:.02,dest:B});
-   hat(t+(b%2?MST*.18:0),b%2?.007:.012,B);
-   if(b%2===0&&!(b===6||b===14)){const c=SND.ctx,o=c.createOscillator(),g=c.createGain();o.type="sine";o.frequency.value=mtof(R0-12+(b===8?7:0));
-     g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(.09,t+.01);g.gain.exponentialRampToValueAtTime(.0001,t+MST*1.8);o.connect(g);g.connect(B);o.start(t);o.stop(t+MST*2)}
-   if(b===0&&bar%2===0)pad(R0+12,[0,3,7],t,MST*32,B);
-   if(b===2&&bar===1)for(const i of [0,3,7])pluck(mtof(R0+24+i),t,.25,.01,B,1400);
- }},
- {id:"atmos",bpm:170,bars:4,step(st,t,B){ // Drum&bass atmosfèric: ritme a mig temps, campanetes en arpegi i coixins llargs
-   const bar=Math.floor(st/16)%4,b=st%16,[R0,iv]=[[50,[0,3,7,10]],[46,[0,4,7,11]],[53,[0,4,7,9]],[48,[0,4,7,11]]][bar];
-   if(b===0||(b===11&&bar%2===1))kick(t,.11,B);
-   if(b===8)clap(t,.035,B);
-   if(b%4===2)hat(t,.012,B);if(b%2===1)hat(t,.004,B);
-   if(b===0)pad(R0,iv,t,MST*16,B);
-   if(b===0)subb(mtof(R0-12),t,MST*12,.07,B,"sine");
-   if(b%3===0&&b<15)ep(mtof(R0+24+iv[(b/3+bar)%4]),t,.9,.016,B);
- }},
- {id:"pols",bpm:108,bars:4,step(st,t,B){ // Pols de retransmissió esportiva: baix en corxeres, bombo constant, motiu de 4 notes
-   const bar=Math.floor(st/16)%4,b=st%16,R0=[50,46,53,48][bar];
-   if(b%2===0)subb(mtof(R0-12+(b%4===2?12:0)),t,MST*1.7,.05,B);
-   if(b%4===0)kick(t,.11,B);if(b===4||b===12)clap(t,.025,B);hat(t+(b%2?MST*.08:0),b%2?.006:.01,B);
-   const mot=[[0,74],[2,77],[4,81],[6,77]];for(const [s,n] of mot)if(s===b%8&&bar!==3)pluck(mtof(n+(R0-50)),t,.35,.022,B,2200);
-   if(b===0)for(const i of [0,3,7])pluck(mtof(R0+12+i),t,MST*14,.01,B,900);
- }},
- {id:"estrategia",bpm:96,bars:4,step(st,t,B){ // Ambient d'estratègia: arpegi suau de 16es amb eco, sub greu, percussió mínima
-   const bar=Math.floor(st/16)%4,b=st%16,[R0,iv]=[[52,[0,3,7,10]],[48,[0,4,7,11]],[55,[0,4,7,9]],[50,[0,4,7,10]]][bar];
-   const arp=[0,1,2,3,2,1,2,3][b%8];ep(mtof(R0+12+iv[arp]+(b>=8?12:0)),t,.45,.016,B);
-   if(b===0)subb(mtof(R0-12),t,MST*15,.06,B,"sine");
-   if(b===0||b===10)kick(t,.07,B);if(b===8)noise(t,.05,{f:3200,q:2,v:.012,dest:B});
-   if(b===0&&bar%2===0)pad(R0,iv,t,MST*32,B);
- }},
- {id:"vestidor",bpm:118,bars:4,step(st,t,B){ // Minimal elèctric: acords curts a contratemps, baix sincopat, hi-hats
-   const bar=Math.floor(st/16)%4,b=st%16,[R0,iv]=[[45,[0,3,7]],[45,[0,3,7]],[41,[0,4,7]],[43,[0,4,7]]][bar];
-   if(b%4===0)kick(t,.1,B);if(b%4===2)hat(t,.014,B);if(b%2===1)hat(t,.005,B);if(b===4||b===12)noise(t,.06,{f:2500,q:1.5,v:.012,dest:B});
-   if([0,3,6,10,11].includes(b))subb(mtof(R0-12),t,MST*.9,.06,B,"square");
-   if(b===2||b===6||b===10||b===14)for(const i of iv)pluck(mtof(R0+24+i),t,.18,.009,B,1600);
-   if(bar===3&&b===8)for(const [k,n] of [[0,69],[2,72],[4,74],[6,76]])pluck(mtof(n),t+k*MST,.3,.016,B,2500);
- }}];
-
-function mStep(st,t){TRACKS[MZ.track%TRACKS.length].step(st,t,MZ.bus)}
-function mTick(){const c=SND.ctx;while(MZ.next<c.currentTime+.2){mStep(MZ.step,MZ.next);MZ.next+=MST;MZ.step=(MZ.step+1)%256}}
-function musicLevel(l){const B=mbus();if(!B)return;const c=SND.ctx;
-  if(l>0&&!MZ.timer){MST=60/TRACKS[MZ.track%TRACKS.length].bpm/4;MZ.step=0;MZ.next=c.currentTime+.1;MZ.timer=setInterval(mTick,40);mTick()}
-  B.gain.cancelScheduledValues(c.currentTime);B.gain.setValueAtTime(B.gain.value,c.currentTime);B.gain.linearRampToValueAtTime(l,c.currentTime+(l>MZ.lvl?2.5:.8));MZ.lvl=l;
-  if(l===0&&MZ.timer){const tm=MZ.timer;MZ.timer=null;setTimeout(()=>{if(!MZ.timer)clearInterval(tm)},900)}}
-function sndScene(){if(!SND.unlocked||!SND.on||!MZ.on){if(MZ.timer||MZ.lvl)musicLevel(0);return}musicLevel(view==="partit"&&S?.4:1.6)}
-function musTrack(i){MZ.track=i;try{localStorage.setItem("hm27-mtrack",String(i))}catch(e){}if(MZ.timer){clearInterval(MZ.timer);MZ.timer=null;MZ.lvl=0}sndScene()}
-function musSet(on){MZ.on=on;try{localStorage.setItem("hm27-music",on?"1":"0")}catch(e){}SND.unlocked=true;if(on&&!SND.on)sndSet(true);sndScene();musBtn()}
+function menuMusicAllowed(){
+  try{return !!LANG&&!S&&MODE!=="fantasy"&&startStep==="menu"}catch(e){return false}
+}
+function sndScene(){
+  const play=menuMusicAllowed()&&document.visibilityState!=="hidden"&&SND.unlocked&&SND.on&&MZ.on;
+  if(play){
+    if(!MZ.audio){MZ.audio=document.createElement("audio");MZ.audio.src="audio/ice-management.mp3";MZ.audio.loop=true;MZ.audio.preload="none";MZ.audio.volume=.45}
+    if(MZ.audio.paused){const pending=MZ.audio.play();if(pending&&pending.catch)pending.catch(()=>{})}
+  }else if(MZ.audio){MZ.audio.pause();MZ.audio.currentTime=0}
+  musBtn();
+}
+function musSet(on){MZ.on=on;try{localStorage.setItem("hm27-music",on?"1":"0")}catch(e){}SND.unlocked=true;if(on&&!SND.on)sndSet(true);sndScene()}
 function musBtn(){
   let b=document.getElementById("musBtn");
-  if(!b){b=document.createElement("button");b.id="musBtn";b.className="sndbtn";b.type="button";b.style.bottom=_tx("calc(66px + env(safe-area-inset-bottom,0px))");b.addEventListener("click",e=>{e.stopPropagation();musSet(!MZ.on)});document.body.appendChild(b)}
-  b.setAttribute("aria-label",MZ.on?W(_tx("Apaga la música"),_tx("Apagar la música")):W(_tx("Engega la música"),_tx("Encender la música")));b.title=b.getAttribute("aria-label");
-  b.innerHTML=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18V5l11-2v13"/><circle cx="6" cy="18" r="3" fill="currentColor"/><circle cx="17" cy="16" r="3" fill="currentColor"/>${MZ.on?"":'<path d="M3 3l18 18" stroke-width="2.4"/>'}</svg>`;
-  b.style.opacity=MZ.on?"1":".6";
+  if(!b){b=document.createElement("button");b.id="musBtn";b.className="sndbtn";b.type="button";b.style.bottom="calc(66px + env(safe-area-inset-bottom,0px))";b.addEventListener("click",e=>{e.stopPropagation();musSet(!MZ.on)});document.body.appendChild(b)}
+  b.hidden=!menuMusicAllowed();
+  b.setAttribute("aria-label",MZ.on?W("Apaga la música del menú","Apagar la música del menú"):W("Engega la música del menú","Encender la música del menú"));b.title=b.getAttribute("aria-label");
+  b.innerHTML='<span aria-hidden="true">'+(MZ.on?'♫':'♫ ×')+'</span>';b.style.opacity=MZ.on?"1":".6";
 }
+document.addEventListener("visibilitychange",sndScene);
+document.addEventListener("pointerdown",sndScene,true);
+window.addEventListener("pagehide",()=>{if(MZ.audio){MZ.audio.pause();MZ.audio.currentTime=0}});
+window.addEventListener("pageshow",sndScene);
 
 /* El primer toc desbloqueja l'àudio (els navegadors no deixen sonar res abans) */
 document.addEventListener("pointerdown",e=>{
@@ -2445,7 +2347,6 @@ function bind(){
   document.querySelectorAll("[data-fup]").forEach(b=>b.onclick=()=>promoteFilial(b.dataset.fup));
   document.querySelectorAll("[data-tr]").forEach(b=>b.onclick=()=>{trainPlan()[b.dataset.tr]=b.dataset.k;save();render()});
   document.querySelectorAll("[data-tind]").forEach(el=>el.onchange=()=>{const T=trainPlan();if(el.value)T.ind[el.dataset.tind]=el.value;else delete T.ind[el.dataset.tind];save();render()});
-  document.querySelectorAll("[data-mtrack]").forEach(b=>b.onclick=()=>{musTrack(+b.dataset.mtrack);if(!MZ.on)musSet(true);render()});
   document.querySelectorAll("[data-club]").forEach(b=>b.onclick=()=>clubAct(b.dataset.club,b.dataset.k,b.dataset.v));
   const bs=$("#bSave");if(bs)bs.onclick=()=>{save();toast(_tx("Partida desada"))};
   {const be=$("#bExport");if(be)be.onclick=exportSave;const bi=$("#bImport");if(bi)bi.onclick=importSave;
