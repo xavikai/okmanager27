@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="ca">
 <head>
-<meta name="hm27-version" content="hm27-v39">
+<meta name="hm27-version" content="hm27-v40">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="Hoquei Manager 27: fantasy d'hoquei patins gratuït i no oficial, amb un mode mànager.">
@@ -56,6 +56,16 @@ function uiIcon(key){const shapes={"desk":"<rect x=\"3\" y=\"8\" width=\"18\" he
 .arena-side{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.18em;color:#c3cedd}
 .arena-photo .hvs{display:grid;place-items:center;width:64px;height:64px;border:1px solid #ffffff40;border-radius:50%;background:#09121dc7;box-shadow:0 4px 20px #0005;font-size:26px;color:#fff;text-shadow:none;justify-self:center}
 @media(max-width:600px){.arena-photo{aspect-ratio:auto;min-height:300px}.arena-photo .hero-in{padding:48px 12px 20px;grid-template-columns:minmax(0,1fr) 36px minmax(0,1fr);gap:8px}.arena-photo .arena-team{padding:14px 8px;gap:10px;border-radius:11px}.arena-photo .arena-team>svg{width:60px;height:60px}.arena-photo .arena-team b{font-size:19px}.arena-photo .hvs{width:36px;height:36px;font-size:18px}.arena-heading{top:17px;font-size:10px}.arena-photo .arena-backdrop{object-position:center}}
+
+</style>
+<style>
+.press-dialog{width:min(720px,calc(100vw - 24px));max-height:88vh;max-height:88dvh;border:1px solid var(--line2);border-radius:16px;padding:0;background:var(--panel);color:var(--fg);box-shadow:0 20px 80px #0008;overflow:auto}
+.press-dialog::backdrop{background:rgba(3,8,16,.72);backdrop-filter:blur(5px)}
+.press-dialog-head{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:24px;background-size:cover;background-position:center;color:#fff}.press-dialog-head .lbl{color:#d6dfec;letter-spacing:.04em;font-size:11px}.press-dialog-head h2{color:#fff;font-size:34px;margin-top:7px}.press-dialog-head .btn{background:#ffffff15;border-color:#ffffff35;color:#fff}
+.press-dialog-body{padding:24px;display:grid;gap:20px}.press-progress{display:flex;align-items:center;justify-content:space-between;gap:12px;color:var(--dim);font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.06em}.press-progress>div{display:flex;gap:5px}.press-progress i{width:24px;height:4px;background:var(--line2);border-radius:2px}.press-progress i.active{background:var(--accent)}
+.press-question{font-size:20px;line-height:1.45;font-weight:600;margin:0}.press-options{display:grid;gap:10px}.press-option{text-align:left;display:flex;align-items:center;gap:12px;padding:14px;line-height:1.4}.press-option>span:first-child{display:grid;place-items:center;flex-shrink:0;width:28px;height:28px;background:var(--panel2);border:1px solid var(--line2);border-radius:8px;color:var(--dim);font-size:12px}.press-option:hover{border-color:var(--accent)}
+.press-dialog-footer{display:flex;justify-content:flex-end;border-top:1px solid var(--line);padding:16px 24px}.press-complete{text-align:center;display:grid;justify-items:center;gap:10px}.press-complete .hm-icon{width:40px;height:40px;color:var(--good)}.press-complete h3{color:var(--fg);font-size:24px}.press-complete p{margin:0;color:var(--dim)}.press-said{padding:14px;background:var(--panel2);border:1px solid var(--line);border-radius:10px;font-size:13px}.press-said p{margin:8px 0 0;color:var(--dim)}
+@media(max-width:600px){.press-dialog-head,.press-dialog-body{padding:18px}.press-dialog-head h2{font-size:28px}.press-question{font-size:18px}.press-option{font-size:14px;padding:12px;align-items:flex-start}.press-dialog-footer{padding:14px 18px}}
 
 </style>
 </head>
@@ -3206,18 +3216,53 @@ function pressQs(m){const s=matchStory(m),me=S.user,b=board(),Q=[],add=q=>{if(q&
     {t:W("Farem rotacions: hi ha jugadors que necessiten descansar.","Haremos rotaciones: hay jugadores que necesitan descansar."),fx:{mor:1}}]})}
   if(!Q.length){const base=pressQuestion(m);if(base)add({id:"base",...base})}
   return Q}
-pressPanel=function(m){const rep=matchReport(m),Q=pressQs(m);ui.press2={m,Q,i:0,said:[]};ui.press=null;
-  return statsBox(m)+`<div class="ht"><span class="lbl">${W("Crònica del partit","Crónica del partido")}</span><h3 style="color:var(--fg);text-transform:none;font-size:20px">${esc(rep.head)}</h3>${rep.P.map(p=>`<p style="margin:0">${esc(p)}</p>`).join("")}</div>
-  <div class="ht" id="pressBox">${pressBoxHtml()}</div>`};
-function pressBoxHtml(){const P=ui.press2;if(!P)return "";const sc=`<div class="scene sm" style="background-image:linear-gradient(90deg,rgba(8,12,22,.85),rgba(8,12,22,.2)),url(${IMG.premsa})"><div><h2>${W("Roda de premsa","Rueda de prensa")}</h2></div></div>`;
-  const said=P.said.map(x=>`<p class="muted" style="margin:0"><b>«${esc(x.q)}»</b><br>— ${esc(x.a)}</p>`).join("");
-  if(P.i>=P.Q.length)return sc+said+`<p style="margin:0">${P.skip?W("No has atès la premsa. A l'afició no li ha agradat.","No has atendido a la prensa. A la afición no le ha gustado."):W("Roda de premsa acabada. Els jugadors i la directiva han llegit les teves paraules.","Rueda de prensa terminada. Los jugadores y la directiva han leído tus palabras.")}</p>`;
+/* Press conference window */
+const pressPending=()=>!!(S&&S.pressSession&&S.pressSession.user===S.user&&S.pressSession.season===S.season&&S.pressSession.i<S.pressSession.Q.length);
+function pressDialogOpen(){
+  if(!S?.pressSession||S.pressSession.user!==S.user||S.pressSession.season!==S.season||ui.match?.m?.live)return;
+  ui.press2=S.pressSession;
+  let d=document.getElementById('pressDialog');if(d){pressDialogRefresh();return}
+  d=document.createElement('dialog');d.id='pressDialog';d.className='press-dialog';d.setAttribute('aria-labelledby','press-dialog-title');
+  document.body.appendChild(d);pressDialogRefresh();
+  d.addEventListener('cancel',event=>{event.preventDefault();pressDialogClose()});
+  d.showModal();(d.querySelector('[data-press2]')||d.querySelector('[data-press-close]'))?.focus();
+}
+function pressDialogRefresh(){
+  const d=document.getElementById('pressDialog'),P=ui.press2;if(!d||!P)return;
+  const done=P.i>=P.Q.length;
+  d.innerHTML=`<header class="press-dialog-head" style="background-image:linear-gradient(90deg,rgba(8,12,22,.92),rgba(8,12,22,.4)),url(${IMG.premsa})"><div><span class="lbl">${esc(P.label)}</span><h2 id="press-dialog-title">${W("Roda de premsa","Rueda de prensa")}</h2></div><button class="btn small" data-press-close aria-label="${W("Tanca","Cierra")}">✕</button></header><div id="pressBox" class="press-dialog-body" aria-live="polite">${pressBoxHtml()}</div><footer class="press-dialog-footer"><button class="btn ${done?'primary':''}" data-press-close>${done?W("Continuar","Continuar"):W("Més tard","Más tarde")}</button></footer>`;
+}
+function pressDialogClose(){
+  if(ui.press2)ui.pressDeferredKey=ui.press2.key;
+  document.getElementById('pressDialog')?.remove();
+  document.querySelector('[data-press-open]')?.focus();
+}
+pressPanel=function(m){
+  const rep=matchReport(m),key=`${S.season}:${S.user}:${ui.match?.cat||'league'}:${ui.match?.round??S.round}:${m.h}:${m.a}`;
+  if(S.pressSession?.key!==key){S.pressSession={key,user:S.user,season:S.season,label:`${S.teams[m.h].name} ${m.res.gh}–${m.res.ga} ${S.teams[m.a].name}`,Q:pressQs(m),i:0,said:[]};save()}
+  ui.press2=S.pressSession;ui.press=null;
+  if(pressPending()&&ui.pressDeferredKey!==key)setTimeout(()=>{if(pressPending()&&S.pressSession.key===key&&!document.querySelector('.modal,dialog[open]'))pressDialogOpen()},0);
+  return statsBox(m)+`<div class="ht"><span class="lbl">${W("Crònica del partit","Crónica del partido")}</span><h3 style="color:var(--fg);text-transform:none;font-size:20px">${esc(rep.head)}</h3>${rep.P.map(p=>`<p style="margin:0">${esc(p)}</p>`).join("")}</div><div class="row"><button class="btn primary" data-press-open>${uiIcon('message')} ${W("Roda de premsa","Rueda de prensa")}</button></div>`;
+};
+function pressBoxHtml(){
+  const P=ui.press2;if(!P)return '';
+  if(P.i>=P.Q.length)return `<div class="press-complete">${uiIcon('check')}<h3>${P.skip?W("Roda de premsa declinada","Rueda de prensa declinada"):W("Roda de premsa acabada","Rueda de prensa terminada")}</h3><p>${P.skip?W("No has atès la premsa. A l’afició no li ha agradat.","No has atendido a la prensa. A la afición no le ha gustado."):W("Els jugadors i la directiva han llegit les teves paraules.","Los jugadores y la directiva han leído tus palabras.")}</p></div>${P.said.map(x=>`<div class="press-said"><b>«${esc(x.q)}»</b><p>— ${esc(x.a)}</p></div>`).join('')}`;
   const q=P.Q[P.i];
-  return sc+said+`<span class="lbl">${W("Pregunta","Pregunta")} ${P.i+1}/${P.Q.length}</span><p style="margin:0"><b>«${esc(q.q)}»</b></p><div style="display:grid;gap:6px">${q.o.map((o,i)=>`<button class="btn" data-press2="${i}" style="text-align:left;justify-content:flex-start">${esc(o.t)}</button>`).join("")}${P.i===0?`<button class="btn small" data-press2="-1" style="align-self:flex-start">${W("No atendre la premsa","No atender a la prensa")}</button>`:""}</div>`}
-function pressAct(i){const P=ui.press2;if(!P)return;const q=P.Q[P.i];
-  if(i<0){pressAnswer({afi:-2,conf:-1});P.skip=true;P.i=P.Q.length}
+  return `<div class="press-progress"><span>${W("Pregunta","Pregunta")} ${P.i+1} / ${P.Q.length}</span><div>${P.Q.map((_,i)=>`<i class="${i<=P.i?'active':''}"></i>`).join('')}</div></div><p class="press-question">«${esc(q.q)}»</p><div class="press-options">${q.o.map((o,i)=>`<button class="btn press-option" data-press2="${i}"><span aria-hidden="true">${i+1}</span><span>${esc(o.t)}</span></button>`).join('')}</div><button class="btn small" data-press2="-1">${P.i?W("No atendre més preguntes","No atender más preguntas"):W("No atendre la premsa","No atender a la prensa")}</button>`;
+}
+function pressAct(i){
+  const P=ui.press2;if(!P||P!==S?.pressSession||P.user!==S.user||P.season!==S.season||P.i>=P.Q.length||!Number.isInteger(i))return;
+  const q=P.Q[P.i];if(i!==-1&&!q.o[i])return;
+  if(i===-1){pressAnswer({afi:-2,conf:-1});P.skip=true;P.i=P.Q.length}
   else{const fx={...q.o[i].fx};if(fx.pmor&&!fx.pmor[0])delete fx.pmor;if(fx.form)delete fx.form;pressAnswer(fx);P.said.push({q:q.q,a:q.o[i].t});P.i++}
-  const b=$("#pressBox");if(b)b.innerHTML=pressBoxHtml()}
+  save();pressDialogRefresh();
+  const pendingButton=document.querySelector('header.top [data-press-open]');if(pendingButton){if(pressPending())pendingButton.querySelector('.badge').textContent=P.Q.length-P.i;else pendingButton.remove()}
+  const dialog=document.getElementById('pressDialog');(dialog?.querySelector('[data-press2]')||dialog?.querySelector('[data-press-close]'))?.focus();
+}
+document.addEventListener('click',event=>{
+  if(event.target.closest('[data-press-open]')){event.preventDefault();pressDialogOpen()}
+  if(event.target.closest('[data-press-close]')){event.preventDefault();pressDialogClose()}
+});
 
 /* ---------- Connexions amb el cicle de la partida ---------- */
 newSlotId=function(){return Date.now().toString(36)+Math.floor(Math.random()*1296).toString(36)};
@@ -4464,6 +4509,25 @@ youthView=function(){return (isFem(S.user)?"":`<div class="ymbanner"><div><b>�
 /* Menú: el mercat de joves va dins de Mercat */
 {const g=HUB_GROUPS.find(x=>x.k==="merc");if(g&&!g.v.includes("ymercat"))g.v.splice(2,0,"ymercat");HUB_IC.ymercat=uiIcon("ymercat");HUB_SL.ymercat=["Joves d'altres clubs","Jóvenes de otros clubes"]}
 _yS=null;try{if(S&&MODE!=="fantasy")render()}catch(e){console.warn(e)}
+</script>
+<script>
+const _renderPressWindow=render;
+render=function(){
+  const result=_renderPressWindow.apply(this,arguments);
+  if(!S||MODE==='fantasy'){document.getElementById('pressDialog')?.remove();return result}
+  if(pressPending()&&!ui.match?.m?.live){
+    ui.press2=S.pressSession;
+    const top=document.querySelector('header.top');
+    if(top&&!top.querySelector('[data-press-open]')){const button=document.createElement('button');button.className='btn primary';button.dataset.pressOpen='';button.innerHTML=`${uiIcon('message')} ${W("Premsa","Prensa")} <span class="badge">${S.pressSession.Q.length-S.pressSession.i}</span>`;top.appendChild(button)}
+    const key=S.pressSession.key;if(ui.pressDeferredKey!==key)setTimeout(()=>{if(pressPending()&&S.pressSession.key===key&&!document.querySelector('.modal,dialog[open]'))pressDialogOpen()},0);
+  }
+  return result;
+};
+const _matchPreviewPressWindow=matchPreviewOpen;
+matchPreviewOpen=function(){if(pressPending()){pressDialogOpen();return true}return _matchPreviewPressWindow()};
+if(S&&MODE!=='fantasy')render();
+/* End press conference window */
+
 </script>
 </body>
 </html>
