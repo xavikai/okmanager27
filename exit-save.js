@@ -13,7 +13,11 @@
     if(busy||!S)return;busy=true;
     dialog.querySelector('[data-exit-message]').textContent=W('Desant la partida…','Guardando la partida…');
     dialog.querySelectorAll('button').forEach(button=>button.disabled=true);
-    save();
+    try{save();if(!await localSaveConfirmed())throw Error('local save failed')}
+    catch{
+      busy=false;dialog.querySelector('[data-exit-message]').textContent=W('No s’ha pogut confirmar el desament al dispositiu. La partida continua oberta; torna-ho a provar.','No se ha podido confirmar el guardado en el dispositivo. La partida sigue abierta; vuelve a intentarlo.');
+      dialog.querySelector('[data-exit-local]').hidden=true;dialog.querySelectorAll('button').forEach(button=>button.disabled=false);return;
+    }
     if(cloudActive()){
       cloudFlush(true).catch(()=>{CLOUD.msg=W('No s’ha confirmat la còpia del núvol.','No se ha confirmado la copia de la nube.')});
       const end=Date.now()+10000;
@@ -35,7 +39,7 @@
     document.body.appendChild(dialog);if(!document.getElementById('exit-save-css')){const st=document.createElement('style');st.id='exit-save-css';st.textContent='dialog[aria-labelledby=exit-save-title]::backdrop{background:rgba(0,0,0,.6)}dialog[aria-labelledby=exit-save-title] h2{margin:0 0 8px;color:var(--fg)}dialog[aria-labelledby=exit-save-title] p{color:var(--fg)}';document.head.appendChild(st)}
     dialog.querySelector('[data-exit-save]').onclick=saveAndLeave;
     dialog.querySelector('[data-exit-cancel]').onclick=close;
-    dialog.querySelector('[data-exit-local]').onclick=()=>{save();leave()};
+    dialog.querySelector('[data-exit-local]').onclick=async()=>{if(busy)return;busy=true;try{save();if(await localSaveConfirmed())leave();else{busy=false;dialog.querySelector('[data-exit-message]').textContent=W('No s’ha pogut confirmar la còpia local. Continua jugant i torna-ho a provar.','No se ha podido confirmar la copia local. Sigue jugando y vuelve a intentarlo.')}}catch{busy=false}};
     dialog.addEventListener('cancel',event=>{event.preventDefault();close()});
     dialog.showModal();dialog.querySelector('[data-exit-save]').focus();
   }

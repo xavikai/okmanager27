@@ -12,6 +12,7 @@
     buttons.forEach(b=>{b.disabled=true;b.textContent=W('Desant…','Guardando…')});
     try{
       save();
+      if(!await localSaveConfirmed())throw Error('local save failed');
       const slot=S.slot,updated=S.upd,user=CLOUD.uid;
       if(CLOUD.mode==='cf'&&user){
         await cloudFlush(true);

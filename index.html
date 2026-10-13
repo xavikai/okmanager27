@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="ca">
 <head>
-<meta name="hm27-version" content="hm27-v27">
+<meta name="hm27-version" content="hm27-v28">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="Hoquei Manager 27: fantasy d'hoquei patins gratuït i no oficial, amb un mode mànager.">
@@ -470,6 +470,10 @@ const squad=tid=>Object.values(S.players).filter(p=>p.team===tid);
 const salaryMass=tid=>squad(tid).reduce((s,p)=>s+p.salary+perkCost(p),0);
 const avail=p=>p.inj<=0&&!(p.rest>0)&&!(p.susp>0);
 function teamOvr(tid){const L=lineupOf(tid).map(id=>S.players[id]);return L.length?Math.round(L.reduce((s,p)=>s+ovr(p),0)/L.length):0}
+function validLineup(tid){
+ const L=S.teams[tid].lineup;if(!Array.isArray(L)||L.length!==5||new Set(L).size!==5)return false;
+ return L.every((id,i)=>{const p=S.players[id];return p&&p.team===tid&&avail(p)&&(i===0?p.pos==="POR":p.pos!=="POR")});
+}
 function autoLineup(tid){
   const sq=squad(tid).filter(avail).sort((a,b)=>ovr(b)*(.75+.25*b.energy/100)-ovr(a)*(.75+.25*a.energy/100));
   const gk=sq.find(p=>p.pos==="POR");
@@ -481,9 +485,7 @@ function autoLineup(tid){
   S.teams[tid].lineup=L.map(x=>x||null);
 }
 function lineupOf(tid){
-  const L=S.teams[tid].lineup.filter(id=>id&&S.players[id]&&S.players[id].team===tid&&avail(S.players[id]));
-  if(L.length<5||!L.some(id=>S.players[id].pos==="POR")){autoLineup(tid);return S.teams[tid].lineup.filter(Boolean)}
-  return L;
+ autoFix(tid);return S.teams[tid].lineup.filter(id=>id&&S.players[id]&&S.players[id].team===tid&&avail(S.players[id]));
 }
 
 /* ============ SIMULADOR DE PARTIT ============ */
@@ -535,7 +537,7 @@ function evText(e,m){
 }
 
 /* ============ JORNADA ============ */
-function autoFix(tid){const L=S.teams[tid].lineup;if(L.some(id=>!id||!S.players[id]||S.players[id].team!==tid||!avail(S.players[id])))autoLineup(tid)}
+function autoFix(tid){if(!validLineup(tid))autoLineup(tid)}
 /* Cobra el viatge una sola vegada quan es liquida un partit fora de casa. */
 function chargeAwayTravel(m,round){
   if(!m||!m.res||m.travelPaid||!S.teams[m.a])return;
@@ -1872,12 +1874,17 @@ function vitrinaView(){
    Cada 5 targetes blaves acumulades: 1 partit de sanció. Targeta vermella: 1 o 2 partits. */
 const susp=p=>p.susp>0;
 function applySanctions(rd){
-  for(const p of Object.values(S.players))if(p.susp>0)p.susp--;
-  const news=[];
-  for(const m of rd)for(const e of m.res.ev){const p=S.players[e.pid];if(!p)continue;
-    if(e.t==="blue"){if(p.cards>0&&p.cards%5===0){p.susp=(p.susp||0)+1;if(p.team===S.user)news.push(W(`${p.name}${_tx(` arriba a `)}${p.cards}${_tx(` blaves i queda sancionat 1 partit.`)}`,`${p.name}${_tx(` llega a `)}${p.cards}${_tx(` azules y queda sancionado 1 partido.`)}`))}}
-    if(e.t==="red"){const n=e.n||1;p.susp=(p.susp||0)+n;if(p.team===S.user)news.push(W(`${_tx(`SANCIÓ: `)}${p.name}${_tx(` (vermella) no podrà jugar `)}${n} ${n>1?"partits":"partit"}.`,`${_tx(`SANCIÓN: `)}${p.name}${_tx(` (roja) no podrá jugar `)}${n} ${n>1?"partidos":"partido"}.`))}}
-  for(const t of news)pushNews(t,true);
+ const teams=new Set(rd.flatMap(m=>[m.h,m.a]));
+ for(const p of Object.values(S.players))if(teams.has(p.team)&&p.susp>0)p.susp--;
+ const blues=new Map();
+ for(const m of rd)for(const e of m.res.ev){if(e.t==="blue")blues.set(e.pid,(blues.get(e.pid)||0)+1)}
+ for(const [id,count] of blues){const p=S.players[id];if(!p)continue;
+  const n=Math.floor(p.cards/5)-Math.floor(Math.max(0,p.cards-count)/5);
+  if(n>0){p.susp=(p.susp||0)+n;if(p.team===S.user)pushNews(W(p.name+" arriba a "+p.cards+" blaves i queda sancionat "+n+" partit(s).",p.name+" llega a "+p.cards+" azules y queda sancionado "+n+" partido(s)."),true)}
+ }
+ for(const m of rd)for(const e of m.res.ev){const p=S.players[e.pid];if(!p||e.t!=="red")continue;const n=e.n||1;p.susp=(p.susp||0)+n;
+  if(p.team===S.user)pushNews(W("SANCIÓ: "+p.name+" (vermella) no podrà jugar "+n+" partit(s).","SANCIÓN: "+p.name+" (roja) no podrá jugar "+n+" partido(s)."),true);
+ }
 }
 /* ============ ESTADÍSTIQUES ============ */
 function statsView(){
@@ -2793,6 +2800,13 @@ save=function(){if(!S)return;if(!S.slot){S.slot=newSlotId()}S.upd=Date.now();let
   const k=slotKey(S.slot);try{localStorage.setItem(k,j)}catch(e){}
   IDB.put(k,j);const L=slotsList().filter(x=>x.id!==S.slot);L.push(slotMetaOf(S,S.slot));slotsWrite(L);
   askPersist();cloudQueue(S.slot,j)};
+/* Verifica una còpia real abans d'anunciar el desament o abandonar la partida. */
+async function localSaveConfirmed(){
+ if(!S?.slot)return false;
+ const snapshot=JSON.stringify(S),key=slotKey(S.slot);
+ try{if(localStorage.getItem(key)===snapshot)return true}catch{}
+ try{await IDB.put(key,snapshot);return await IDB.get(key)===snapshot}catch{return false}
+}
 function deleteSlot(id){try{localStorage.removeItem(slotKey(id))}catch(e){}IDB.del(slotKey(id));slotsWrite(slotsList().filter(x=>x.id!==id));cloudDelete(id)}
 
 /* ---------- Núvol: la partida es pot continuar des de qualsevol dispositiu ----------
@@ -3911,9 +3925,13 @@ function catCompleteBatch(c,batch){
  else if(c.st==="f"){c.champ=winners[0];c.runner=batch[0].h===c.champ?batch[0].a:batch[0].h;c.st="done";compAward(c);newChallenge();pushNews(W("La Lliga Catalana ha acabat. Ara comença la lliga regular.","La Liga Catalana ha terminado. Ahora empieza la liga regular."),true)}
  save();
 }
+function catPrepareRound(c){
+ if(c.recoveredStep!==c.step){for(const tid of c.teams)for(const p of squad(tid)){p.energy=clamp(p.energy+6,30,100);if(p.inj>0)p.inj--}c.recoveredStep=c.step}
+ for(const tid of c.teams)autoFix(tid);
+}
 function catPlayRound(c){
  const batch=catBatch(c),um=batch.find(m=>m.h===S.user||m.a===S.user);
- if(c.recoveredStep!==c.step){for(const tid of c.teams)for(const p of squad(tid)){p.energy=clamp(p.energy+6,30,100);if(p.inj>0)p.inj--}c.recoveredStep=c.step}
+ catPrepareRound(c);
  for(const tid of c.teams){autoFix(tid);if(tid!==S.user)aiTactic(tid)}
  for(const m of batch)if(m!==um)m.res=cMatch(m.h,m.a,c.st!=="grp");
  if(!um){catCompleteBatch(c,batch);view="inici";return}
@@ -4029,6 +4047,7 @@ function matchPreviewTeam(tid){
 }
 function matchPreviewOpen(){
  const m=matchPreviewNext();if(!m||document.getElementById('matchPreview'))return false;
+ const upcoming=catCurrent();if(upcoming)catPrepareRound(upcoming);
  autoFix(m.h);autoFix(m.a);
  const dialog=document.createElement('dialog');dialog.id='matchPreview';dialog.setAttribute('aria-labelledby','match-preview-title');
  dialog.style.cssText='width:min(900px,calc(100vw - 24px));max-height:88vh;overflow:auto;border:2px solid var(--line);border-radius:12px;padding:16px;color:var(--fg);background:var(--panel)';

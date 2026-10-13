@@ -62,3 +62,8 @@ test('competition screen renders every group and labels its preseason calendar',
  vm.runInContext(between('const COMP_SCHED=','function compAfterRound(')+between('function compsView(){','/* ---------- Roda de premsa:'),c);c.catEnsure();const screen=c.compsView();
  for(const g of ['A','B','C'])assert.ok(screen.includes('Grup '+g));assert.match(screen,/abans de la lliga/);assert.ok(!screen.includes('undefined'));
 });
+
+test('preview preparation and match share one recovery step, including healing injuries',()=>{
+ const c=setup();c.catEnsure();const p={id:'p',team:'BAR',energy:60,inj:1};c.S.players.p=p;c.squad=id=>id==='BAR'?[p]:[];let available=false;c.autoFix=id=>{if(id==='BAR')available=p.inj===0};
+ const cup=c.catCurrent();c.catPrepareRound(cup);assert.equal(p.energy,66);assert.equal(p.inj,0);assert.equal(available,true);c.catPrepareRound(cup);assert.equal(p.energy,66);c.catPlayRound(cup);assert.equal(p.energy,66);
+});
