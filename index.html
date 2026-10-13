@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="ca">
 <head>
-<meta name="hm27-version" content="hm27-v36">
+<meta name="hm27-version" content="hm27-v37">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="Hoquei Manager 27: fantasy d'hoquei patins gratuït i no oficial, amb un mode mànager.">
@@ -4324,7 +4324,7 @@ render=function(){
   if(MODE==="fantasy"||!S||S.fired||!S.teams||!document.querySelector("header.top"))return r;
   const G=hubGroupOf(view);if(G){ui.hubLast=ui.hubLast||{};ui.hubLast[G.k]=view}
   const cats=hubData(),n=cats.reduce((s,c)=>s+c.items.length,0),fresh=cats.reduce((s,c)=>s+c.items.filter(i=>i.fresh).length,0);
-  const mk=lbl=>{const b=document.createElement("button");b.className="btn hubbell";b.dataset.hubopen="";b.setAttribute("aria-label",W(`Avisos: ${n}`,`Avisos: ${n}`));b.innerHTML=`🔔${lbl?`<span class="hbl">${W("Avisos","Avisos")}</span>`:""}${n?`<span class="badge ${fresh?"":"old"}">${n}</span>`:""}`;return b};
+  const mk=lbl=>{const b=document.createElement("button");b.className="btn hubbell";b.dataset.hubopen="";b.setAttribute("aria-label",W(`Avisos: ${n}`,`Avisos: ${n}`));b.innerHTML=`${uiIcon("bell")}${lbl?`<span class="hbl">${W("Avisos","Avisos")}</span>`:""}${n?`<span class="badge ${fresh?"":"old"}">${n}</span>`:""}`;return b};
   const top=document.querySelector("header.top"),ref=top.querySelector("[data-manual-save]")||top.querySelector("#bMenu");if(ref)top.insertBefore(mk(true),ref);
   document.querySelectorAll("[data-hubopen]").forEach(b=>b.onclick=()=>{if(hubLive())return;hubOpen(b.dataset.hubopen||null)});
   const H=hubState();
