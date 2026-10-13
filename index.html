@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="ca">
 <head>
-<meta name="hm27-version" content="hm27-v33">
+<meta name="hm27-version" content="hm27-v34">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="Hoquei Manager 27: fantasy d'hoquei patins gratuït i no oficial, amb un mode mànager.">
@@ -2271,10 +2271,11 @@ function sndBtn(){
 }
 /* ============ MÚSICA DEL MENÚ ============
    Ice Management (Suno), proporcionada per l'usuari. Només al menú principal. */
+let APP_EXITED=false;
 const MZ={on:true,audio:null};
 try{MZ.on=localStorage.getItem("hm27-music")!=="0"}catch(e){}
 function menuMusicAllowed(){
-  try{return !!LANG&&!S&&MODE!=="fantasy"&&startStep==="menu"}catch(e){return false}
+  try{return !APP_EXITED&&!!LANG&&!S&&MODE!=="fantasy"&&startStep==="menu"}catch(e){return false}
 }
 function sndScene(){
   const play=menuMusicAllowed()&&document.visibilityState!=="hidden"&&SND.unlocked&&MZ.on;
@@ -2298,7 +2299,7 @@ window.addEventListener("pageshow",sndScene);
 
 /* El primer toc desbloqueja l'àudio (els navegadors no deixen sonar res abans) */
 document.addEventListener("pointerdown",e=>{
-  if(e.target.closest("#sndBtn,#musBtn"))return;
+  if(APP_EXITED||e.target.closest("#sndBtn,#musBtn,[data-app-exit]"))return;
   if(!SND.unlocked){SND.unlocked=true;if(SND.on)actx()}
   sndScene();
   const b=e.target.closest("button,.click,[data-pl]");if(!b||b.disabled)return;
@@ -3302,7 +3303,7 @@ function menuScreen(){
       ${L.length?`<div class="homesavelist">${L.map(slotCard).join("")}</div>`:`<div class="homeempty"><span aria-hidden="true">▱</span><p>${W("Encara no tens cap partida guardada","Aún no tienes ninguna partida guardada")}</p></div>`}
       ${CLOUD.uid&&cloud.length?`<details class="homecloud"><summary>☁ ${W("Partides al núvol","Partidas en la nube")} <span class="homecount">${cloud.length}</span></summary><div class="homesavelist">${cloud.map(m=>`<div class="bevel homecloudslot">${shield(S0team(m),36)}<div><b>${esc(m.name)}</b><span class="muted">${m.season}-${String((m.season+1)%100).padStart(2,"0")} · J${(m.round||0)+1}</span></div><button class="btn primary" data-cloudget="${esc(m.id)}">${W("Continuar","Continuar")}</button></div>`).join("")}</div></details>`:""}
     </section>
-    <footer class="homefooter"><div class="homelanguages" role="group" aria-label="${W("Idioma","Idioma")}"><span aria-hidden="true">◎</span><button class="btn small ${LANG!=="es"?"primary":""}" data-lang="ca" aria-pressed="${LANG!=="es"}">Català</button><button class="btn small ${LANG==="es"?"primary":""}" data-lang="es" aria-pressed="${LANG==="es"}">Castellano</button></div><div class="homeutilities"><button class="btn small" data-fed>↻ ${W("Federacions","Federaciones")}</button><button class="btn small" data-contact>✉ ${W("Contacte","Contacto")}</button><button class="btn small" data-step="help" aria-label="${W("Com es juga","Cómo se juega")}" title="${W("Com es juga","Cómo se juega")}">?</button>${typeof installPrompt!=="undefined"&&installPrompt?`<button class="btn small" data-install-game>↓ ${W("Instal·lar","Instalar")}</button>`:""}</div></footer>
+    <footer class="homefooter"><div class="homelanguages" role="group" aria-label="${W("Idioma","Idioma")}"><span aria-hidden="true">◎</span><button class="btn small ${LANG!=="es"?"primary":""}" data-lang="ca" aria-pressed="${LANG!=="es"}">Català</button><button class="btn small ${LANG==="es"?"primary":""}" data-lang="es" aria-pressed="${LANG==="es"}">Castellano</button></div><div class="homeutilities"><button class="btn small" data-app-exit>⏻ ${W("Sortir","Salir")}</button><button class="btn small" data-fed>↻ ${W("Federacions","Federaciones")}</button><button class="btn small" data-contact>✉ ${W("Contacte","Contacto")}</button><button class="btn small" data-step="help" aria-label="${W("Com es juga","Cómo se juega")}" title="${W("Com es juga","Cómo se juega")}">?</button>${typeof installPrompt!=="undefined"&&installPrompt?`<button class="btn small" data-install-game>↓ ${W("Instal·lar","Instalar")}</button>`:""}</div></footer>
     <details class="homelegal"><summary>${W("Sobre el joc","Sobre el juego")}</summary>${LEGAL}</details>
   </div>`;
 }
@@ -4070,6 +4071,7 @@ window.claude?.hot?.ready?window.claude.hot.ready(start):start(window.claude?.ho
 <script src="exit-save.js"></script>
 <script src="manual-save.js"></script>
 <script src="app-updates.js"></script>
+<script src="app-exit.js"></script>
 <style>
 /* ---- Menú agrupat ---- */
 nav.menu .hubg{align-items:center;justify-content:flex-start!important;gap:10px!important}

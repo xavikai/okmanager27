@@ -40,7 +40,7 @@ test('redrawing music status keeps the icon node intact and controls do not trig
  const start=html.indexOf('/* El primer toc desbloqueja');const end=html.indexOf('sndBtn();musBtn();',start);
  const pointer=html.slice(start,end);assert.ok(!pointer.includes('setTimeout(sndScene'));
  const events={},calls=[];
- const c={document:{addEventListener:(k,f)=>events[k]=f},SND:{on:true,unlocked:false},actx:()=>calls.push('context'),sndScene:()=>calls.push('music'),sfx:k=>calls.push(k)};
+ const c={APP_EXITED:false,document:{addEventListener:(k,f)=>events[k]=f},SND:{on:true,unlocked:false},actx:()=>calls.push('context'),sndScene:()=>calls.push('music'),sfx:k=>calls.push(k)};
  vm.createContext(c);vm.runInContext(pointer,c);
  for(const id of ['sndBtn','musBtn'])events.pointerdown({target:{closest:s=>s.includes('#'+id)?{}:null}});
  assert.deepEqual(calls,[],'toggling audio controls never starts music or a sound before click');
