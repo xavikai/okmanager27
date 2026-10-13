@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="ca">
 <head>
-<meta name="hm27-version" content="hm27-v32">
+<meta name="hm27-version" content="hm27-v33">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="Hoquei Manager 27: fantasy d'hoquei patins gratuït i no oficial, amb un mode mànager.">
@@ -2266,7 +2266,7 @@ function sndSet(on){
 function sndBtn(){
   let b=document.getElementById("sndBtn");
   if(!b){b=document.createElement("button");b.id="sndBtn";b.className="sndbtn";b.type="button";b.addEventListener("click",e=>{e.stopPropagation();sndSet(!SND.on)});document.body.appendChild(b)}
-  b.setAttribute("aria-label",SND.on?_tx("Silencia el so"):_tx("Activa el so"));b.title=b.getAttribute("aria-label");
+  b.setAttribute("aria-label",SND.on?W("Silencia els efectes de so","Silenciar los efectos de sonido"):W("Activa els efectes de so","Activar los efectos de sonido"));b.title=b.getAttribute("aria-label");b.setAttribute("aria-pressed",String(SND.on));
   b.innerHTML=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9z" fill="currentColor"/>${SND.on?'<path d="M16 9a4 4 0 0 1 0 6M18.5 6.5a8 8 0 0 1 0 11"/>':'<path d="M17 9l5 6M22 9l-5 6"/>'}</svg>`;
 }
 /* ============ MÚSICA DEL MENÚ ============
@@ -2277,30 +2277,30 @@ function menuMusicAllowed(){
   try{return !!LANG&&!S&&MODE!=="fantasy"&&startStep==="menu"}catch(e){return false}
 }
 function sndScene(){
-  const play=menuMusicAllowed()&&document.visibilityState!=="hidden"&&SND.unlocked&&SND.on&&MZ.on;
+  const play=menuMusicAllowed()&&document.visibilityState!=="hidden"&&SND.unlocked&&MZ.on;
   if(play){
     if(!MZ.audio){MZ.audio=document.createElement("audio");MZ.audio.src="audio/ice-management.mp3";MZ.audio.loop=true;MZ.audio.preload="none";MZ.audio.volume=.45}
     if(MZ.audio.paused){const pending=MZ.audio.play();if(pending&&pending.catch)pending.catch(()=>{})}
-  }else if(MZ.audio){MZ.audio.pause();MZ.audio.currentTime=0}
+  }else if(MZ.audio){if(!MZ.audio.paused)MZ.audio.pause();if(!menuMusicAllowed())MZ.audio.currentTime=0}
   musBtn();
 }
-function musSet(on){MZ.on=on;try{localStorage.setItem("hm27-music",on?"1":"0")}catch(e){}SND.unlocked=true;if(on&&!SND.on)sndSet(true);sndScene()}
+function musSet(on){MZ.on=on;try{localStorage.setItem("hm27-music",on?"1":"0")}catch(e){}SND.unlocked=true;sndScene()}
 function musBtn(){
   let b=document.getElementById("musBtn");
   if(!b){b=document.createElement("button");b.id="musBtn";b.className="sndbtn";b.type="button";b.style.bottom="calc(66px + env(safe-area-inset-bottom,0px))";b.addEventListener("click",e=>{e.stopPropagation();musSet(!MZ.on)});document.body.appendChild(b)}
   b.hidden=!menuMusicAllowed();
   b.setAttribute("aria-label",MZ.on?W("Apaga la música del menú","Apagar la música del menú"):W("Engega la música del menú","Encender la música del menú"));b.title=b.getAttribute("aria-label");
-  b.innerHTML='<span aria-hidden="true">'+(MZ.on?'♫':'♫ ×')+'</span>';b.style.opacity=MZ.on?"1":".6";
+  const icon='<span aria-hidden="true">'+(MZ.on?'♫':'♫ ×')+'</span>';if(b.innerHTML!==icon)b.innerHTML=icon;b.style.opacity=MZ.on?"1":".6";b.setAttribute("aria-pressed",String(MZ.on));
 }
 document.addEventListener("visibilitychange",sndScene);
-document.addEventListener("pointerdown",sndScene,true);
 window.addEventListener("pagehide",()=>{if(MZ.audio){MZ.audio.pause();MZ.audio.currentTime=0}});
 window.addEventListener("pageshow",sndScene);
 
 /* El primer toc desbloqueja l'àudio (els navegadors no deixen sonar res abans) */
 document.addEventListener("pointerdown",e=>{
-  if(!SND.unlocked){SND.unlocked=true;if(SND.on){actx();setTimeout(sndScene,50)}}
-  if(e.target.closest("#sndBtn"))return;
+  if(e.target.closest("#sndBtn,#musBtn"))return;
+  if(!SND.unlocked){SND.unlocked=true;if(SND.on)actx()}
+  sndScene();
   const b=e.target.closest("button,.click,[data-pl]");if(!b||b.disabled)return;
   if(b.matches("#bPlay,#mBuy"))return;
   if(b.matches(".primary,[data-start],#fcGo,#fjGo,#lSave"))sfx("ok");

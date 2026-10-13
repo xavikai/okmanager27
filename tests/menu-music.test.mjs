@@ -17,9 +17,9 @@ test('music starts only after interaction on the main menu and stops immediately
  for(const step of ['pick','confirm','help']){t.c.startStep=step;t.run('sndScene()');assert.equal(t.audio.paused,true)}
  t.c.startStep='menu';t.c.MODE='fantasy';t.run('sndScene()');assert.equal(t.audio.paused,true);
 });
-test('music mute, master mute, hidden pages and rejected autoplay never enable in-game music',async()=>{
+test('music and effects mute independently; hidden pages and rejected autoplay are handled',async()=>{
  const t=setup();t.c.SND.unlocked=true;t.run('sndScene();musSet(false)');assert.equal(t.audio.paused,true);assert.equal(t.c.SND.on,true);
- t.run('musSet(true)');t.c.SND.on=false;t.run('sndScene()');assert.equal(t.audio.paused,true);
+ t.c.SND.on=false;t.run('musSet(true)');assert.equal(t.c.SND.on,false);assert.equal(t.audio.paused,false);t.run('sndScene()');assert.equal(t.audio.paused,false);t.audio.currentTime=42;t.run('musSet(false)');assert.equal(t.audio.currentTime,42);t.run('musSet(true)');assert.equal(t.audio.currentTime,42);
  t.c.SND.on=true;t.c.document.visibilityState='hidden';t.events.visibilitychange();assert.equal(t.audio.paused,true);
  t.c.document.visibilityState='visible';t.events.pageshow();assert.equal(t.audio.paused,false);t.events.pagehide();assert.equal(t.audio.paused,true);
  t.audio.play=()=>Promise.reject(Error('autoplay'));t.run('sndScene()');await Promise.resolve();
@@ -30,4 +30,19 @@ test('old music is removed, sound effects remain and MP3 is shipped offline',()=
  assert.ok(readFileSync(new URL('../sw.js',import.meta.url),'utf8').includes('"audio/ice-management.mp3"'));
  assert.ok(readFileSync(new URL('../scripts/build-site.cjs',import.meta.url),'utf8').includes("'audio'"));
  assert.ok(readFileSync(new URL('../audio/ice-management.mp3',import.meta.url)).length>1000000);
+});
+
+test('redrawing music status keeps the icon node intact and controls do not trigger the pointer sound handler',()=>{
+ const t=setup();t.run('sndScene()');const button=t.buttons.get('musBtn');let writes=0,value=button.innerHTML;
+ Object.defineProperty(button,'innerHTML',{get:()=>value,set:v=>{value=v;writes++}});
+ t.run('sndScene();sndScene()');assert.equal(writes,0,'unchanged icon is never replaced during a gesture');
+ t.run('musSet(false)');assert.equal(writes,1);t.run('sndScene()');assert.equal(writes,1);
+ const start=html.indexOf('/* El primer toc desbloqueja');const end=html.indexOf('sndBtn();musBtn();',start);
+ const pointer=html.slice(start,end);assert.ok(!pointer.includes('setTimeout(sndScene'));
+ const events={},calls=[];
+ const c={document:{addEventListener:(k,f)=>events[k]=f},SND:{on:true,unlocked:false},actx:()=>calls.push('context'),sndScene:()=>calls.push('music'),sfx:k=>calls.push(k)};
+ vm.createContext(c);vm.runInContext(pointer,c);
+ for(const id of ['sndBtn','musBtn'])events.pointerdown({target:{closest:s=>s.includes('#'+id)?{}:null}});
+ assert.deepEqual(calls,[],'toggling audio controls never starts music or a sound before click');
+ events.pointerdown({target:{closest:()=>null}});assert.deepEqual(calls,['context','music'],'first interaction starts playback synchronously');
 });
