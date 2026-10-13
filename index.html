@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="ca">
 <head>
-<meta name="hm27-version" content="hm27-v42">
+<meta name="hm27-version" content="hm27-v43">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="Hoquei Manager 27: fantasy d'hoquei patins gratuït i no oficial, amb un mode mànager.">
@@ -4305,11 +4305,10 @@ function hubOpen(focusCat,auto){
 
 /* ---------- Infermeria ---------- */
 function treatOpts(p){
-  const C=S.club,fis=C&&C.staff?C.staff.fisio||0:0,T=p.treat||{},bud=S.teams[S.user].budget;
-  const k=[.45,.45,.6,.8,1,1.3][clamp(Math.round(S.teams[S.user].rep||3),0,5)],cst=v=>Math.round(v*k*10)/10;
+  const T=p.treat||{},bud=S.teams[S.user].budget;
   const o=[
-   {k:"fis",ic:"💆",l:W("Sessions extra de fisioteràpia","Sesiones extra de fisioterapia"),d:W(`Recupera 1 jornada abans.${fis?" El fisio del club abarateix el preu.":""}`,`Se recupera 1 jornada antes.${fis?" El fisio del club abarata el precio.":""}`),w:1,cost:cst([1.6,1.1,.7][Math.min(fis,2)]),ok:!T.fis&&p.inj>=1},
-   {k:"cli",ic:"🏥",l:W("Clínica especialitzada","Clínica especializada"),d:W("Tractament intensiu fora del club: recupera la meitat del temps de baixa.","Tratamiento intensivo fuera del club: recupera la mitad del tiempo de baja."),w:Math.max(2,Math.floor(p.inj/2)),cost:cst(3.5+p.inj*.6),ok:!T.cli&&p.inj>=3},
+   {k:"fis",ic:"💆",l:W("Sessions extra de fisioteràpia","Sesiones extra de fisioterapia"),d:W("Recupera 1 jornada abans.","Se recupera 1 jornada antes."),w:1,cost:.25,ok:!T.fis&&p.inj>=1},
+   {k:"cli",ic:"🏥",l:W("Clínica especialitzada","Clínica especializada"),d:W("Tractament intensiu fora del club: recupera la meitat del temps de baixa.","Tratamiento intensivo fuera del club: recupera la mitad del tiempo de baja."),w:Math.max(2,Math.floor(p.inj/2)),cost:.5,ok:!T.cli&&p.inj>=3},
    {k:"for",ic:"⚡",l:W("Forçar la tornada","Forzar la vuelta"),d:W("Pot jugar ja la propera jornada, però amb menys energia i un 25 % de risc de recaiguda cada partit durant 3 jornades.","Puede jugar ya la próxima jornada, pero con menos energía y un 25 % de riesgo de recaída cada partido durante 3 jornadas."),w:p.inj,cost:0,ok:!T.for&&p.inj>=1&&p.inj<=3}];
   for(const x of o){if(x.ok&&x.cost>bud){x.ok=false;x.why=W("No hi ha prou pressupost","No hay suficiente presupuesto")}
     else if(!x.ok)x.why=T[x.k]?W("Ja s'ha fet","Ya se ha hecho"):x.k==="cli"?W("Només per a baixes de 3 jornades o més","Solo para bajas de 3 jornadas o más"):x.k==="for"?W("Només per a baixes curtes (fins a 3 jornades)","Solo para bajas cortas (hasta 3 jornadas)"):""}
@@ -4338,7 +4337,7 @@ function treatOpen(pid,after){
    <div class="trt">${opts.map(o=>`<div class="trto ${o.ok?"":"off"}"><span class="ti" aria-hidden="true">${o.ic}</span><b>${o.l}${o.k!=="for"?` <span class="good" style="font-weight:600">−${o.w} ${o.w===1?W("jornada","jornada"):W("jornades","jornadas")}</span>`:""}</b>
      <small>${o.d}${o.why?` <b>${o.why}.</b>`:""}</small>
      <button class="btn ${o.ok?"primary":""}" data-tr="${o.k}" ${o.ok?"":"disabled"}>${o.cost?money(o.cost):W("Gratis","Gratis")}</button></div>`).join("")}</div>
-   <p class="muted" style="margin:0;font-size:13px">${W("Cada tractament es pot fer un cop per lesió. El preu depèn de la mida del club i surt a «Altres» de les finances de la propera jornada.","Cada tratamiento se puede hacer una vez por lesión. El precio depende del tamaño del club y aparece en «Otros» en las finanzas de la próxima jornada.")}</p>
+   <p class="muted" style="margin:0;font-size:13px">${W("Cada tractament es pot fer un cop per lesió. El cost surt a «Altres» de les finances de la propera jornada.","Cada tratamiento se puede hacer una vez por lesión. El coste aparece en «Otros» en las finanzas de la próxima jornada.")}</p>
    <div class="row" style="justify-content:flex-end"><button class="btn" data-trx>${W("Tancar","Cerrar")}</button></div></div>`;
   document.body.appendChild(d);
   const close=()=>{d.remove();if(after)after();else render()};

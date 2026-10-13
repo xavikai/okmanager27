@@ -43,11 +43,12 @@ test('alerts list injuries, bans, personal problems, offers, unhappy players and
 test('treatments shorten injuries once each, cost money and forced returns can relapse',()=>{
  const c=setup();run(c,`Math.random=rng(5);newGame('BAR');`);
  run(c,`globalThis.P=squad(S.user).find(p=>p.pos!=="POR");P.inj=5;S.teams[S.user].budget=100;`);
+ for(const rep of [1,2,3,4,5])for(const fisio of [0,1,2]){run(c,`S.teams[S.user].rep=${rep};S.club.staff.fisio=${fisio}`);assert.equal(run(c,`treatOpts(P).find(o=>o.k==='fis').cost`),.25);assert.equal(run(c,`treatOpts(P).find(o=>o.k==='cli').cost`),.5)}
  const b0=run(c,`S.teams[S.user].budget`);
  run(c,`treatApply(P.id,"fis")`);
- assert.equal(run(c,`P.inj`),4);assert.ok(run(c,`S.teams[S.user].budget`)<b0);
+ assert.equal(run(c,`P.inj`),4);assert.equal(run(c,`S.teams[S.user].budget`),b0-.25);
  run(c,`treatApply(P.id,"fis")`);assert.equal(run(c,`P.inj`),4,'fisio only once per injury');
- run(c,`treatApply(P.id,"cli")`);assert.equal(run(c,`P.inj`),2);
+ run(c,`treatApply(P.id,"cli")`);assert.equal(run(c,`P.inj`),2);assert.equal(run(c,`S.teams[S.user].budget`),b0-.75);
  run(c,`treatApply(P.id,"for")`);assert.equal(run(c,`P.inj`),0);assert.equal(run(c,`avail(P)`),true);
  assert.equal(run(c,`!!P.forced`),true);
  let steps=0;while(run(c,`!!P.forced&&!S.finished`)&&steps++<6)run(c,`autoFix(S.user);playRoundFast()`);
