@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="ca">
 <head>
-<meta name="hm27-version" content="hm27-v44">
+<meta name="hm27-version" content="hm27-v45">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="Hoquei Manager 27: fantasy d'hoquei patins gratuït i no oficial, amb un mode mànager.">
@@ -908,6 +908,31 @@ function clubEventCategories(){const E=clubEventState();if(!E)return[];const cat
 }
 function clubEventBoardHtml(){const E=clubEventState();if(!E)return'';return `<section class="bevel panel"><h2>${W('Directiva del club','Directiva del club')}</h2><div class="grid3">${Object.entries(E.board).map(([role,name])=>`<div><span class="lbl">${W(...CLUB_BOARD_ROLES[role])}</span><p><b>${esc(name)}</b></p></div>`).join('')}</div><p class="muted">${W('Els relleus de la directiva i les incidències del pavelló es comuniquen als avisos.','Los relevos de la directiva y las incidencias del pabellón se comunican en los avisos.')}</p></section>`}
 /* End occasional club events */
+
+/* Bank credit and consecutive negative-budget rounds. Amounts are in thousands. */
+const BANK_NEGATIVE_LIMIT=6,BANK_LOAN_LIMIT=20,BANK_RATE=.05;
+let bankDismissalNotice=null;
+function bankState(){if(!S?.club)return null;let B=S.club.bank;if(!B||B.team!==S.user)B=S.club.bank={team:S.user,debt:0,principal:0,negativeRounds:0,checked:''};return B}
+function bankRecover(){const B=bankState();if(B&&S.teams[S.user].budget>=0&&B.negativeRounds){B.negativeRounds=0;save()}}
+function bankBorrow(amount){const B=bankState();if(!B||S.fired||S.bankDismissed||S.teams[S.user].budget>0||B.debt>0||![5,10,BANK_LOAN_LIMIT].includes(amount))return false;
+ B.principal=amount;B.debt=Math.round(amount*(1+BANK_RATE)*1000)/1000;clubEventMoney(amount);bankRecover();pushNews(W(`BANC: crèdit de ${money(amount)} concedit. Interès únic del 5 %; total a retornar: ${money(B.debt)}.`,`BANCO: crédito de ${money(amount)} concedido. Interés único del 5 %; total a devolver: ${money(B.debt)}.`),true);save();return true;
+}
+function bankRepay(amount){const B=bankState(),t=S?.teams?.[S.user];if(!B||!t||S.fired||S.bankDismissed||!Number.isFinite(amount)||amount<=0||B.debt<=0)return false;amount=Math.round(Math.min(amount,B.debt)*1000)/1000;if(amount>t.budget)return false;
+ clubEventMoney(-amount);B.debt=Math.round((B.debt-amount)*1000)/1000;if(!B.debt)B.principal=0;pushNews(W(`BANC: has retornat ${money(amount)} del crèdit. Deute pendent: ${money(B.debt)}.`,`BANCO: has devuelto ${money(amount)} del crédito. Deuda pendiente: ${money(B.debt)}.`),true);bankRecover();save();return true;
+}
+function bankRoundCheck(){const B=bankState();if(!B||S.bankDismissed)return;const stamp=S.season+'|'+S.round;if(B.checked===stamp)return;B.checked=stamp;
+ if(S.teams[S.user].budget>=0){B.negativeRounds=0;return}B.negativeRounds++;
+ if(B.negativeRounds>=BANK_NEGATIVE_LIMIT){S.bankDismissed=true;S.fired=true;pushNews(W(`CESSAMENT PER INSOLVÈNCIA: el club ha encadenat ${BANK_NEGATIVE_LIMIT} jornades amb pressupost negatiu. La directiva et cessa i la partida ha acabat.`,`DESTITUCIÓN POR INSOLVENCIA: el club ha encadenado ${BANK_NEGATIVE_LIMIT} jornadas con presupuesto negativo. La directiva te destituye y la partida ha terminado.`),true);save();const career=S;setTimeout(()=>{if(S===career&&S.bankDismissed)bankDismissToMenu()},0)}
+}
+function bankDismissToMenu(){if(!S?.bankDismissed)return;bankDismissalNotice={club:S.teams[S.user].name,budget:S.teams[S.user].budget};save();if(ticker){clearInterval(ticker);ticker=null}document.querySelectorAll('.modal,dialog[open]').forEach(d=>d.remove());ui.match=null;ui.press2=null;S=null;MODE='manager';startStep='menu';view='inici';render();window.scrollTo?.(0,0)}
+function bankPanel(){const B=bankState();if(!B)return'';const budget=S.teams[S.user].budget,negative=budget<0,canBorrow=budget<=0&&!B.debt&&!S.fired;
+ const payments=B.debt?[...new Set([1,5,B.debt].map(x=>Math.min(x,B.debt)))]:[];
+ return `<section class="bevel panel" id="bank-panel"><h2>${uiIcon('finance')} ${W('Banc i crèdit del club','Banco y crédito del club')}</h2><p style="margin:0">${W('Deute pendent','Deuda pendiente')}: <b class="${B.debt?'warn':'good'}">${money(B.debt)}</b></p><p class="muted" style="margin:0">${W('Un crèdit actiu, fins a 20.000 €. Interès únic del 5 %, inclòs en el deute; sense comissions setmanals. Pots retornar-lo parcialment o del tot quan tinguis saldo.','Un crédito activo, hasta 20.000 €. Interés único del 5 %, incluido en la deuda; sin comisiones semanales. Puedes devolverlo parcialmente o por completo cuando tengas saldo.')}</p>${negative?`<p class="bad" role="status"><b>${W('Jornades consecutives en negatiu','Jornadas consecutivas en negativo')}: ${B.negativeRounds}/${BANK_NEGATIVE_LIMIT}.</b> ${W('Recupera un saldo de zero o positiu abans d’acabar la sisena jornada en negatiu; si no, seràs cessat i tornaràs al menú principal.','Recupera un saldo de cero o positivo antes de acabar la sexta jornada en negativo; si no, serás destituido y volverás al menú principal.')}</p>`:`<p class="muted">${W('El límit és de 6 jornades consecutives en negatiu. Recuperar el saldo reinicia el comptador.','El límite es de 6 jornadas consecutivas en negativo. Recuperar el saldo reinicia el contador.')}</p>`}
+ ${B.debt?`<div class="row" style="flex-wrap:wrap">${payments.map(x=>`<button class="btn ${x===B.debt?'primary':''}" data-bank-repay="${x}" ${budget<x?'disabled':''}>${x===B.debt?W('Retornar tot','Devolver todo'):W('Retornar','Devolver')} · ${money(x)}</button>`).join('')}</div>${budget<Math.min(1,B.debt)?`<p class="muted">${W('Cal recuperar saldo per retornar el crèdit.','Hay que recuperar saldo para devolver el crédito.')}</p>`:''}`:canBorrow?`<div class="row" style="flex-wrap:wrap">${[5,10,20].map(x=>`<button class="btn primary" data-bank-borrow="${x}">${W('Demanar','Solicitar')} ${money(x)} <small>(${W('retorn','devolución')}: ${money(x*1.05)})</small></button>`).join('')}</div>`:`<p class="muted">${W('Pots demanar un crèdit quan el club es quedi sense diners.','Puedes solicitar un crédito cuando el club se quede sin dinero.')}</p>`}</section>`;
+}
+function bankCategory(){const B=bankState();if(!B)return[];const negative=S.teams[S.user].budget<0;if(!negative&&!B.debt)return[];return[{k:'bank',ic:uiIcon('finance'),tone:negative?'var(--bad)':'var(--warn)',t:W('Tresoreria i banc','Tesorería y banco'),items:[{key:'bank-'+S.user+'-'+S.season+'-'+S.round+'-'+B.debt,html:`<span class="ti">${uiIcon('finance')}</span><div><b>${negative?W('Pressupost negatiu','Presupuesto negativo'):W('Crèdit pendent','Crédito pendiente')}</b><small>${negative?W(`Portes ${B.negativeRounds} de 6 jornades consecutives en negatiu. Revisa el crèdit i el pla de recuperació.`,`Llevas ${B.negativeRounds} de 6 jornadas consecutivas en negativo. Revisa el crédito y el plan de recuperación.`):''} ${W('Deute pendent','Deuda pendiente')}: ${money(B.debt)}.</small></div>`,acts:[[W('Anar al banc','Ir al banco'),'v:finances',1]]}]}]}
+document.addEventListener('click',e=>{const borrow=e.target.closest('[data-bank-borrow]'),repay=e.target.closest('[data-bank-repay]');if(!borrow&&!repay)return;if(borrow)bankBorrow(+borrow.dataset.bankBorrow);else bankRepay(+repay.dataset.bankRepay);render()});
+/* End bank functions */
 
 function newClub(){return {fac:{grades:0,bar:0,marcador:0,pista:0,gimnas:0},works:[],staff:{fisio:0,prep:0},bar:{price:"normal",staff:"vol"},afi:60,form:0,
   sponsor:null,spOffers:genSponsors(),panera:null,oneoff:0,lastAtt:0}}
@@ -4048,7 +4073,7 @@ function budgetAmount(amount){return `<span${amount<0?' class="bad" style="color
 function budgetWarningPanel(){
  if(!S||!S.teams||!(S.teams[S.user]?.budget<0))return "";
  const deficit=-S.teams[S.user].budget,C=S.club||{},paid=squad(S.user).filter(p=>p.salary>0).slice().sort((a,b)=>b.salary-a.salary).slice(0,2);
- const suggestions=[W("Ajornar nous fitxatges, obres i altres despeses opcionals fins a recuperar el saldo.","Aplazar nuevos fichajes, obras y otros gastos opcionales hasta recuperar el saldo.")];
+ const suggestions=[W("Si no tens cap crèdit actiu, pots demanar fins a 20.000 € al banc des de Finances, amb un interès únic del 5 %. Tens un límit de 6 jornades consecutives en negatiu.","Si no tienes ningún crédito activo, puedes solicitar hasta 20.000 € al banco desde Finanzas, con un interés único del 5 %. Tienes un límite de 6 jornadas consecutivas en negativo."),W("Ajornar nous fitxatges, obres i altres despeses opcionals fins a recuperar el saldo.","Aplazar nuevos fichajes, obras y otros gastos opcionales hasta recuperar el saldo.")];
  if(paid.length)suggestions.push(W("Revisar els sous més alts: ","Revisar los sueldos más altos: ")+paid.map(p=>`${esc(p.name)} (${money(p.salary)}/${W("temporada","temporada")})`).join(", ")+". "+W("Posar a la venda els jugadors prescindibles pot aportar diners i reduir la massa salarial; l’ingrés dependrà de les ofertes.","Poner a la venta a los jugadores prescindibles puede aportar dinero y reducir la masa salarial; el ingreso dependerá de las ofertas."));
  suggestions.push(!C.sponsor?W("Triar un patrocinador a «Club i pavelló» per obtenir ingressos regulars. Les primes depenen de complir els objectius.","Elegir un patrocinador en «Club y pabellón» para obtener ingresos regulares. Las primas dependen de cumplir los objetivos."):W("Revisar el contracte del patrocinador i els objectius que donen dret a la prima.","Revisar el contrato del patrocinador y los objetivos que dan derecho a la prima."));
  suggestions.push(W("Revisar el personal i el cos tècnic. Acomiadar entrenadors té una indemnització: compara-la amb l’estalvi abans de decidir.","Revisar el personal y el cuerpo técnico. Despedir entrenadores tiene una indemnización: compárala con el ahorro antes de decidir."));
@@ -4308,7 +4333,7 @@ function hubData(){
   if(S.club&&!isFem(me)){const H=coaches(),pool=(S.club.coachPool||[]).filter(c=>{const cur=H[c.role];return cur?coachQ(c)>=coachQ(cur)+4:coachQ(c)>=60}).sort((a,b)=>(coachQ(b)-coachQ(H[b.role]))-(coachQ(a)-coachQ(H[a.role]))).filter((c,i,A)=>A.findIndex(x=>x.role===c.role)===i);
     if(pool.length)cats.push({k:"coach",ic:"🧑‍🏫",tone:"var(--accent)",t:W("Entrenadors interessants disponibles","Entrenadores interesantes disponibles"),items:pool.map(c=>{const cur=H[c.role];return {key:"c:"+coachKey(c.name)+":"+S.season,html:`<span class="ti" aria-hidden="true" style="font-size:22px">${uiIcon("coach")}</span><div><b>${esc(c.name)}</b> <span class="muted">· ${hubRoleName(c.role)}</span><small>${hubCoachAttrs(c)} · ${money(c.cost)}/${W("jornada","jornada")} · ${cur?`<b class="good">${W("millor que","mejor que")} ${esc(cur.name)} (${coachQ(cur)})</b>`:`<b class="warn">${W("càrrec vacant","cargo vacante")}</b>`}</small></div>`,acts:[[W("Fitxar","Fichar"),"hire:"+c.id,1],[W("Cos tècnic","Cuerpo técnico"),"v:cos"]]}})})}
   for(const c of cats)c.ic=uiIcon(c.k);
-  cats.push(...clubEventCategories());
+  cats.push(...clubEventCategories(),...bankCategory());
   const seen=new Set(hubState().seen);for(const c of cats)for(const i of c.items)i.fresh=!seen.has(i.key);
   return cats;
 }
@@ -4317,7 +4342,7 @@ function hubMarkSeen(cats){const H=hubState(),keys=cats.flatMap(c=>c.items.map(i
 function hubStrip(){
   const cats=hubData();
   if(!cats.length)return `<div class="hubstrip"><button class="hubtile calm" data-hubopen><span class="ti" aria-hidden="true">${uiIcon("check")}</span><span class="tt"><b style="font-size:20px">${W("Tot en ordre","Todo en orden")}</b><small>${W("No hi ha cap avís pendent aquesta jornada.","No hay ningún aviso pendiente esta jornada.")}</small></span></button></div>`;
-  const short={'club-events':W('incidències del club','incidencias del club'),'club-sponsors':W('patrocinis puntuals','patrocinios puntuales'),inj:W("lesionats","lesionados"),sus:W("sancionats","sancionados"),iss:W("problemes personals","problemas personales"),off:W("ofertes rebudes","ofertas recibidas"),want:W("volen sortir del club","quieren salir del club"),coach:W("entrenadors disponibles","entrenadores disponibles")};
+  const short={bank:W('avisos de tresoreria','avisos de tesorería'),'club-events':W('incidències del club','incidencias del club'),'club-sponsors':W('patrocinis puntuals','patrocinios puntuales'),inj:W("lesionats","lesionados"),sus:W("sancionats","sancionados"),iss:W("problemes personals","problemas personales"),off:W("ofertes rebudes","ofertas recibidas"),want:W("volen sortir del club","quieren salir del club"),coach:W("entrenadors disponibles","entrenadores disponibles")};
   return `<div class="hubstrip">${cats.map(c=>`<button class="hubtile ${c.items.some(i=>i.fresh)?"new":""}" data-hubopen="${c.k}" style="--tc:${c.tone}"><span class="ti" aria-hidden="true">${c.ic}</span><span class="tt"><b>${c.items.length}</b><small>${short[c.k]}</small></span></button>`).join("")}</div>`;
 }
 function hubOpen(focusCat,auto){
@@ -4589,6 +4614,14 @@ const _matchPreviewPressWindow=matchPreviewOpen;
 matchPreviewOpen=function(){if(pressPending()){pressDialogOpen();return true}return _matchPreviewPressWindow()};
 if(S&&MODE!=='fantasy')render();
 /* End press conference window */
+
+</script>
+<script>
+const _financesBank=VIEWS.finances;VIEWS.finances=function(){return bankPanel()+_financesBank.apply(this,arguments)};
+const _finishRoundBank=finishRound;finishRound=function(){const result=_finishRoundBank.apply(this,arguments);bankRoundCheck();save();return result};
+const _startScreenBank=startScreen;startScreen=function(){const h=_startScreenBank.apply(this,arguments);return (bankDismissalNotice?`<section class="bevel panel" role="alert" style="border-color:var(--bad)"><h2 class="bad">${W('Cessat per insolvència','Destituido por insolvencia')}</h2><p>${esc(bankDismissalNotice.club)}: ${W('has superat el límit de 6 jornades consecutives amb pressupost negatiu. Aquesta partida ha acabat.','has superado el límite de 6 jornadas consecutivas con presupuesto negativo. Esta partida ha terminado.')} ${W('Saldo final','Saldo final')}: ${budgetAmount(bankDismissalNotice.budget)}.</p></section>`:'')+h};
+const _renderBank=render;render=function(){if(S?.bankDismissed){bankDismissToMenu();return}if(S){bankDismissalNotice=null;bankRecover()}return _renderBank.apply(this,arguments)};
+if(S&&MODE!=='fantasy')render();
 
 </script>
 </body>
