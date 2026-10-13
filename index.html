@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="ca">
 <head>
-<meta name="hm27-version" content="hm27-v28">
+<meta name="hm27-version" content="hm27-v29">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="Hoquei Manager 27: fantasy d'hoquei patins gratuït i no oficial, amb un mode mànager.">
@@ -1014,7 +1014,7 @@ function render(){
   const me=S.teams[S.user],tb=table(),pos=tb.findIndex(r=>r.id===S.user)+1;
   document.documentElement.style.setProperty('--team',me.c1);
   const nOff=S.offers.length;
-  const items=[["inici",_tx("Despatx")],["plantilla",_tx("Plantilla")],...(S.round===0&&!S.finished?[["custom",W("Personalitzar l'equip","Personalizar el equipo")]]:[]),["alineacio",_tx("Alineació i tàctica")],["entrenament",_tx("Entrenament")],["joves",_tx("Joves promeses")],["cos",_tx("Cos tècnic")],["calendari",_tx("Calendari")],["classificacio",_tx("Classificació")],["comp",W("Competicions","Competiciones")],["resum",_tx("Resum de la jornada")],["estadistiques",_tx("Estadístiques")],["vitrina",_tx("Vitrina i assoliments")],["sep"],["mercat",_tx("Mercat")],["exjug",W("Veterans i exjugadors","Veteranos y exjugadores")],["oficina",_tx("Ofertes"),nOff],["equips",_tx("Equips i editor")],["finances",_tx("Finances")],["club",_tx("Club i pavelló")],["sep"],["opcions",_tx("Partida")]];
+  const items=[["inici",_tx("Despatx")],["plantilla",_tx("Plantilla")],...(S.round===0&&!S.finished?[["custom",W("Personalitzar l'equip","Personalizar el equipo")]]:[]),["alineacio",_tx("Alineació i tàctica")],["entrenament",_tx("Entrenament")],["joves",_tx("Joves promeses")],["cos",_tx("Cos tècnic")],["calendari",_tx("Calendari")],["classificacio",_tx("Classificació")],["comp",W("Competicions","Competiciones")],["resum",_tx("Resum de la jornada")],["estadistiques",_tx("Estadístiques")],["vitrina",_tx("Vitrina i assoliments")],["sep"],["mercat",_tx("Mercat")],["exjug",W("Veterans i exjugadors","Veteranos y exjugadores")],...(isFem(S.user)?[]:[["ymercat",W("Joves d'altres clubs","Jóvenes de otros clubes")]]),["oficina",_tx("Ofertes"),nOff],["equips",_tx("Equips i editor")],["finances",_tx("Finances")],["club",_tx("Club i pavelló")],["sep"],["opcions",_tx("Partida")]];
   app.innerHTML=`
   <header class="top bevel">
     <div class="club">${shield(me,34)}<div><b>${esc(me.name)}</b><div class="muted">${esc(me.arena)}${_tx(` · Temporada `)}${S.season}-${String((S.season+1)%100).padStart(2,"0")}</div></div></div>
@@ -1026,10 +1026,10 @@ function render(){
     <button class="btn" id="bMenu" title="Desa i torna al menú principal">Menú</button>
     `)}${ui.match&&ui.match.m&&ui.match.m.live&&view==="partit"?"":S.finished?_tx(`<button class="btn primary" id="bNew">Nova temporada</button>`):`${_tx(`<button class="btn primary" id="bPlay">Jugar jornada `)}${S.round+1} ▸</button>`}
   </header>
-  <div class="mbar"><button class="btn" id="bNav" aria-haspopup="true"><b aria-hidden="true">☰</b><span>${(items.find(x=>x[0]===view)||items[0])[1]}</span>${nOff?`${_tx(`<span class="badge" title="`)}${W(_tx("Ofertes pendents"),_tx("Ofertas pendientes"))}${_tx(`" style="background:var(--bad);color:#fff;border-radius:10px;padding:0 7px;font-size:12px;margin-left:auto">`)}${nOff} ${W("ofertes","ofertas")}</span>`:""}</button><button class="btn" data-manual-save aria-label="${W("Desar partida","Guardar partida")}" title="${W("Desar partida","Guardar partida")}">💾 ${W("Desar","Guardar")}</button>${ui.match&&ui.match.m&&ui.match.m.live&&view==="partit"?"":S.finished?`<button class="btn primary" data-new="1">${W(_tx("Nova temporada"),_tx("Nueva temporada"))}</button>`:`<button class="btn primary" data-play="1">${W(_tx("Jugar"),_tx("Jugar"))} J${S.round+1} ▸</button>`}</div>
+  <div class="mbar"><button class="btn" id="bNav" aria-haspopup="true"><b aria-hidden="true">☰</b><span>${typeof hubLabel==="function"?hubLabel(items):(items.find(x=>x[0]===view)||items[0])[1]}</span>${nOff?`${_tx(`<span class="badge" title="`)}${W(_tx("Ofertes pendents"),_tx("Ofertas pendientes"))}${_tx(`" style="background:var(--bad);color:#fff;border-radius:10px;padding:0 7px;font-size:12px;margin-left:auto">`)}${nOff} ${W("ofertes","ofertas")}</span>`:""}</button><button class="btn" data-manual-save aria-label="${W("Desar partida","Guardar partida")}" title="${W("Desar partida","Guardar partida")}">💾 ${W("Desar","Guardar")}</button>${ui.match&&ui.match.m&&ui.match.m.live&&view==="partit"?"":S.finished?`<button class="btn primary" data-new="1">${W(_tx("Nova temporada"),_tx("Nueva temporada"))}</button>`:`<button class="btn primary" data-play="1">${W(_tx("Jugar"),_tx("Jugar"))} J${S.round+1} ▸</button>`}</div>
   <div class="shell">
-    <nav class="menu bevel" aria-label="Menú"><div class="navhead"><b>${W(_tx("Menú"),_tx("Menú"))}${_tx(`</b><button class="btn" id="bNavX" aria-label="`)}${W(_tx("Tanca"),_tx("Cierra"))}">✕</button></div>${items.map(([k,l,b])=>k==="sep"?`<div class="sep"></div>`:`${_tx(`<button data-v="`)}${k}" ${view===k?_tx("aria-current=\"page\""):""}>${l}${b?`<span class="badge">${b}</span>`:""}</button>`).join("")}<div class="sep"></div><button data-fed>🔄 ${W("Revisar federacions","Revisar federaciones")}</button><button data-contact>✉ ${W("Contacte","Contacto")}</button><div class="navx"><button class="btn" id="bMenu2">${W(_tx("Menú principal"),_tx("Menú principal"))}</button></div></nav>
-    <main>${view!=="partit"?budgetWarningPanel():""}${VIEWS[view]?VIEWS[view]():VIEWS.inici()}</main>
+    <nav class="menu bevel" aria-label="Menú"><div class="navhead"><b>${W(_tx("Menú"),_tx("Menú"))}${_tx(`</b><button class="btn" id="bNavX" aria-label="`)}${W(_tx("Tanca"),_tx("Cierra"))}">✕</button></div>${typeof hubNav==="function"?hubNav(items):items.map(([k,l,b])=>k==="sep"?`<div class="sep"></div>`:`${_tx(`<button data-v="`)}${k}" ${view===k?_tx("aria-current=\"page\""):""}>${l}${b?`<span class="badge">${b}</span>`:""}</button>`).join("")}<div class="sep"></div><button data-fed>🔄 ${W("Revisar federacions","Revisar federaciones")}</button><button data-contact>✉ ${W("Contacte","Contacto")}</button><div class="navx"><button class="btn" id="bMenu2">${W(_tx("Menú principal"),_tx("Menú principal"))}</button></div></nav>
+    <main>${view!=="partit"?(typeof hubTabs==="function"?hubTabs(items):"")+budgetWarningPanel():""}${VIEWS[view]?VIEWS[view]():VIEWS.inici()}</main>
   </div>`;
   bind();
 }
@@ -4079,5 +4079,407 @@ window.claude?.hot?.ready?window.claude.hot.ready(start):start(window.claude?.ho
 <script src="exit-save.js"></script>
 <script src="manual-save.js"></script>
 <script src="app-updates.js"></script>
+<style>
+/* ---- Menú agrupat ---- */
+nav.menu .hubg{align-items:center;justify-content:flex-start!important;gap:10px!important}
+nav.menu .hubg .hic{font-size:17px;width:22px;text-align:center;flex:0 0 auto;line-height:1}
+nav.menu .hubg .hgl{display:flex;flex-direction:column;flex:1;min-width:0;gap:1px}
+nav.menu .hubg .hgl small{display:none;font-weight:500;font-size:12px;color:var(--dim);white-space:normal;line-height:1.25}
+nav.menu .hubsubs{display:flex;flex-direction:column;gap:1px;margin:0 0 6px 21px;padding-left:9px;border-left:2px solid var(--line)}
+nav.menu .hubsubs button{padding:6px 10px;font-size:13.5px;font-weight:500;justify-content:flex-start;gap:7px}
+nav.menu .hubsubs button[aria-current="page"]{box-shadow:none;color:var(--accent);background:color-mix(in srgb,var(--accent) 10%,transparent);font-weight:700}
+.hubtabs{display:flex;gap:4px;align-items:center;overflow-x:auto;padding:5px;background:var(--panel);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);scrollbar-width:none}
+.hubtabs::-webkit-scrollbar{display:none}
+.hubtabs .hgt{font-family:var(--f-display);font-weight:800;text-transform:uppercase;font-size:18px;display:flex;align-items:center;gap:7px;padding:0 12px 0 8px;margin-right:2px;border-right:1px solid var(--line);white-space:nowrap}
+.hubtabs button{flex:0 0 auto;display:flex;align-items:center;gap:7px;border:0;background:transparent;border-radius:9px;padding:8px 13px;font-weight:600;font-size:14px;color:var(--dim);white-space:nowrap}
+.hubtabs button:hover{background:var(--panel2);color:var(--fg)}
+.hubtabs button[aria-current="page"]{background:var(--accent);color:var(--accent-fg)}
+.hubtabs .badge{background:var(--bad);color:#fff;font-size:11.5px;padding:0 7px;border-radius:10px;line-height:18px}
+/* ---- Campana i rajoles del Despatx ---- */
+.hubbell{position:relative;display:inline-flex;align-items:center;gap:6px}
+.hubbell .badge{background:var(--bad);color:#fff;font-size:11.5px;padding:0 7px;border-radius:10px;line-height:18px}
+.hubbell .badge.old{background:var(--dim)}
+.hubstrip{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(158px,100%),1fr));gap:10px}
+.hubtile{display:flex;align-items:center;gap:11px;text-align:left;padding:11px 13px;border-radius:13px;border:1px solid var(--line);background:var(--panel);box-shadow:var(--shadow);color:var(--fg);position:relative;transition:border-color .15s,transform .15s}
+.hubtile:hover{border-color:var(--tc);transform:translateY(-1px)}
+.hubtile .ti{font-size:21px;width:42px;height:42px;border-radius:11px;display:grid;place-items:center;background:color-mix(in srgb,var(--tc) 16%,transparent);flex:0 0 auto}
+.hubtile .tt{display:flex;flex-direction:column;min-width:0}
+.hubtile b{font-family:var(--f-display);font-size:26px;line-height:.95;color:var(--tc)}
+.hubtile small{color:var(--dim);font-size:12.5px;line-height:1.2}
+.hubtile.new::after{content:"";position:absolute;top:9px;right:9px;width:9px;height:9px;border-radius:50%;background:var(--bad);box-shadow:0 0 0 3px var(--panel)}
+.hubtile.calm{grid-column:1/-1;--tc:var(--good)}
+/* ---- Finestra d'avisos ---- */
+.hubm .box{width:min(720px,100%);gap:12px}
+.hubm .box>*{flex-shrink:0}
+.hubhead{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;padding:16px 18px;margin:-20px -20px 0;background:var(--board);color:var(--boardfg);border-radius:14px 14px 0 0;position:relative;overflow:hidden}
+.hubhead::before{content:"";position:absolute;inset:0 auto 0 0;width:5px;background:var(--team)}
+.hubhead h2{font-size:28px;color:var(--boardfg)}.hubhead .lbl{color:color-mix(in srgb,var(--boardfg) 70%,transparent)}
+.hubhead .btn{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.2);color:var(--boardfg)}
+.hubsum{display:flex;gap:6px;flex-wrap:wrap}
+.hubsum a{display:inline-flex;gap:5px;align-items:center;padding:4px 10px;border-radius:20px;font-size:13px;font-weight:700;text-decoration:none;color:var(--fg);background:color-mix(in srgb,var(--tc) 14%,var(--panel));border:1px solid color-mix(in srgb,var(--tc) 35%,var(--line))}
+.hubcat{border:1px solid var(--line);border-radius:12px;overflow:hidden;scroll-margin-top:10px}
+.hubcat>header{display:flex;align-items:center;gap:10px;padding:9px 12px;background:color-mix(in srgb,var(--tc) 12%,var(--panel));border-bottom:1px solid var(--line)}
+.hubcat>header .hci{font-size:19px;line-height:1}.hubcat>header b{flex:1;font-size:15px}
+.hubcat>header .muted{font-size:12.5px}
+.hubcat .hcn{background:var(--tc);color:#fff;border-radius:10px;padding:0 8px;font-size:12px;font-weight:700;line-height:20px}
+.hubcat ul{list-style:none;margin:0;padding:0}
+.hubcat li{display:flex;gap:8px 12px;align-items:center;justify-content:space-between;flex-wrap:wrap;padding:9px 12px;border-top:1px solid var(--line)}
+.hubcat li:first-child{border-top:0}
+.hubcat li.new{background:color-mix(in srgb,var(--tc) 6%,transparent);box-shadow:inset 3px 0 var(--tc)}
+.hubcat li .hit{display:flex;gap:10px;align-items:center;min-width:0;flex:1 1 240px}
+.hubcat li .hit>div{display:block;min-width:0;line-height:1.35}
+.hubcat li .hit>div .pos{margin-left:4px;vertical-align:1px}.hubcat li .hit>div .ovr{margin-left:4px}
+.hubcat li .hit small{display:block;color:var(--dim);white-space:normal}
+.hubcat li .hia{display:flex;gap:6px;flex-wrap:wrap}
+.tag.hnew{background:var(--bad);color:#fff;margin-left:6px;font-size:10px}
+.hubempty{text-align:center;padding:26px 10px;color:var(--dim);display:grid;gap:6px;justify-items:center}.hubempty span{font-size:38px}
+.hubauto{display:flex;gap:8px;align-items:center;font-size:13.5px;color:var(--dim)}
+/* ---- Infermeria ---- */
+.trt{display:grid;gap:10px}
+.trto{display:grid;grid-template-columns:auto 1fr auto;gap:4px 12px;align-items:center;padding:12px 14px;border:1px solid var(--line2);border-radius:12px;background:var(--panel2)}
+.trto .ti{font-size:24px;grid-row:1/3}.trto b{font-size:15px}.trto small{color:var(--dim);grid-column:2}
+.trto .btn{grid-row:1/3;grid-column:3}
+.trto.off{opacity:.55}
+.injbox{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap;padding:10px 12px;border-radius:10px;background:color-mix(in srgb,var(--bad) 10%,var(--panel));border:1px solid color-mix(in srgb,var(--bad) 35%,var(--line))}
+.injweeks{display:flex;gap:3px}.injweeks i{width:12px;height:12px;border-radius:3px;background:var(--bad)}.injweeks i.done{background:var(--line2)}
+@media (max-width:820px){
+  nav.menu .hubsubs{display:none}
+  body.navopen nav.menu .hubg{padding:10px 12px}
+  body.navopen nav.menu .hubg .hgl small{display:block}
+  body.navopen nav.menu .hubg .hic{font-size:22px;width:28px}
+  .hubtabs .hgt{display:none}
+  .hubhead{margin:-18px -16px 0;border-radius:16px 16px 0 0}
+  .mbar .hubbell{display:none}
+}
+</style>
+<script>
+/* ============ CENTRE DE COMANDAMENT (13/10/2026) ============
+   1. Menú agrupat: Despatx, Equip, Competició, Mercat, Club i Partida. Cada grup té pestanyes a dalt.
+   2. Avisos de la temporada: ofertes, jugadors que volen sortir, entrenadors disponibles, problemes personals, lesionats i sancionats.
+      La finestra s'obre sola un cop per jornada si hi ha novetats (es pot desactivar).
+   3. Infermeria: sessions extra de fisio, clínica especialitzada o forçar la tornada (amb risc de recaiguda). */
+const HUB_GROUPS=[
+ {k:"desp",ic:"🏠",ca:"Despatx",es:"Despacho",v:["inici"]},
+ {k:"equip",ic:"👕",ca:"Equip",es:"Equipo",v:["plantilla","alineacio","custom","entrenament","joves"]},
+ {k:"comp",ic:"🏆",ca:"Competició",es:"Competición",v:["calendari","classificacio","comp","resum","estadistiques"]},
+ {k:"merc",ic:"🤝",ca:"Mercat",es:"Mercado",v:["mercat","exjug","oficina"]},
+ {k:"club",ic:"🏟️",ca:"Club",es:"Club",v:["cos","finances","club","vitrina","equips"]},
+ {k:"part",ic:"⚙️",ca:"Partida",es:"Partida",v:["opcions"]}];
+const HUB_IC={inici:"🏠",plantilla:"📋",alineacio:"🎯",custom:"🎨",entrenament:"🏋️",joves:"🌱",calendari:"📅",classificacio:"📊",comp:"🥇",resum:"📰",estadistiques:"📈",mercat:"🔎",exjug:"🧓",oficina:"📨",cos:"🧑‍🏫",finances:"💶",club:"🏟️",vitrina:"🏅",equips:"🛠️",opcions:"💾"};
+const HUB_SL={custom:["Personalitzar","Personalizar"],mercat:["Fitxatges","Fichajes"],exjug:["Veterans i exjugadors","Veteranos y exjugadores"],oficina:["Ofertes","Ofertas"],club:["Pavelló","Pabellón"],vitrina:["Vitrina","Vitrina"],resum:["Resum de jornada","Resumen de jornada"]};
+const hubGroupOf=v=>HUB_GROUPS.find(g=>g.v.includes(v));
+const hubSub=(v,m)=>HUB_SL[v]?W(HUB_SL[v][0],HUB_SL[v][1]):(m.get(v)||[v,v])[1];
+function hubMap(items){return new Map(items.filter(x=>x[0]!=="sep").map(x=>[x[0],x]))}
+function hubNav(items){
+  const m=hubMap(items),used=new Set();ui.hubLast=ui.hubLast||{};
+  let h=HUB_GROUPS.map(G=>{const vs=G.v.filter(v=>m.has(v));if(!vs.length)return"";vs.forEach(v=>used.add(v));
+    const cur=vs.includes(view),tgt=cur?view:(vs.includes(ui.hubLast[G.k])?ui.hubLast[G.k]:vs[0]);
+    let badge=vs.reduce((s,v)=>s+(+m.get(v)[2]||0),0);if(G.k==="desp")badge+=hubFresh().length;
+    return `<button class="hubg" data-v="${tgt}" ${cur?'aria-current="page"':""}><span class="hic" aria-hidden="true">${G.ic}</span><span class="hgl">${W(G.ca,G.es)}${vs.length>1?`<small>${vs.map(v=>esc(hubSub(v,m))).join(" · ")}</small>`:""}</span>${badge?`<span class="badge">${badge}</span>`:""}</button>`+
+      (cur&&vs.length>1?`<div class="hubsubs">${vs.map(v=>`<button data-v="${v}" ${view===v?'aria-current="page"':""}><span aria-hidden="true">${HUB_IC[v]||"•"}</span>${esc(hubSub(v,m))}${m.get(v)[2]?`<span class="badge">${m.get(v)[2]}</span>`:""}</button>`).join("")}</div>`:"")}).join("");
+  const rest=items.filter(x=>x[0]!=="sep"&&!used.has(x[0]));
+  if(rest.length)h+=`<div class="sep"></div>`+rest.map(([k,l,b])=>`<button data-v="${k}" ${view===k?'aria-current="page"':""}>${l}${b?`<span class="badge">${b}</span>`:""}</button>`).join("");
+  return h;
+}
+function hubTabs(items){
+  const G=hubGroupOf(view);if(!G)return"";const m=hubMap(items),vs=G.v.filter(v=>m.has(v));if(vs.length<2)return"";
+  return `<div class="hubtabs" role="tablist" aria-label="${W(G.ca,G.es)}"><span class="hgt"><span aria-hidden="true">${G.ic}</span>${W(G.ca,G.es)}</span>${vs.map(v=>`<button role="tab" data-v="${v}" ${view===v?'aria-current="page" aria-selected="true"':'aria-selected="false"'}><span aria-hidden="true">${HUB_IC[v]||""}</span>${esc(hubSub(v,m))}${m.get(v)[2]?`<span class="badge">${m.get(v)[2]}</span>`:""}</button>`).join("")}</div>`;
+}
+function hubLabel(items){const m=hubMap(items),G=hubGroupOf(view);
+  if(!G||!m.has(view))return (items.find(x=>x[0]===view)||items[0])[1];
+  const vs=G.v.filter(v=>m.has(v));return vs.length>1?`${HUB_IC[view]||G.ic} ${esc(hubSub(view,m))}`:`${G.ic} ${W(G.ca,G.es)}`}
+
+/* ---------- Avisos ---------- */
+function hubState(){if(!S.hub)S.hub={auto:true,seen:[],at:""};if(!Array.isArray(S.hub.seen))S.hub.seen=[];return S.hub}
+const hubKey=()=>S.season+"-"+S.round+"-"+((typeof catCurrent==="function"&&catCurrent()||{}).step??"");
+const hubBusy=()=>!!document.querySelector(".modal,dialog[open]")||document.body.classList.contains("navopen");
+const hubLive=()=>!!(ui.match&&ui.match.m&&ui.match.m.live&&view==="partit");
+function coachQ(c){return !c?0:c.role==="ass"?Math.round((c.tac+c.mot)/2):c.role==="gk"?c.gk:c.you}
+function hubCoachAttrs(c){return c.role==="ass"?`${W("Tàctica","Táctica")} ${c.tac} · ${W("Motivació","Motivación")} ${c.mot}`:c.role==="gk"?`${W("Porters","Porteros")} ${c.gk}`:`${W("Formació","Formación")} ${c.you}`}
+function hubRoleName(r){return r==="ass"?W("Segon entrenador","Segundo entrenador"):r==="gk"?W("Entrenador de porters","Entrenador de porteros"):W("Entrenador de formació","Entrenador de formación")}
+function hubWho(p){return `${shield(S.teams[p.team],26)}<div><b>${esc(p.name)}</b> `}
+function hubData(){
+  const me=S.user,sq=squad(me),L=S.teams[me].lineup||[],cats=[];const plain=p=>`${pos(p.pos)} <span class="ovr" style="font-size:16px;color:${ovrCol(ovr(p))}">${ovr(p)}</span>`;
+  // Lesionats
+  const inj=sq.filter(p=>p.inj>0).sort((a,b)=>b.inj-a.inj);
+  if(inj.length)cats.push({k:"inj",ic:"✚",tone:"var(--bad)",t:W("Lesionats","Lesionados"),hint:W("Pots pagar un tractament per escurçar la baixa.","Puedes pagar un tratamiento para acortar la baja."),items:inj.map(p=>({key:"i:"+p.id,html:`${hubWho(p)}${plain(p)}<small>${W(`Baixa de ${p.inj} ${p.inj===1?"jornada":"jornades"}`,`Baja de ${p.inj} ${p.inj===1?"jornada":"jornadas"}`)}${treatOpts(p).some(o=>o.ok)?"":` · ${W("ja ha fet tots els tractaments","ya ha hecho todos los tratamientos")}`}</small></div>`,acts:[...(treatOpts(p).some(o=>o.ok)?[[W("✚ Tractament","✚ Tratamiento"),"treat:"+p.id,1]]:[]),[W("Fitxa","Ficha"),"pl:"+p.id]]}))});
+  // Sancionats
+  const sus=sq.filter(p=>p.susp>0);
+  if(sus.length)cats.push({k:"sus",ic:"🟥",tone:"var(--bad)",t:W("Sancionats","Sancionados"),items:sus.map(p=>({key:"s:"+p.id,html:`${hubWho(p)}${plain(p)}<small>${W(`${p.susp} ${p.susp===1?"partit":"partits"} de sanció`,`${p.susp} ${p.susp===1?"partido":"partidos"} de sanción`)}${L.includes(p.id)?` · <b class="bad">${W("és a l'alineació","está en la alineación")}</b>`:""}</small></div>`,acts:[[W("Alineació","Alineación"),"v:alineacio",L.includes(p.id)?1:0]]}))});
+  // Problemes personals
+  const iss=sq.filter(p=>p.issue);
+  if(iss.length)cats.push({k:"iss",ic:"💬",tone:"var(--warn)",t:W("Problemes personals","Problemas personales"),hint:W("Rendeixen menys i perden moral cada jornada.","Rinden menos y pierden moral cada jornada."),items:iss.map(p=>({key:"x:"+p.id,html:`${hubWho(p)}<span class="muted">· ${W("moral","moral")} ${Math.round(p.morale)}</span><small>${esc(p.issue.t)}.</small></div>`,acts:[...(p.issue.talked===S.round?[]:[[W("Parlar-hi","Hablar con él"),"iss:"+p.id+":talk",1]]),...(p.rest>0?[]:[[W("Donar-li festa","Darle fiesta"),"iss:"+p.id+":rest"]])]}))});
+  // Ofertes
+  const offs=S.offers.filter(o=>S.players[o.pid]&&S.players[o.pid].team===me);
+  if(offs.length)cats.push({k:"off",ic:"💰",tone:"var(--good)",t:W("Ofertes pels teus jugadors","Ofertas por tus jugadores"),items:offs.map(o=>{const p=S.players[o.pid],B=S.teams[o.from];return {key:"o:"+o.id,html:`${shield(B,26)}<div><b>${esc(B.name)}</b> → ${esc(p.name)}<small>${W("Ofereix","Ofrece")} <b class="good">${money(o.amt)}</b> · ${W("valor","valor")} ${money(valueOf(p))}${o.unsol?` · ${o.keen?`<span class="warn">${W("el jugador hi vol anar","el jugador quiere ir")}</span>`:W("el jugador no hi té interès","el jugador no tiene interés")}`:""}</small></div>`,acts:[[W("Respondre","Responder"),"v:oficina",1]]}})});
+  // Jugadors que volen sortir del seu club
+  const ref=ps=>{const xs=L.map(id=>S.players[id]).filter(x=>x&&x.pos===ps).map(ovr);return xs.length?Math.min(...xs):0};
+  const allW=Object.values(S.players).filter(p=>p.wants===S.season&&p.team!==me&&sameG(p.team,me)&&!pend().some(x=>x.pid===p.id));
+  const wants=allW.filter(p=>ovr(p)>=ref(p.pos)-3).sort((a,b)=>ovr(b)-ovr(a)).slice(0,6);
+  if(wants.length)cats.push({k:"want",ic:"🚪",tone:"var(--data)",t:W("Jugadors que volen sortir del seu club","Jugadores que quieren salir de su club"),hint:W("Són més barats i fàcils de convèncer.","Son más baratos y fáciles de convencer."),more:allW.length>wants.length?[W(`Veure'ls tots al mercat (${allW.length})`,`Verlos todos en el mercado (${allW.length})`),"mw"]:null,items:wants.map(p=>({key:"w:"+p.id+":"+S.season,html:`${hubWho(p)}${plain(p)}<small>${esc(S.teams[p.team].name)} · ${p.age<18?"&lt;18":p.age+" "+W("anys","años")} · ${W("valor","valor")} ${money(valueOf(p))}${ovr(p)>ref(p.pos)?` · <b class="good">${W("milloraria el teu cinc inicial","mejoraría tu cinco inicial")}</b>`:""}</small></div>`,acts:[[W("Fer oferta","Hacer oferta"),"pl:"+p.id,1]]}))});
+  // Entrenadors disponibles
+  if(S.club&&!isFem(me)){const H=coaches(),pool=(S.club.coachPool||[]).filter(c=>{const cur=H[c.role];return cur?coachQ(c)>=coachQ(cur)+4:coachQ(c)>=60}).sort((a,b)=>(coachQ(b)-coachQ(H[b.role]))-(coachQ(a)-coachQ(H[a.role]))).filter((c,i,A)=>A.findIndex(x=>x.role===c.role)===i);
+    if(pool.length)cats.push({k:"coach",ic:"🧑‍🏫",tone:"var(--accent)",t:W("Entrenadors interessants disponibles","Entrenadores interesantes disponibles"),items:pool.map(c=>{const cur=H[c.role];return {key:"c:"+coachKey(c.name)+":"+S.season,html:`<span class="ti" aria-hidden="true" style="font-size:22px">🧑‍🏫</span><div><b>${esc(c.name)}</b> <span class="muted">· ${hubRoleName(c.role)}</span><small>${hubCoachAttrs(c)} · ${money(c.cost)}/${W("jornada","jornada")} · ${cur?`<b class="good">${W("millor que","mejor que")} ${esc(cur.name)} (${coachQ(cur)})</b>`:`<b class="warn">${W("càrrec vacant","cargo vacante")}</b>`}</small></div>`,acts:[[W("Fitxar","Fichar"),"hire:"+c.id,1],[W("Cos tècnic","Cuerpo técnico"),"v:cos"]]}})})}
+  const seen=new Set(hubState().seen);for(const c of cats)for(const i of c.items)i.fresh=!seen.has(i.key);
+  return cats;
+}
+function hubFresh(){try{return S&&S.teams?hubData().flatMap(c=>c.items.filter(i=>i.fresh)):[]}catch(e){return[]}}
+function hubMarkSeen(cats){const H=hubState(),keys=cats.flatMap(c=>c.items.map(i=>i.key));H.seen=keys}
+function hubStrip(){
+  const cats=hubData();
+  if(!cats.length)return `<div class="hubstrip"><button class="hubtile calm" data-hubopen><span class="ti" aria-hidden="true">✅</span><span class="tt"><b style="font-size:20px">${W("Tot en ordre","Todo en orden")}</b><small>${W("No hi ha cap avís pendent aquesta jornada.","No hay ningún aviso pendiente esta jornada.")}</small></span></button></div>`;
+  const short={inj:W("lesionats","lesionados"),sus:W("sancionats","sancionados"),iss:W("problemes personals","problemas personales"),off:W("ofertes rebudes","ofertas recibidas"),want:W("volen sortir del club","quieren salir del club"),coach:W("entrenadors disponibles","entrenadores disponibles")};
+  return `<div class="hubstrip">${cats.map(c=>`<button class="hubtile ${c.items.some(i=>i.fresh)?"new":""}" data-hubopen="${c.k}" style="--tc:${c.tone}"><span class="ti" aria-hidden="true">${c.ic}</span><span class="tt"><b>${c.items.length}</b><small>${short[c.k]}</small></span></button>`).join("")}</div>`;
+}
+function hubOpen(focusCat,auto){
+  document.querySelectorAll(".hubm").forEach(x=>x.remove());
+  const cats=hubData(),H=hubState(),T=S.teams[S.user];
+  const btn=(l,a,pri)=>`<button class="btn small ${pri?"primary":""}" data-ha="${esc(a)}">${l}</button>`;
+  const d=document.createElement("div");d.className="modal hubm";
+  d.innerHTML=`<div class="box bevel" role="dialog" aria-modal="true" aria-labelledby="hubT">
+   <div class="hubhead"><div><span class="lbl">${esc(T.name)} · ${typeof catCurrent==="function"&&catCurrent()?W("Pretemporada","Pretemporada"):W("Jornada","Jornada")+" "+Math.min(S.round+1,NROUNDS())}</span><h2 id="hubT">🔔 ${W("Avisos de la temporada","Avisos de la temporada")}</h2></div><button class="btn" data-hubx aria-label="${W("Tanca","Cierra")}">✕</button></div>
+   ${cats.length>1?`<div class="hubsum">${cats.map(c=>`<a href="#hubc-${c.k}" style="--tc:${c.tone}" data-hubjump="${c.k}">${c.ic} ${c.items.length}</a>`).join("")}</div>`:""}
+   ${cats.length?cats.map(c=>`<section class="hubcat" id="hubc-${c.k}" style="--tc:${c.tone}"><header><span class="hci" aria-hidden="true">${c.ic}</span><b>${c.t}</b>${c.hint?`<span class="muted">${c.hint}</span>`:""}<span class="hcn">${c.items.length}</span></header>
+     <ul>${c.items.map(i=>`<li class="${i.fresh?"new":""}"><div class="hit">${i.html.replace(/<\/div>$/,"").replace(/(<div><b>[^<]*<\/b>)/,`$1${i.fresh?`<span class="tag hnew">${W("NOU","NUEVO")}</span>`:""}`)}</div></div><div class="hia">${i.acts.map(a=>btn(a[0],a[1],a[2])).join("")}</div></li>`).join("")}
+     ${c.more?`<li><span class="muted">${W("N'hi ha més.","Hay más.")}</span><div class="hia">${btn(c.more[0],c.more[1])}</div></li>`:""}</ul></section>`).join(""):`<div class="hubempty"><span aria-hidden="true">✅</span><b>${W("Tot en ordre","Todo en orden")}</b>${W("No hi ha ofertes, lesions, sancions ni problemes pendents.","No hay ofertas, lesiones, sanciones ni problemas pendientes.")}</div>`}
+   <label class="hubauto"><input type="checkbox" data-hubauto ${H.auto!==false?"checked":""}> ${W("Obre aquesta finestra sola quan hi hagi novetats després d'una jornada","Abre esta ventana sola cuando haya novedades después de una jornada")}</label>
+   <div class="row" style="justify-content:flex-end"><button class="btn primary" data-hubx>${W("Entesos","Entendido")}</button></div></div>`;
+  document.body.appendChild(d);hubMarkSeen(cats);H.at=hubKey();
+  if(auto&&typeof sfx==="function")try{sfx("nav")}catch(e){}
+  const close=(rr)=>{d.remove();if(rr!==false)render()};
+  d.addEventListener("click",e=>{if(e.target===d){close();return}
+    const x=e.target.closest("[data-hubx]");if(x){close();return}
+    const j=e.target.closest("[data-hubjump]");if(j){e.preventDefault();const s=d.querySelector("#hubc-"+j.dataset.hubjump);if(s)s.scrollIntoView({behavior:"smooth",block:"start"});return}
+    const b=e.target.closest("[data-ha]");if(!b)return;const [k,a,c]=b.dataset.ha.split(":");
+    if(k==="v"){d.remove();view=a;ui.selSlot=null;render();window.scrollTo(0,0);return}
+    if(k==="mw"){d.remove();ui.mWant=true;ui.mQ="";view="mercat";render();window.scrollTo(0,0);return}
+    if(k==="pl"){d.remove();render();playerModal(a);return}
+    if(k==="iss"){d.remove();issueAct(a,c);hubOpen("iss");return}
+    if(k==="hire"){d.remove();hireCoach(a);hubOpen("coach");return}
+    if(k==="treat"){d.remove();treatOpen(a,()=>hubOpen("inj"));return}
+  });
+  d.querySelector("[data-hubauto]").onchange=e=>{H.auto=e.target.checked;save()};
+  d.addEventListener("keydown",e=>{if(e.key==="Escape")close()});
+  save();
+  const f=focusCat&&d.querySelector("#hubc-"+focusCat);if(f)setTimeout(()=>f.scrollIntoView({block:"start"}),30);
+  d.querySelector("[data-hubx]").focus();
+}
+
+/* ---------- Infermeria ---------- */
+function treatOpts(p){
+  const C=S.club,fis=C&&C.staff?C.staff.fisio||0:0,T=p.treat||{},bud=S.teams[S.user].budget;
+  const k=[.45,.45,.6,.8,1,1.3][clamp(Math.round(S.teams[S.user].rep||3),0,5)],cst=v=>Math.round(v*k*10)/10;
+  const o=[
+   {k:"fis",ic:"💆",l:W("Sessions extra de fisioteràpia","Sesiones extra de fisioterapia"),d:W(`Recupera 1 jornada abans.${fis?" El fisio del club abarateix el preu.":""}`,`Se recupera 1 jornada antes.${fis?" El fisio del club abarata el precio.":""}`),w:1,cost:cst([1.6,1.1,.7][Math.min(fis,2)]),ok:!T.fis&&p.inj>=1},
+   {k:"cli",ic:"🏥",l:W("Clínica especialitzada","Clínica especializada"),d:W("Tractament intensiu fora del club: recupera la meitat del temps de baixa.","Tratamiento intensivo fuera del club: recupera la mitad del tiempo de baja."),w:Math.max(2,Math.floor(p.inj/2)),cost:cst(3.5+p.inj*.6),ok:!T.cli&&p.inj>=3},
+   {k:"for",ic:"⚡",l:W("Forçar la tornada","Forzar la vuelta"),d:W("Pot jugar ja la propera jornada, però amb menys energia i un 25 % de risc de recaiguda cada partit durant 3 jornades.","Puede jugar ya la próxima jornada, pero con menos energía y un 25 % de riesgo de recaída cada partido durante 3 jornadas."),w:p.inj,cost:0,ok:!T.for&&p.inj>=1&&p.inj<=3}];
+  for(const x of o){if(x.ok&&x.cost>bud){x.ok=false;x.why=W("No hi ha prou pressupost","No hay suficiente presupuesto")}
+    else if(!x.ok)x.why=T[x.k]?W("Ja s'ha fet","Ya se ha hecho"):x.k==="cli"?W("Només per a baixes de 3 jornades o més","Solo para bajas de 3 jornadas o más"):x.k==="for"?W("Només per a baixes curtes (fins a 3 jornades)","Solo para bajas cortas (hasta 3 jornadas)"):""}
+  return o;
+}
+function treatApply(pid,k){
+  const p=S.players[pid];if(!p||p.team!==S.user||!(p.inj>0))return;const x=treatOpts(p).find(o=>o.k===k);if(!x||!x.ok)return;
+  p.treat={...(p.treat||{}),[k]:true};const T=S.teams[S.user];
+  if(x.cost){T.budget=Math.round((T.budget-x.cost)*100)/100;if(S.club)S.club.oneoff=(S.club.oneoff||0)-x.cost}
+  if(k==="for"){p.forced={n:3,w:p.inj};p.inj=0;p.energy=Math.min(p.energy,72);
+    pushNews(W(`INFERMERIA: ${p.name} forçarà la tornada. Ja pot jugar, però hi ha risc de recaiguda.`,`ENFERMERÍA: ${p.name} forzará la vuelta. Ya puede jugar, pero hay riesgo de recaída.`),true);
+    toast(W(`${p.name} ja està disponible (amb risc)`,`${p.name} ya está disponible (con riesgo)`))}
+  else{p.inj=Math.max(0,p.inj-x.w);
+    pushNews(W(`INFERMERIA: ${p.name} fa ${k==="fis"?"sessions extra de fisio":"tractament en una clínica especialitzada"} (${money(x.cost)}). ${p.inj?`Li queden ${p.inj} ${p.inj===1?"jornada":"jornades"} de baixa.`:"Ja està recuperat."}`,`ENFERMERÍA: ${p.name} hace ${k==="fis"?"sesiones extra de fisio":"tratamiento en una clínica especializada"} (${money(x.cost)}). ${p.inj?`Le quedan ${p.inj} ${p.inj===1?"jornada":"jornadas"} de baja.`:"Ya está recuperado."}`),true);
+    toast(p.inj?W(`${p.name}: ${p.inj} ${p.inj===1?"jornada":"jornades"} de baixa`,`${p.name}: ${p.inj} ${p.inj===1?"jornada":"jornadas"} de baja`):W(`${p.name} ja està recuperat!`,`¡${p.name} ya está recuperado!`))}
+  if(typeof sfx==="function")try{sfx("ok")}catch(e){}
+  if(!p.inj&&typeof autoFix==="function")autoFix(S.user);
+  save();
+}
+function treatOpen(pid,after){
+  const p=S.players[pid];if(!p)return;const opts=treatOpts(p),tot=Math.max(p.inj,(p.injMax||p.inj));
+  const d=document.createElement("div");d.className="modal";
+  d.innerHTML=`<div class="box bevel" role="dialog" aria-modal="true" aria-labelledby="trtT">
+   <div class="row" style="gap:12px;flex-wrap:nowrap">${shield(S.teams[p.team],40)}<div style="flex:1;min-width:0"><span class="lbl">${W("Infermeria","Enfermería")}</span><h2 id="trtT">${esc(p.name)}</h2></div></div>
+   <div class="injbox"><div><b class="bad">✚ ${W(`Baixa de ${p.inj} ${p.inj===1?"jornada":"jornades"}`,`Baja de ${p.inj} ${p.inj===1?"jornada":"jornadas"}`)}</b><div class="muted" style="font-size:13px">${W("Pressupost","Presupuesto")}: ${budgetAmount(S.teams[S.user].budget)}</div></div><div class="injweeks" aria-hidden="true">${Array.from({length:Math.min(tot,12)},(_,i)=>`<i class="${i<tot-p.inj?"done":""}"></i>`).join("")}</div></div>
+   <div class="trt">${opts.map(o=>`<div class="trto ${o.ok?"":"off"}"><span class="ti" aria-hidden="true">${o.ic}</span><b>${o.l}${o.k!=="for"?` <span class="good" style="font-weight:600">−${o.w} ${o.w===1?W("jornada","jornada"):W("jornades","jornadas")}</span>`:""}</b>
+     <small>${o.d}${o.why?` <b>${o.why}.</b>`:""}</small>
+     <button class="btn ${o.ok?"primary":""}" data-tr="${o.k}" ${o.ok?"":"disabled"}>${o.cost?money(o.cost):W("Gratis","Gratis")}</button></div>`).join("")}</div>
+   <p class="muted" style="margin:0;font-size:13px">${W("Cada tractament es pot fer un cop per lesió. El preu depèn de la mida del club i surt a «Altres» de les finances de la propera jornada.","Cada tratamiento se puede hacer una vez por lesión. El precio depende del tamaño del club y aparece en «Otros» en las finanzas de la próxima jornada.")}</p>
+   <div class="row" style="justify-content:flex-end"><button class="btn" data-trx>${W("Tancar","Cerrar")}</button></div></div>`;
+  document.body.appendChild(d);
+  const close=()=>{d.remove();if(after)after();else render()};
+  d.addEventListener("click",e=>{if(e.target===d||e.target.closest("[data-trx]")){close();return}
+    const b=e.target.closest("[data-tr]");if(b&&!b.disabled){treatApply(pid,b.dataset.tr);close()}});
+  d.addEventListener("keydown",e=>{if(e.key==="Escape")close()});
+  d.querySelector("[data-trx]").focus();
+}
+/* Recaigudes dels que han forçat la tornada; els tractaments es reinicien quan el jugador es recupera */
+const _finishRoundHub=finishRound;
+finishRound=function(um){
+  const me=S.user,before={};for(const p of squad(me))before[p.id]=p.apps;
+  for(const p of squad(me))if(p.inj>0)p.injMax=Math.max(p.injMax||0,p.inj);
+  const r=_finishRoundHub.apply(this,arguments);
+  for(const p of squad(me)){
+    if(p.forced){if(p.apps>(before[p.id]??p.apps)&&R()<.25){const w=Math.max(2,Math.ceil(p.forced.w*1.5));p.inj=Math.max(p.inj,w);p.forced=null;p.treat={for:true};
+        pushNews(W(`RECAIGUDA: ${p.name} es torna a fer mal. Baixa de ${w} jornades.`,`RECAÍDA: ${p.name} vuelve a lesionarse. Baja de ${w} jornadas.`),true)}
+      else if(--p.forced.n<=0)p.forced=null}
+    if(p.inj>0)p.injMax=Math.max(p.injMax||0,p.inj);
+    if(!(p.inj>0)&&!p.forced){if(p.treat)delete p.treat;if(p.injMax)delete p.injMax}
+  }
+  return r;
+};
+/* Fitxa del jugador: bloc d'infermeria */
+const _pmHub=playerModal;
+playerModal=function(pid){
+  const r=_pmHub.apply(this,arguments);const p=S&&S.players[pid];
+  if(p&&p.team===S.user&&(p.inj>0||p.forced)){const box=[...document.querySelectorAll(".modal .box")].pop();
+    if(box){const div=document.createElement("div");div.className="injbox";
+      div.innerHTML=p.inj>0?`<span><b class="bad">✚ ${W(`Lesionat · ${p.inj} ${p.inj===1?"jornada":"jornades"} de baixa`,`Lesionado · ${p.inj} ${p.inj===1?"jornada":"jornadas"} de baja`)}</b></span>${treatOpts(p).some(o=>o.ok)?`<button class="btn small primary" data-treat>✚ ${W("Tractament mèdic","Tratamiento médico")}</button>`:`<span class="muted">${W("Ja ha fet tots els tractaments possibles.","Ya ha hecho todos los tratamientos posibles.")}</span>`}`
+        :`<span><b class="warn">⚡ ${W(`Ha forçat la tornada: risc de recaiguda (${p.forced.n} ${p.forced.n===1?"jornada":"jornades"} més)`,`Ha forzado la vuelta: riesgo de recaída (${p.forced.n} ${p.forced.n===1?"jornada":"jornadas"} más)`)}</b></span>`;
+      const det=box.querySelector("details");box.insertBefore(div,det||null);
+      const b=div.querySelector("[data-treat]");if(b)b.onclick=()=>{box.closest(".modal").remove();treatOpen(pid)}}}
+  return r;
+};
+/* Despatx: rajoles d'avisos a dalt */
+const _vIniciHub=VIEWS.inici;VIEWS.inici=()=>hubStrip()+_vIniciHub();
+/* Botó d'avisos a la capçalera i obertura automàtica */
+const _renderHub=render;
+render=function(){
+  const r=_renderHub.apply(this,arguments);
+  if(MODE==="fantasy"||!S||S.fired||!S.teams||!document.querySelector("header.top"))return r;
+  const G=hubGroupOf(view);if(G){ui.hubLast=ui.hubLast||{};ui.hubLast[G.k]=view}
+  const cats=hubData(),n=cats.reduce((s,c)=>s+c.items.length,0),fresh=cats.reduce((s,c)=>s+c.items.filter(i=>i.fresh).length,0);
+  const mk=lbl=>{const b=document.createElement("button");b.className="btn hubbell";b.dataset.hubopen="";b.setAttribute("aria-label",W(`Avisos: ${n}`,`Avisos: ${n}`));b.innerHTML=`🔔${lbl?`<span class="hbl">${W("Avisos","Avisos")}</span>`:""}${n?`<span class="badge ${fresh?"":"old"}">${n}</span>`:""}`;return b};
+  const top=document.querySelector("header.top"),ref=top.querySelector("[data-manual-save]")||top.querySelector("#bMenu");if(ref)top.insertBefore(mk(true),ref);
+  document.querySelectorAll("[data-hubopen]").forEach(b=>b.onclick=()=>{if(hubLive())return;hubOpen(b.dataset.hubopen||null)});
+  const H=hubState();
+  if(fresh&&H.auto!==false&&H.at!==hubKey()&&view!=="partit"&&!hubLive()&&!hubBusy())setTimeout(()=>{if(!hubBusy()&&view!=="partit"&&!hubLive())hubOpen(null,true)},350);
+  return r;
+};
+try{if(S&&MODE!=="fantasy")render()}catch(e){console.warn(e)}
+</script>
+<style>
+.ymf{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.ymf select,.ymf input{min-height:36px}
+.ymcats{display:flex;gap:6px;flex-wrap:wrap}
+.ymprog{font-weight:700;color:var(--good)}
+.ymint{display:inline-flex;align-items:center;gap:5px;font-size:13px;font-weight:600}
+.ymint i{width:9px;height:9px;border-radius:50%;background:var(--tc)}
+.ymbanner{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap;padding:12px 16px;border-radius:12px;background:linear-gradient(135deg,color-mix(in srgb,var(--good) 14%,var(--panel)),var(--panel));border:1px solid color-mix(in srgb,var(--good) 35%,var(--line))}
+.ymbanner b{font-size:15px}.ymbanner span{color:var(--dim);font-size:13.5px}
+.ycto{font-size:12px;color:var(--dim);margin-top:3px;white-space:normal;max-width:260px}
+</style>
+<script>
+/* ============ FITXAR JOVES D'ALTRES CLUBS I CEDIR-LOS (13/10/2026) ============
+   - Mercat de joves: juvenils, júniors i joves sèniors de tots els clubs amb dades a les federacions.
+     El jove fitxat passa a la pedrera del club (es guarda a S.yprog[id].to; les dades originals no canvien).
+   - Una mateixa persona pot sortir a dos clubs (mateix nom i mateixa edat): compta com una sola i,
+     quan la fitxes, les altres entrades queden fora (out/up) perquè cap club la pugui pujar.
+   - Cessions per a tots els joves de fins a 21 anys, també a Nacional Catalana i a l'OK Liga Plata. */
+const YM_MAX=4;
+const YM_CATS={JJ:{ca:"Juvenils i júniors",es:"Juveniles y júniors",k:["JVO","JVP","JOR","JPL","JUN"]},JUV:{ca:"Juvenils",es:"Juveniles",k:["JVO","JVP"]},JUN:{ca:"Júniors",es:"Júniors",k:["JOR","JPL","JUN"]},SEN:{ca:"Sèniors catalanes",es:"Séniors catalanas",k:["NAC","1A","2A","3A","AUT1"]},TOT:{ca:"Totes",es:"Todas",k:null}};
+CESS.NAC={n:()=>W("Nacional Catalana","Nacional Catalana"),min:58,f:1.2};
+CESS.PL={n:()=>W("OK Liga Plata","OK Liga Plata"),min:62,f:1.35};
+const yPersonKey=y=>yNorm(y[1])+"|"+(y[5]<0?"m":y[5]);
+let _yPers=null;
+function yPersons(){if(_yPers)return _yPers;_yPers=new Map();for(const y of YOUTH0){const k=yPersonKey(y);if(!_yPers.has(k))_yPers.set(k,[]);_yPers.get(k).push(y[0])}return _yPers}
+const yHomeOf=y=>{const o=yState()[y[0]];return o&&o.to?o.to:y[2]};
+/* Les entrades fitxades canvien de club; en carregar una altra partida es restauren */
+const _yApplyYM=yApply;
+yApply=function(){_yApplyYM();
+  for(let i=0;i<YOUTH.length;i++){YOUTH[i][2]=YOUTH0[i][2];YOUTH[i][4]=YOUTH0[i][4]}
+  if(S&&S.yprog){const idx=new Map(YOUTH.map(y=>[y[0],y]));for(const [id,o] of Object.entries(S.yprog))if(o&&o.to){const y=idx.get(+id);if(y){y[2]=o.to;y[4]=o.toName||y[4]}}}
+  yDedupeMine();yTakenKey=""};
+/* Si un jove de la teva pedrera també surt a la plantilla d'un altre club, aquella altra entrada queda bloquejada */
+function yDedupeMine(){if(!S||!S.user||!S.teams||!S.teams[S.user])return;const mine=yClub(S.user),st=yState();
+  for(const y of YOUTH){if(y[2]!==mine)continue;const o=st[y[0]];if(o&&(o.out||o.up))continue;
+    const ids=yPersons().get(yPersonKey(y))||[];if(ids.length<2)continue;
+    for(const did of ids)if(did!==y[0]){const d=yst(did);if(!d.to&&!d.up){d.out=1;d.up=1;d.dupOf=y[0]}}}}
+function ymRep(code){const t=S.teams[code]||S.teams[(Object.entries(YCLUB).find(([k,v])=>v===code)||[])[0]];return t?t.rep||1:1}
+function ymFee(y){const r=ymRep(y[2]);let f=Math.pow(Math.max(0,y[8]-55),2)/140+Math.max(0,yCur(y)-50)*.04;f*=r>=4?1.6:r>=3?1.3:1;return Math.max(.3,Math.round(f*10)/10)}
+function ymChance(y){const me=S.teams[S.user],r=ymRep(y[2]);
+  let c=.5+.12*((me.rep||1)-r)+(divOf(S.user)==="OK"?.1:0)-(y[8]>=80?.12:0)-(y[5]<0?.05:0);return clamp(c,.1,.92)}
+function ymTaken(){const s=new Set();for(const p of Object.values(S.players))s.add(yNorm(p.name));return s}
+/* Llista del mercat: una entrada per persona, sense els del teu club ni els que ja juguen en algun equip */
+function ymList(){
+  const mine=yClub(S.user),st=yState(),taken=ymTaken(),seen=new Set(),out=[];
+  const myPeople=new Set(youthOf(S.user).map(yPersonKey));
+  for(const y of YOUTH){const o=st[y[0]];if(o&&(o.up||o.out||o.to))continue;if(y[2]===mine)continue;
+    if(y[5]>21||(!y[5]&&!["JVO","JVP","JOR","JPL","JUN"].includes(y[3])))continue;
+    const k=yPersonKey(y);if(myPeople.has(k)||taken.has(yNorm(y[1])))continue;
+    if(seen.has(k)){const j=out.findIndex(x=>yPersonKey(x)===k);if(j>=0&&yCur(y)>yCur(out[j]))out[j]=y;continue}
+    seen.add(k);out.push(y)}
+  return out;
+}
+function ymSignedThisSeason(){return Object.values(yState()).filter(o=>o&&o.signed===S.season).length}
+function ySign(id){
+  const y=YOUTH.find(x=>x[0]===id);if(!y||isFem(S.user))return;const o=yst(id),me=S.teams[S.user],key=S.season*100+S.round;
+  if(o.to||o.up||o.out){toast(W("Aquest jugador ja no està disponible.","Este jugador ya no está disponible."));return}
+  if(ymSignedThisSeason()>=YM_MAX){toast(W(`Aquesta temporada ja has fitxat ${YM_MAX} joves. Més no hi caben als equips de base.`,`Esta temporada ya has fichado ${YM_MAX} jóvenes. No caben más en los equipos de base.`));return}
+  if(o.try===key){toast(W(`Ja n'has parlat aquesta jornada. Torna-ho a provar després del proper partit.`,`Ya has hablado esta jornada. Vuelve a intentarlo después del próximo partido.`));return}
+  const fee=ymFee(y);if(me.budget<fee){toast(W("No tens prou pressupost per pagar els drets de formació.","No tienes presupuesto suficiente para pagar los derechos de formación."));return}
+  o.try=key;
+  if(R()>=ymChance(y)){const why=[W("la família prefereix que continuï al seu club","la familia prefiere que siga en su club"),W("el club no el vol deixar marxar","el club no quiere dejarle marchar"),W("vol acabar la temporada amb els seus companys","quiere acabar la temporada con sus compañeros")][hash(y[1]+key)%3];
+    toast(W(`${y[1]} diu que no: ${why}.`,`${y[1]} dice que no: ${why}.`));if(typeof sfx==="function")try{sfx("no")}catch(e){}save();render();return}
+  me.budget=Math.round((me.budget-fee)*100)/100;if(S.club)S.club.oneoff=(S.club.oneoff||0)-fee;
+  Object.assign(o,{to:yClub(S.user),toName:me.name,from:y[2],fromName:y[4],signed:S.season,fee});delete o.try;
+  y[2]=o.to;y[4]=o.toName;
+  for(const did of yPersons().get(yPersonKey(y))||[])if(did!==id){const d=yst(did);d.out=1;d.up=1;d.dupOf=id}
+  yTakenKey="";
+  pushNews(W(`PEDRERA: fitxem ${y[1]} (${o.fromName}, ${YLV[y[3]]}). Drets de formació: ${money(fee)}.`,`CANTERA: fichamos a ${y[1]} (${o.fromName}, ${YLV[y[3]]}). Derechos de formación: ${money(fee)}.`),true);
+  toast(W(`${y[1]} s'incorpora a la pedrera!`,`¡${y[1]} se incorpora a la cantera!`));if(typeof sfx==="function")try{sfx("ok")}catch(e){}
+  save();render();
+}
+function ymView(){
+  if(isFem(S.user))return `<section class="bevel panel"><h2>${W("Joves d'altres clubs","Jóvenes de otros clubes")}</h2><p style="margin:0">${W("Les dades de categories inferiors que fem servir són de les competicions masculines.","Los datos de categorías inferiores que usamos son de las competiciones masculinas.")}</p></section>`;
+  ui.ym=ui.ym||{cat:"JJ",pos:"TOT",prog:0,sort:"prog",q:""};const F=ui.ym,c=coachOf(S.user,"youth"),exact=c&&c.you>=70;
+  const ks=YM_CATS[F.cat].k,q=(F.q||"").toLowerCase();
+  let L=ymList().filter(y=>(!ks||ks.includes(y[3]))&&(F.pos==="TOT"||y[6]===F.pos)&&y[8]-yCur(y)>=F.prog&&(!q||y[1].toLowerCase().includes(q)||String(y[4]).toLowerCase().includes(q)));
+  L.sort((a,b)=>F.sort==="pot"?b[8]-a[8]||yCur(b)-yCur(a):F.sort==="ovr"?yCur(b)-yCur(a)||b[8]-a[8]:(b[8]-yCur(b))-(a[8]-yCur(a))||b[8]-a[8]);
+  const n=L.length;L=L.slice(0,80);
+  const pot=y=>exact?`<b class="num">${y[8]-1}–${Math.min(99,y[8]+2)}</b>`:`<span class="stars" style="font-size:13px">${stars(youthStars(y))}</span>`;
+  const prog=y=>{const d=y[8]-yCur(y);return `<span class="ymprog">▲ ${exact?d:"~"+Math.max(0,Math.round(d/3)*3)}</span>`};
+  const intr=y=>{const ch=ymChance(y);const [l,t]=ch>=.65?[W("Alt","Alto"),"var(--good)"]:ch>=.4?[W("Mitjà","Medio"),"var(--warn)"]:[W("Baix","Bajo"),"var(--bad)"];return `<span class="ymint" style="--tc:${t}"><i></i>${l}</span>`};
+  const used=ymSignedThisSeason(),key=S.season*100+S.round;
+  const opt=(k,v,l)=>`<option value="${v}" ${String(F[k])===String(v)?"selected":""}>${l}</option>`;
+  return `<section class="bevel panel"><div class="row" style="justify-content:space-between"><h2>${W("Joves d'altres clubs","Jóvenes de otros clubes")}</h2><span class="muted">${W("Fitxats aquesta temporada","Fichados esta temporada")}: <b>${used}/${YM_MAX}</b> · ${W("Pressupost","Presupuesto")} ${budgetAmount(S.teams[S.user].budget)}</span></div>
+   <p class="muted" style="margin:0;max-width:80ch">${W("Juvenils i júniors (i joves de fins a 21 anys) d'altres clubs, segons les plantilles de les federacions. Si un vol venir, pagues uns drets de formació i passa a la teva pedrera: creix amb el teu entrenador de formació, el pots cedir a un altre equip i el pots pujar al primer equip quan estigui preparat. Els juvenils segueixen la norma de sempre: fins als 18 anys, o després d'una temporada cedits amb 62 de mitjana, no poden jugar al primer equip.","Juveniles y júniors (y jóvenes de hasta 21 años) de otros clubes, según las plantillas de las federaciones. Si uno quiere venir, pagas unos derechos de formación y pasa a tu cantera: crece con tu entrenador de formación, lo puedes ceder a otro equipo y subirlo al primer equipo cuando esté preparado. Los juveniles siguen la norma de siempre: hasta los 18 años, o tras una temporada cedidos con 62 de media, no pueden jugar en el primer equipo.")}${exact?"":` ${W("Amb un entrenador de formació de 70 o més veuràs el potencial exacte.","Con un entrenador de formación de 70 o más verás el potencial exacto.")}`}</p>
+   <div class="ymcats">${Object.entries(YM_CATS).map(([k,v])=>`<button class="btn small ${F.cat===k?"primary":""}" data-ymcat="${k}">${W(v.ca,v.es)}</button>`).join("")}</div>
+   <div class="ymf"><input type="search" data-ymf="q" value="${esc(F.q||"")}" placeholder="${W("Jugador o club","Jugador o club")}" aria-label="${W("Cerca","Busca")}">
+    <select data-ymf="pos" aria-label="${W("Posició","Posición")}">${opt("pos","TOT",W("Totes les posicions","Todas las posiciones"))}${opt("pos","POR","POR")}${opt("pos","JUG","JUG")}</select>
+    <select data-ymf="prog" aria-label="${W("Progressió","Progresión")}">${opt("prog",0,W("Qualsevol progressió","Cualquier progresión"))}${opt("prog",6,W("Progressió bona (▲6+)","Progresión buena (▲6+)"))}${opt("prog",10,W("Progressió molt bona (▲10+)","Progresión muy buena (▲10+)"))}${opt("prog",14,W("Gran projecte (▲14+)","Gran proyecto (▲14+)"))}</select>
+    <select data-ymf="sort" aria-label="${W("Ordena","Ordena")}">${opt("sort","prog",W("Ordena per progressió","Ordena por progresión"))}${opt("sort","pot",W("Ordena per potencial","Ordena por potencial"))}${opt("sort","ovr",W("Ordena per mitjana","Ordena por media"))}</select></div>
+   <div class="scroll"><table><thead><tr><th>Pos</th><th>${W("Jugador","Jugador")}</th><th>${W("Club i categoria","Club y categoría")}</th><th class="r">${W("Edat","Edad")}</th><th class="r">Med</th><th>${W("Potencial","Potencial")}</th><th>${W("Progressió","Progresión")}</th><th>${W("Interès","Interés")}</th><th></th></tr></thead><tbody>
+   ${L.length?L.map(y=>{const o=yState()[y[0]]||{},tried=o.try===key;return `<tr><td>${pos(y[6])}</td><td><b>${esc(y[1])}</b> ${flag(y[12])}<br><span class="muted" style="font-size:12.5px">${y[9]?`${y[9]} PJ · ${y[10]} G · ${y[11]} A`:W("sense partits","sin partidos")}</span></td><td style="white-space:normal;min-width:150px"><span>${esc(y[4])}</span><br><span class="muted">${esc(YLV[y[3]])}</span></td><td class="r">${y[5]?(yAge(y)<18?"&lt;18":yAge(y)):"–"}</td><td class="r"><span class="ovr" style="color:${ovrCol(yCur(y))}">${yCur(y)}</span></td><td>${pot(y)}</td><td>${prog(y)}</td><td>${intr(y)}</td>
+     <td><button class="btn small ${tried?"":"primary"}" data-ysign="${y[0]}" ${tried||used>=YM_MAX?"disabled":""} title="${tried?W("Ja n'has parlat aquesta jornada","Ya has hablado esta jornada"):W("Drets de formació","Derechos de formación")}">${tried?W("Ho pensarà","Lo pensará"):W("Fitxar","Fichar")}</button><div class="muted" style="font-size:12px;margin-top:2px">${money(ymFee(y))}</div></td></tr>`}).join(""):`<tr><td colspan="9" class="muted">${W("Cap jugador amb aquest filtre.","Ningún jugador con este filtro.")}</td></tr>`}
+   </tbody></table></div>
+   ${n>L.length?`<p class="muted" style="margin:0">${W(`Es mostren els ${L.length} primers de ${n}. Afina els filtres per veure'n d'altres.`,`Se muestran los ${L.length} primeros de ${n}. Afina los filtros para ver otros.`)}</p>`:""}
+   <p class="muted" style="margin:0;font-size:12.5px">${W(`Pots fitxar fins a ${YM_MAX} joves per temporada i parlar amb cada un un cop per jornada. Un mateix jugador que surt a dues plantilles compta com un de sol. Mitjanes, potencial, preus i interès són estimacions del joc.`,`Puedes fichar hasta ${YM_MAX} jóvenes por temporada y hablar con cada uno una vez por jornada. Un mismo jugador que aparece en dos plantillas cuenta como uno solo. Medias, potencial, precios e interés son estimaciones del juego.`)}</p></section>`;
+}
+VIEWS.ymercat=()=>ymView();
+document.addEventListener("click",e=>{if(!S||MODE==="fantasy")return;
+  const s=e.target.closest("[data-ysign]");if(s&&!s.disabled){ySign(+s.dataset.ysign);return}
+  const c=e.target.closest("[data-ymcat]");if(c){ui.ym=ui.ym||{};ui.ym.cat=c.dataset.ymcat;render()}});
+document.addEventListener("change",e=>{const t=e.target.closest&&e.target.closest("[data-ymf]");if(!t||!S)return;ui.ym=ui.ym||{};const k=t.dataset.ymf;ui.ym[k]=k==="prog"?+t.value:t.value;render()});
+/* Cessions per a tots els joves de fins a 21 anys, amb un equip concret de destinació */
+const yCessOk=y=>isJuv(y)||y[5]<0||(y[5]>0&&yAge(y)<=21)||(!y[5]&&["JOR","JPL","JUN"].includes(y[3]));
+function yCessTeam(cat,id){const mine=yClub(S.user);let names;
+  if(cat==="PL")names=Object.values(S.teams).filter(t=>["PN","PS"].includes(divOf(t.id))&&!t.filial&&t.id!==filialOf(S.user)).map(t=>t.name);
+  else names=[...new Set(YOUTH0.filter(y=>y[3]===cat&&y[2]!==mine).map(y=>y[4]))];
+  return names.length?names[hash(String(id)+"|"+cat+"|"+S.season)%names.length]:"";}
+const _setCessYM=setCess;
+setCess=function(id,v){const before=yst(id).cess;_setCessYM(id,v);const o=yst(id);
+  if(o.cess&&o.cess!==before){o.cteam=yCessTeam(o.cess,id);const y=YOUTH.find(x=>x[0]===id);
+    if(o.cteam&&S.news[0]&&y&&S.news[0].t.includes(y[1]))S.news[0].t=S.news[0].t.replace(/\.$/,"")+W(` (${o.cteam}).`,` (${o.cteam}).`);save();render()}
+  else if(!o.cess&&o.cteam){delete o.cteam;save()}};
+const _yActYM=yActions;
+yActions=function(y){let h=_yActYM(y);const o=yst(y[0]);
+  if(!isJuv(y)&&!o.cess&&yCessOk(y)){const cs=`<select data-ycess="${y[0]}" aria-label="${W("Cessió","Cesión")}" style="padding:3px 6px;font-size:13px"><option value="">${W("Sense cessió","Sin cesión")}</option>${Object.keys(CESS).map(k=>`<option value="${k}">${W("Cedit a ","Cedido en ")}${CESS[k].n()}${cessTag(k,y)}</option>`).join("")}</select>`;
+    h=h.replace('<select data-ytec',cs+'<select data-ytec')}
+  const extra=[o.cess&&o.cteam?`→ ${W("cedit al","cedido en el")} <b>${esc(o.cteam)}</b>`:"",o.from?`✍ ${W("fitxat del","fichado del")} ${esc(o.fromName||o.from)} (${o.signed}-${String((o.signed+1)%100).padStart(2,"0")})`:""].filter(Boolean);
+  return h+(extra.length?`<div class="ycto">${extra.join(" · ")}</div>`:"")};
+/* Joves promeses: accés directe al mercat de joves */
+const _yViewYM=youthView;
+youthView=function(){return (isFem(S.user)?"":`<div class="ymbanner"><div><b>🔎 ${W("Busques talent fora de casa?","¿Buscas talento fuera de casa?")}</b><br><span>${W("Fitxa juvenils i júniors d'altres clubs per a la teva pedrera i cedeix-los fins que estiguin formats.","Ficha juveniles y júniors de otros clubes para tu cantera y cédelos hasta que estén formados.")}</span></div><button class="btn primary" data-v="ymercat">${W("Joves d'altres clubs","Jóvenes de otros clubes")} ▸</button></div>`)+_yViewYM()};
+/* Menú: el mercat de joves va dins de Mercat */
+{const g=HUB_GROUPS.find(x=>x.k==="merc");if(g&&!g.v.includes("ymercat"))g.v.splice(2,0,"ymercat");HUB_IC.ymercat="🌱";HUB_SL.ymercat=["Joves d'altres clubs","Jóvenes de otros clubes"]}
+_yS=null;try{if(S&&MODE!=="fantasy")render()}catch(e){console.warn(e)}
+</script>
 </body>
 </html>

@@ -14,6 +14,8 @@
     "test:updates": "node --test tests/app-updates.test.mjs tests/service-worker.test.mjs",
     "test:catalan": "node --test tests/catalan-league.test.mjs",
     "test:budget": "node --test tests/negative-budget.test.mjs",
-    "test:age-preview": "node --test tests/age-preview.test.mjs"
+    "test:age-preview": "node --test tests/age-preview.test.mjs",
+    "test:hub": "node --test tests/season-hub.test.mjs",
+    "test:youth-market": "node --test tests/youth-market.test.mjs"
   }
 }
