@@ -10,3 +10,6 @@
   Cache-Control: no-cache
 /data/app-version.json
   Cache-Control: no-cache
+
+/manifest.webmanifest
+  Cache-Control: no-cache
