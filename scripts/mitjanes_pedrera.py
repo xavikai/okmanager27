@@ -9,11 +9,16 @@ Com més avança la temporada, més pes tenen els partits de l'actual (un partit
 Els jugadors sense partits es queden aproximadament on eren dins de la seva categoria.
 """
 import json, re, sys
-BAND = {"JVP": (44, 48), "JVO": (49, 54), "3A": (55, 60), "JPL": (55, 58), "JUN": (56, 60), "AUT1": (56, 61),
+# Juvenils: franja segons l'edat. Els que també surten a una plantilla infantil (YINF) tenen edat d'infantil.
+BAND = {"JVP": (44, 48), "JVO": (49, 54), "JVP_J": (49, 52), "JVO_J": (55, 58), "3A": (55, 60), "JPL": (55, 58), "JUN": (56, 60), "AUT1": (56, 61),
         "2A": (57, 63), "JOR": (57, 62), "1A": (60, 66), "NAC": (63, 68)}
 LV = {"NAC": 6.0, "1A": 5.0, "2A": 4.0, "JOR": 3.8, "3A": 3.0, "JPL": 2.8, "JVO": 2.5, "JVP": 1.6, "IOR": 1.4, "IPL": 0.9}
 # Mitges ajustades a mà per l'usuari: no es toquen
 FIXED_NAMES = {"Joel Bancells", "Ot Caimel", "Lluc Oller", "Aran Faig", "Genis Fugarolas", "Grau Sousa", "Martin Sillero", "Sergi Munso"}
+
+def infantils(html):
+    line = next((l for l in html.split("\n") if l.startswith("const YINF=")), None)
+    return set(json.loads(line[len("const YINF=new Set("):].rstrip().rstrip(";").rstrip(")"))) if line else set()
 
 def youth_rows(html):
     line = next(l for l in html.split("\n") if l.startswith("const YOUTH="))
@@ -33,6 +38,7 @@ def main():
     stats = json.load(open(sys.argv[2]))
     cur = max(r[1] for r in stats)
     Y = youth_rows(html)
+    INF = infantils(html)
     by, seen, st = {}, set(), {}
     for r in stats:
         k = tuple(str(x) for x in r)
@@ -45,7 +51,8 @@ def main():
             t[0] += int(r[3]); t[1] += int(r[4]); t[2] += int(r[5])
     out = {}
     for cat, (lo, hi) in BAND.items():
-        P = [y for y in Y if y[3] == cat]
+        base = cat[:-2] if cat.endswith("_J") else cat
+        P = [y for y in Y if y[3] == base and (base not in ("JVO", "JVP") or (y[0] in INF) != cat.endswith("_J"))]
         if not P:
             continue
         old = sorted(P, key=lambda y: y[7])
