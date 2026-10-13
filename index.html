@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="ca">
 <head>
-<meta name="hm27-version" content="hm27-v43">
+<meta name="hm27-version" content="hm27-v44">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="Hoquei Manager 27: fantasy d'hoquei patins gratuït i no oficial, amb un mode mànager.">
@@ -858,6 +858,57 @@ const STAFF={
 const BARP={barat:{l:_tx("Populars"),spend:2.5,rate:1,afi:1},normal:{l:_tx("Normals"),spend:3.5,rate:.85,afi:0},car:{l:_tx("Cars"),spend:4.8,rate:.6,afi:-1}};
 const PANERA={mida:{petita:{l:_tx("Petita (embotits i cava)"),cost:.25,att:.7},mitjana:{l:_tx("Mitjana (lot complet)"),cost:.55,att:1},gran:{l:_tx("Gran (pernil, cava i cistella de luxe)"),cost:1.1,att:1.5}},
  preu:{1:{el:1.25},2:{el:1},3:{el:.7}}};
+/* Occasional club events: all money values are in thousands of euros. */
+const CLUB_REPAIRS=[
+ [['Goteres al pavelló','Goteras en el pabellón'],['S’han segellat les filtracions del sostre.','Se han sellado las filtraciones del techo.'],.35],
+ [['Terra de la pista malmès','Suelo de la pista deteriorado'],['S’ha reparat una zona del terra perquè es pugui jugar amb seguretat.','Se ha reparado una zona del suelo para poder jugar con seguridad.'],.75],
+ [['Xarxes de les porteries trencades','Redes de las porterías rotas'],['S’han substituït les xarxes de les dues porteries.','Se han sustituido las redes de las dos porterías.'],.12],
+ [['Línies de la pista esborrades','Líneas de la pista borradas'],['S’han tornat a pintar les línies de joc.','Se han vuelto a pintar las líneas de juego.'],.2],
+ [['Focus fosos','Focos fundidos'],['S’han canviat els focus perquè tota la pista quedi ben il·luminada.','Se han cambiado los focos para iluminar bien toda la pista.'],.25],
+ [['Avaria a les dutxes','Avería en las duchas'],['S’ha reparat la caldera dels vestidors.','Se ha reparado la caldera de los vestuarios.'],.45],
+ [['Tanca de la pista malmesa','Valla de la pista deteriorada'],['S’han fixat els panells i les proteccions de la tanca.','Se han fijado los paneles y las protecciones de la valla.'],.3],
+ [['Marcador avariat','Marcador averiado'],['S’ha reparat l’electrònica del marcador.','Se ha reparado la electrónica del marcador.'],.4],
+ [['Desaigües embussats','Desagües atascados'],['S’han netejat els desaigües dels vestidors.','Se han limpiado los desagües de los vestuarios.'],.15],
+ [['Humitat al magatzem','Humedad en el almacén'],['S’ha retirat el material deteriorat i s’ha tractat la humitat.','Se ha retirado el material deteriorado y se ha tratado la humedad.'],.18],
+ [['Revisió del sistema elèctric','Revisión del sistema eléctrico'],['S’ha substituït un quadre elèctric defectuós.','Se ha sustituido un cuadro eléctrico defectuoso.'],.55],
+ [['Porta d’emergència espatllada','Puerta de emergencia averiada'],['S’ha reparat el mecanisme d’obertura de la sortida d’emergència.','Se ha reparado el mecanismo de apertura de la salida de emergencia.'],.22]
+];
+const CLUB_BOARD_ROLES={president:['President','Presidente'],secretari:['Secretari','Secretario'],tresorer:['Tresorer','Tesorero']};
+const CLUB_BOARD_NAMES=['Joan Ferrer','Marta Soler','Pau Vidal','Anna Riera','Marc Serra','Laia Costa','Albert Puig','Núria Font','Carles Martí','Eva Bosch','David Prat','Clara Pons'];
+function clubEventState(){
+ if(!S?.club)return null;let E=S.club.events;
+ if(!E||E.user!==S.user)E=S.club.events={user:S.user,season:S.season,nextRound:S.round+3+(hash(S.user)%2),processed:'',seq:0,history:[],offers:[],contracts:[],board:Object.fromEntries(Object.keys(CLUB_BOARD_ROLES).map((k,i)=>[k,CLUB_BOARD_NAMES[(hash(S.user)+i)%CLUB_BOARD_NAMES.length]]))};
+ if(E.season!==S.season){E.season=S.season;E.nextRound=S.round+3;E.processed='';E.offers=[];E.contracts=[]}
+ return E;
+}
+function clubEventMoney(amount){const t=S.teams[S.user];t.budget=Math.round((t.budget+amount)*1000)/1000;S.club.oneoff=Math.round(((S.club.oneoff||0)+amount)*1000)/1000}
+function clubEventRecord(k,title,detail,amount,round){const E=clubEventState();const x={id:'ce-'+S.season+'-'+(++E.seq),k,title,detail,amount,round,season:S.season,ack:false};E.history.unshift(x);E.history=E.history.slice(0,24);pushNews(W('CLUB: ','CLUB: ')+W(...title)+'. '+W(...detail)+(amount?' '+W('Import: ','Importe: ')+(amount>0?'+':'−')+money(Math.abs(amount))+'.':''),true);return x}
+function clubEventTick(round){
+ const E=clubEventState();if(!E)return;const stamp=S.season+'|'+round;if(E.processed===stamp)return;E.processed=stamp;
+ for(const c of E.contracts)if(!c.paid&&round>=c.payRound){c.paid=true;clubEventMoney(c.amount);clubEventRecord('payment',['Patrocini cobrat','Patrocinio cobrado'],[c.name+' ha pagat l’aportació acordada.',c.name+' ha pagado la aportación acordada.'],c.amount,round)}
+ for(const o of E.offers)if(o.status==='pending'&&round>o.expires){o.status='expired';clubEventRecord('offer',['Oferta de patrocini caducada','Oferta de patrocinio caducada'],[o.name+' ha retirat l’oferta perquè no s’ha respost a temps.',o.name+' ha retirado la oferta porque no se ha respondido a tiempo.'],0,round)}
+ if(round<E.nextRound)return;E.nextRound=round+3+Math.floor(R()*3);
+ let kind=R();if(kind>=.75&&(round+2>NROUNDS()||E.offers.some(o=>o.status==='pending')||E.contracts.some(c=>!c.paid)))kind=0;
+ if(kind<.55){const choices=CLUB_REPAIRS.map((x,i)=>i).filter(i=>i!==E.lastRepair);const i=choices[Math.floor(R()*choices.length)];E.lastRepair=i;const [title,detail,cost]=CLUB_REPAIRS[i];clubEventMoney(-cost);clubEventRecord('repair',title,detail,-cost,round)}
+ else if(kind<.75){const roles=Object.keys(CLUB_BOARD_ROLES),role=roles[Math.floor(R()*roles.length)],old=E.board[role],names=CLUB_BOARD_NAMES.filter(n=>!Object.values(E.board).includes(n)),name=names[Math.floor(R()*names.length)],cost=role==='president'?.25:role==='tresorer'?.15:.1;E.board[role]=name;clubEventMoney(-cost);
+  clubEventRecord('board',[CLUB_BOARD_ROLES[role][0]+' rellevat',CLUB_BOARD_ROLES[role][1]+' relevado'],[old+' ha plegat. '+name+' ocupa el càrrec. El club ha assumit les despeses administratives del relleu.',old+' ha dejado el cargo. '+name+' ocupa el puesto. El club ha asumido los gastos administrativos del relevo.'],-cost,round)}
+ else{const names=['Comerç Local','Tallers de la Vila','Cooperativa del Barri','Esports de Proximitat'],name=names[Math.floor(R()*names.length)],amount=[.5,.75,1,1.5][Math.floor(R()*4)];E.offers.push({id:'sp-'+S.season+'-'+(++E.seq),name,amount,round,expires:Math.min(round+3,NROUNDS()-2),status:'pending'});pushNews(W(`PATROCINI: ${name} ofereix ${money(amount)} per una campanya puntual. Pots respondre des dels avisos; pagarà dues jornades després de signar.`,`PATROCINIO: ${name} ofrece ${money(amount)} por una campaña puntual. Puedes responder desde los avisos; pagará dos jornadas después de firmar.`),true)}
+ E.offers=E.offers.filter(o=>o.status==='pending'||round-o.round<8);
+}
+function clubEventOffer(id,accept){const E=clubEventState(),o=E?.offers.find(x=>x.id===id);if(!o||o.status!=='pending'||S.round>o.expires||S.finished)return false;
+ o.status=accept?'accepted':'declined';if(accept)E.contracts.push({id:o.id,name:o.name,amount:o.amount,payRound:S.round+2,paid:false});
+ clubEventRecord('offer',accept?['Patrocini puntual signat','Patrocinio puntual firmado']:['Oferta de patrocini rebutjada','Oferta de patrocinio rechazada'],accept?[o.name+' pagarà '+money(o.amount)+' a la jornada '+(S.round+2)+'.',o.name+' pagará '+money(o.amount)+' en la jornada '+(S.round+2)+'.']:[o.name+': has rebutjat l’oferta sense cap cost.',o.name+': has rechazado la oferta sin ningún coste.'],0,S.round);save();return true;
+}
+function clubEventAck(id){const E=clubEventState(),x=E?.history.find(x=>x.id===id);if(x){x.ack=true;save()}}
+function clubEventCategories(){const E=clubEventState();if(!E)return[];const cats=[];
+ const recent=E.history.filter(x=>!x.ack&&x.season===S.season);
+ if(recent.length)cats.push({k:'club-events',ic:uiIcon('stadium'),tone:'var(--warn)',t:W('Incidències i directiva','Incidencias y directiva'),items:recent.map(x=>({key:x.id,html:`<span class="ti">${uiIcon(x.k==='board'?'team':x.k==='payment'?'finance':'stadium')}</span><div><b>${esc(W(...x.title))}</b><small>${esc(W(...x.detail))}</small><small>J${x.round}${x.amount?` · <b class="${x.amount>0?'good':'bad'}">${x.amount>0?'+':'−'}${money(Math.abs(x.amount))}</b> · ${W('Ja comptabilitzat','Ya contabilizado')}`:''}</small></div>`,acts:[[W('Entesos','Entendido'),'ceack:'+x.id]]}))});
+ const offers=E.offers.filter(o=>o.status==='pending'&&S.round<=o.expires&&!S.finished),contracts=E.contracts.filter(c=>!c.paid);
+ if(offers.length||contracts.length)cats.push({k:'club-sponsors',ic:uiIcon('finance'),tone:'var(--good)',t:W('Patrocinis puntuals','Patrocinios puntuales'),items:[...offers.map(o=>({key:o.id,html:`<span class="ti">${uiIcon('finance')}</span><div><b>${esc(o.name)} · <span class="good">+${money(o.amount)}</span></b><small>${W('Campanya puntual. Pagament únic dues jornades després de signar.','Campaña puntual. Pago único dos jornadas después de firmar.')}</small><small>${W('Respon abans d’acabar la jornada','Responde antes de acabar la jornada')} ${o.expires}.</small></div>`,acts:[[W('Acceptar','Aceptar'),'ceaccept:'+o.id,1],[W('Rebutjar','Rechazar'),'cedecline:'+o.id]]})),...contracts.map(c=>({key:c.id+'-contract',html:`<span class="ti">${uiIcon('check')}</span><div><b>${esc(c.name)} · ${W('Contracte signat','Contrato firmado')}</b><small>${W('Pagament pendent','Pago pendiente')}: <b class="good">+${money(c.amount)}</b> · J${c.payRound}</small></div>`,acts:[]}))]});return cats;
+}
+function clubEventBoardHtml(){const E=clubEventState();if(!E)return'';return `<section class="bevel panel"><h2>${W('Directiva del club','Directiva del club')}</h2><div class="grid3">${Object.entries(E.board).map(([role,name])=>`<div><span class="lbl">${W(...CLUB_BOARD_ROLES[role])}</span><p><b>${esc(name)}</b></p></div>`).join('')}</div><p class="muted">${W('Els relleus de la directiva i les incidències del pavelló es comuniquen als avisos.','Los relevos de la directiva y las incidencias del pabellón se comunican en los avisos.')}</p></section>`}
+/* End occasional club events */
+
 function newClub(){return {fac:{grades:0,bar:0,marcador:0,pista:0,gimnas:0},works:[],staff:{fisio:0,prep:0},bar:{price:"normal",staff:"vol"},afi:60,form:0,
   sponsor:null,spOffers:genSponsors(),panera:null,oneoff:0,lastAtt:0}}
 const injMul=tid=>{const C=clubOf(tid);return C?(C.fac.pista?.7:1)*(C.fac.gimnas?.85:1):1};
@@ -898,9 +949,7 @@ function clubRound(m,home,won,lost,t,base){
     C.afi=clamp(C.afi+bp.afi,20,100);
     // panera: venda de números al pavelló
     if(C.panera&&!C.panera.done){const P=C.panera;const n=Math.round(r.att*.11*PANERA.mida[P.mida].att*PANERA.preu[P.preu].el*(P.players?1.5:1)*(.85+R()*.3));P.sold+=n}
-    // avaries puntuals
-    const ev=R();if(ev<(C.fac.pista?.03:.07)){const k=ri(0,3);const cost=Math.round([3,2,4,1.5][k]*sc*10)/10;
-      r.inc-=cost;pushNews(`${_tx(`IMPREVIST: `)}${[_tx("goteres al sostre del pavelló"),_tx("s'ha espatllat la calefacció dels vestidors"),_tx("una part de la tanca de la pista està malmesa"),_tx("el marcador ha deixat de funcionar a mig partit")][k]}${_tx(`. Reparació: `)}${money(cost)}.`,true)}
+
   }
   if(C.fac.bar>=2)r.bar=Math.round((r.bar+.25*sc)*10)/10;
   if(C.panera&&!C.panera.done){const P=C.panera;P.sold+=Math.round(35*PANERA.mida[P.mida].att*PANERA.preu[P.preu].el*(P.players?1.4:1)*(.8+R()*.4));
@@ -908,7 +957,8 @@ function clubRound(m,home,won,lost,t,base){
   for(const k in STAFF)r.staff+=STAFF[k].cost[C.staff[k]]*sc;
   r.staff+=coachCost();
   r.staff=Math.round(r.staff*100)/100;
-  r.extra=Math.round((r.inc+C.oneoff)*10)/10;C.oneoff=0;
+  clubEventTick(S.round+1);
+  r.extra=Math.round((r.inc+C.oneoff)*1000)/1000;C.oneoff=0;
   return r;
 }
 function sponsorIncome(base){const C=S.club;let s=base*.3;if(C.sponsor)s+=C.sponsor.fix/26*(C.fac.marcador?1.1:1);return Math.round(s*10)/10}
@@ -4258,6 +4308,7 @@ function hubData(){
   if(S.club&&!isFem(me)){const H=coaches(),pool=(S.club.coachPool||[]).filter(c=>{const cur=H[c.role];return cur?coachQ(c)>=coachQ(cur)+4:coachQ(c)>=60}).sort((a,b)=>(coachQ(b)-coachQ(H[b.role]))-(coachQ(a)-coachQ(H[a.role]))).filter((c,i,A)=>A.findIndex(x=>x.role===c.role)===i);
     if(pool.length)cats.push({k:"coach",ic:"🧑‍🏫",tone:"var(--accent)",t:W("Entrenadors interessants disponibles","Entrenadores interesantes disponibles"),items:pool.map(c=>{const cur=H[c.role];return {key:"c:"+coachKey(c.name)+":"+S.season,html:`<span class="ti" aria-hidden="true" style="font-size:22px">${uiIcon("coach")}</span><div><b>${esc(c.name)}</b> <span class="muted">· ${hubRoleName(c.role)}</span><small>${hubCoachAttrs(c)} · ${money(c.cost)}/${W("jornada","jornada")} · ${cur?`<b class="good">${W("millor que","mejor que")} ${esc(cur.name)} (${coachQ(cur)})</b>`:`<b class="warn">${W("càrrec vacant","cargo vacante")}</b>`}</small></div>`,acts:[[W("Fitxar","Fichar"),"hire:"+c.id,1],[W("Cos tècnic","Cuerpo técnico"),"v:cos"]]}})})}
   for(const c of cats)c.ic=uiIcon(c.k);
+  cats.push(...clubEventCategories());
   const seen=new Set(hubState().seen);for(const c of cats)for(const i of c.items)i.fresh=!seen.has(i.key);
   return cats;
 }
@@ -4266,7 +4317,7 @@ function hubMarkSeen(cats){const H=hubState(),keys=cats.flatMap(c=>c.items.map(i
 function hubStrip(){
   const cats=hubData();
   if(!cats.length)return `<div class="hubstrip"><button class="hubtile calm" data-hubopen><span class="ti" aria-hidden="true">${uiIcon("check")}</span><span class="tt"><b style="font-size:20px">${W("Tot en ordre","Todo en orden")}</b><small>${W("No hi ha cap avís pendent aquesta jornada.","No hay ningún aviso pendiente esta jornada.")}</small></span></button></div>`;
-  const short={inj:W("lesionats","lesionados"),sus:W("sancionats","sancionados"),iss:W("problemes personals","problemas personales"),off:W("ofertes rebudes","ofertas recibidas"),want:W("volen sortir del club","quieren salir del club"),coach:W("entrenadors disponibles","entrenadores disponibles")};
+  const short={'club-events':W('incidències del club','incidencias del club'),'club-sponsors':W('patrocinis puntuals','patrocinios puntuales'),inj:W("lesionats","lesionados"),sus:W("sancionats","sancionados"),iss:W("problemes personals","problemas personales"),off:W("ofertes rebudes","ofertas recibidas"),want:W("volen sortir del club","quieren salir del club"),coach:W("entrenadors disponibles","entrenadores disponibles")};
   return `<div class="hubstrip">${cats.map(c=>`<button class="hubtile ${c.items.some(i=>i.fresh)?"new":""}" data-hubopen="${c.k}" style="--tc:${c.tone}"><span class="ti" aria-hidden="true">${c.ic}</span><span class="tt"><b>${c.items.length}</b><small>${short[c.k]}</small></span></button>`).join("")}</div>`;
 }
 function hubOpen(focusCat,auto){
@@ -4294,6 +4345,8 @@ function hubOpen(focusCat,auto){
     if(k==="pl"){d.remove();render();playerModal(a);return}
     if(k==="iss"){d.remove();issueAct(a,c);hubOpen("iss");return}
     if(k==="hire"){d.remove();hireCoach(a);hubOpen("coach");return}
+    if(k==="ceack"){clubEventAck(a);hubOpen('club-events');return}
+    if(k==='ceaccept'||k==='cedecline'){clubEventOffer(a,k==='ceaccept');hubOpen('club-sponsors');return}
     if(k==="treat"){d.remove();treatOpen(a,()=>hubOpen("inj"));return}
   });
   d.querySelector("[data-hubauto]").onchange=e=>{H.auto=e.target.checked;save()};
@@ -4519,6 +4572,7 @@ youthView=function(){return (isFem(S.user)?"":`<div class="ymbanner"><div><b>�
 _yS=null;try{if(S&&MODE!=="fantasy")render()}catch(e){console.warn(e)}
 </script>
 <script>
+const _clubViewEvents=clubView;clubView=function(){return _clubViewEvents()+clubEventBoardHtml()};VIEWS.club=()=>clubView();
 const _renderPressWindow=render;
 render=function(){
   const result=_renderPressWindow.apply(this,arguments);
