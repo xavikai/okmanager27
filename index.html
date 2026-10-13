@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="ca">
 <head>
-<meta name="hm27-version" content="hm27-v24">
+<meta name="hm27-version" content="hm27-v25">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="Hoquei Manager 27: fantasy d'hoquei patins gratuït i no oficial, amb un mode mànager.">
@@ -1018,7 +1018,7 @@ function render(){
     <div class="club">${shield(me,34)}<div><b>${esc(me.name)}</b><div class="muted">${esc(me.arena)}${_tx(` · Temporada `)}${S.season}-${String((S.season+1)%100).padStart(2,"0")}</div></div></div>
     ${lvlBadge()}${_tx(`
     <div class="kpi"><span class="lbl">Pressupost</span><span class="v num">`)}${money(me.budget)}${_tx(`</span></div>
-    <div class="kpi"><span class="lbl">Jornada</span><span class="v num">`)}${Math.min(S.round+1,NROUNDS())}/${NROUNDS()}${_tx(`</span></div>
+    <div class="kpi"><span class="lbl">Jornada</span><span class="v num">`)}${catCurrent()?W("Pretemporada","Pretemporada"):Math.min(S.round+1,NROUNDS())+"/"+NROUNDS()}${_tx(`</span></div>
     <div class="kpi"><span class="lbl">Posició</span><span class="v num">`)}${S.round?ord(pos):"–"}${_tx(`</span></div>
     `)}<button class="btn" data-manual-save aria-label="${W("Desar partida","Guardar partida")}">💾 ${W("Desar partida","Guardar partida")}</button>${_tx(`
     <button class="btn" id="bMenu" title="Desa i torna al menú principal">Menú</button>
@@ -1223,7 +1223,7 @@ opcions(){
 },
 partit(){
   const {m}=ui.match;const r=m.res;
-  const others=FX(myDiv())[ui.match.round-1].filter(x=>x!==m);
+  const others=(ui.match.cat?ui.match.catBatch:FX(myDiv())[ui.match.round-1]).filter(x=>x!==m);
   return `${_tx(`<section class="bevel panel"><h2>Jornada `)}${ui.match.round}</h2>
   <div class="board" aria-live="polite"><div class="tn">${esc(S.teams[m.h].name)}</div><div><div class="sc num" id="sc">0–0</div><div class="clk num" id="clk">0'</div></div><div class="tn">${esc(S.teams[m.a].name)}${_tx(`</div></div>
   <div class="row"><button class="btn" id="bPause">⏸ Pausa i canvis</button><button class="btn" id="bSkip">Avançar</button><button class="btn primary" id="bBack">Tornar al despatx</button></div>
@@ -2055,7 +2055,7 @@ function liveFinish(){
   delete um.live;ui.match.half=2;
   finishRound(um);
 }
-function playRoundFast(){if(S.round>=NROUNDS())return;playRound();liveHalftime();liveSeg(26,50);liveFinish()}
+function playRoundFast(){if(S.round>=NROUNDS())return;playRound();if(!ui.match?.m?.live)return;liveHalftime();liveSeg(26,50);liveFinish()}
 /* ---- Panell de canvis (descans o pausa): la mateixa pista i banqueta de l'alineació ---- */
 function changesPanel(min){
   const um=ui.match.m,me=S.user,Lv=um.live;const t=tac(me);
@@ -2365,7 +2365,7 @@ function bind(){
   document.querySelectorAll("[data-new]").forEach(b=>b.onclick=()=>{const p=$("#bNew");if(p)p.click()});
   {const m2=$("#bMenu2");if(m2)m2.onclick=()=>{const m=$("#bMenu");if(m)m.click()}}
   document.querySelectorAll("[data-v]").forEach(b=>b.onclick=()=>{if(live()){toast(W(_tx("Primer acaba el partit."),_tx("Primero termina el partido.")));return}view=b.dataset.v;if(view==="resum"){ui.resumR=S.round;ui.resumDiv=null}ui.selSlot=null;if(ticker){clearInterval(ticker);ticker=null}render();window.scrollTo(0,0)});
-  const bp=$("#bPlay");if(bp)bp.onclick=()=>{if(ticker){clearInterval(ticker);ticker=null}playRound();render();runMatchView()};
+  const bp=$("#bPlay");if(bp)bp.onclick=()=>{if(ticker){clearInterval(ticker);ticker=null}playRound();render();if(view==="partit"&&ui.match?.m)runMatchView()};
   const live=()=>ui.match&&ui.match.m&&ui.match.m.live&&view==="partit";
   const bn=$("#bNew");if(bn)bn.onclick=()=>{newSeason();view="inici";render()};
   const bb=$("#bBack");if(bb)bb.onclick=()=>{if(ticker){clearInterval(ticker);ticker=null}view="inici";render()};
@@ -3130,7 +3130,7 @@ function compAward(c){const me=S.user,P=COMPS[c.k].prize;
   pushNews(`${COMPS[c.k].n()}: ${W("campió","campeón")} ${cName(c.champ)}${W(" (final contra el "," (final contra el ")}${cName(c.runner)}).`,c.champ===me||c.runner===me);
   S.lastCups=S.lastCups||{};if(c.k==="CDR"){S.lastCups.CDR=c.champ;S.lastCups.CDR2=c.runner}if(c.k==="CDRF"){S.lastCups.CDRF=c.champ;S.lastCups.CDRF2=c.runner}}
 function grpTable(c,g){const T={};for(const id of c.groups[g])T[id]={id,pj:0,pts:0,gf:0,gc:0};
-  for(const r of c.res)if(r.stage.startsWith(W("Grup","Grupo")+" "+g)){const h=T[r.h],a=T[r.a];if(!h||!a)continue;h.pj++;a.pj++;h.gf+=r.gh;h.gc+=r.ga;a.gf+=r.ga;a.gc+=r.gh;if(r.gh>r.ga)h.pts+=3;else if(r.gh<r.ga)a.pts+=3;else{h.pts++;a.pts++}}
+  for(const r of c.res)if(r.group===g||r.stage.startsWith("Grup "+g)||r.stage.startsWith("Grupo "+g)){const h=T[r.h],a=T[r.a];if(!h||!a)continue;h.pj++;a.pj++;h.gf+=r.gh;h.gc+=r.ga;a.gf+=r.ga;a.gc+=r.gh;if(r.gh>r.ga)h.pts+=3;else if(r.gh<r.ga)a.pts+=3;else{h.pts++;a.pts++}}
   return Object.values(T).sort((x,y)=>y.pts-x.pts||(y.gf-y.gc)-(x.gf-x.gc)||y.gf-x.gf)}
 const COMP_SCHED=[[1,"SUP","f4"],[1,"SUPF","f4"],[3,"WCL","md",0],[5,"WCL","md",1],[6,"WCU","qf",0],[7,"WCL","md",2],[8,"WCU","qf",1],[9,"WCL","md",3],[10,"WFL","qf1"],[11,"WCL","md",4],[13,"WCL","md",5],[13,"CDR","seed"],[13,"CDRF","seed"],[17,"CDR","f8"],[17,"CDRF","f8"],[22,"WCL","f4"],[22,"WFL","f4"],[24,"WCU","f4"]];
 function compAfterRound(){if(!S.comp||S.comp.s!==S.season)return;S.compRecent=[];const C=S.comp.C;
@@ -3154,14 +3154,14 @@ function compsView(){if(!S.comp)compInit();const C=S.comp.C;const g=isFem(S.user
   const tag=id=>id===S.user?` class="me"`:"";
   const tie=r=>`<tr${r.h===S.user||r.a===S.user?' class="me"':""}><td class="muted" style="white-space:normal;font-size:12.5px">${esc(r.stage)}</td><td style="white-space:normal">${esc(cName(r.h))}</td><td class="r num"><b>${r.gh}–${r.ga}</b></td><td style="white-space:normal">${esc(cName(r.a))}${r.x?`<br><span class="muted" style="font-size:12px">${esc(r.x)}</span>`:""}</td></tr>`;
   const sched=k=>COMP_SCHED.filter(x=>x[1]===k).map(x=>"J"+x[0]).filter((v,i,a)=>a.indexOf(v)===i).join(", ");
-  return `<section class="bevel panel"><h2>${W("Competicions","Competiciones")}</h2><p class="muted" style="margin:0">${W("Copes i competicions europees de la temporada. Es juguen entre jornades de lliga (els partits no compten per a la classificació ni per a les estadístiques, però cansen els titulars). Els rivals estrangers sense plantilla al joc només tenen un nivell.","Copas y competiciones europeas de la temporada. Se juegan entre jornadas de liga (los partidos no cuentan para la clasificación ni para las estadísticas, pero cansan a los titulares). Los rivales extranjeros sin plantilla en el juego solo tienen un nivel.")}</p></section>`+
+  return `<section class="bevel panel"><h2>${W("Competicions","Competiciones")}</h2><p class="muted" style="margin:0">${W("La Lliga Catalana es juga abans de la lliga regular. La resta de copes i competicions europees es juguen entre jornades de lliga (els partits no compten per a la classificació ni per a les estadístiques, però cansen els titulars). Els rivals estrangers sense plantilla al joc només tenen un nivell.","La Liga Catalana se juega antes de la liga regular. Las demás copas y competiciones europeas se juegan entre jornadas de liga (los partidos no cuentan para la clasificación ni para las estadísticas, pero cansan a los titulares). Los rivales extranjeros sin plantilla en el juego solo tienen un nivel.")}</p></section>`+
   list.map(c=>{const P=COMPS[c.k];const inn=c.teams.includes(S.user);
     let body="";
-    if(c.groups)body+=`<div class="grid2">${["A","B"].map(gn=>`<div><h3>${W("Grup","Grupo")} ${gn}</h3><table><thead><tr><th>#</th><th>${W("Equip","Equipo")}</th><th class="r">PJ</th><th class="r">DG</th><th class="r">Pts</th></tr></thead><tbody>${grpTable(c,gn).map((r,i)=>`<tr${tag(r.id)}><td>${i+1}</td><td><span class="row" style="gap:6px;flex-wrap:nowrap">${shield(cTeam(r.id),18)}${esc(cName(r.id))}</span></td><td class="r">${r.pj}</td><td class="r">${r.gf-r.gc}</td><td class="r"><b>${r.pts}</b></td></tr>`).join("")}</tbody></table></div>`).join("")}</div>`;
+    if(c.groups)body+=`<div class="grid2">${Object.keys(c.groups).map(gn=>`<div><h3>${W("Grup","Grupo")} ${gn}</h3><table><thead><tr><th>#</th><th>${W("Equip","Equipo")}</th><th class="r">PJ</th><th class="r">DG</th><th class="r">Pts</th></tr></thead><tbody>${grpTable(c,gn).map((r,i)=>`<tr${tag(r.id)}><td>${i+1}</td><td><span class="row" style="gap:6px;flex-wrap:nowrap">${shield(cTeam(r.id),18)}${esc(cName(r.id))}</span></td><td class="r">${r.pj}</td><td class="r">${r.gf-r.gc}</td><td class="r"><b>${r.pts}</b></td></tr>`).join("")}</tbody></table></div>`).join("")}</div>`;
     if(c.st==="wait")body+=`<p class="muted" style="margin:0">${W("Hi jugaran els 8 primers de la lliga al final de la primera volta (J13).","Jugarán los 8 primeros de la liga al final de la primera vuelta (J13).")}</p>`;
     else if(!c.res.length&&!c.groups)body+=`<p class="muted" style="margin:0">${W("Participants: ","Participantes: ")}${c.teams.map(id=>esc(cName(id))).join(" · ")}</p>`;
     if(c.res.length)body+=`<div class="scroll"><table><tbody>${c.res.slice().reverse().map(tie).join("")}</tbody></table></div>`;
-    return `<section class="bevel panel"><div class="row" style="justify-content:space-between"><div class="row" style="gap:10px">${cupSVG(P.col,34)}<h2>${esc(P.n())}</h2></div><span class="muted">${c.champ?W("Campió: ","Campeón: ")+"<b>"+esc(cName(c.champ))+"</b>":inn?`<span class="tag sale">${W("HI JUGUES","JUEGAS")}</span>`:W("Jornades: ","Jornadas: ")+sched(c.k)}</span></div>${body}</section>`}).join("")}
+    return `<section class="bevel panel"><div class="row" style="justify-content:space-between"><div class="row" style="gap:10px">${cupSVG(P.col,34)}<h2>${esc(P.n())}</h2></div><span class="muted">${c.champ?W("Campió: ","Campeón: ")+"<b>"+esc(cName(c.champ))+"</b>":inn?`<span class="tag sale">${W("HI JUGUES","JUEGAS")}</span>`:W("Jornades: ","Jornadas: ")+(c.pre?W("abans de la lliga","antes de la liga"):sched(c.k))}</span></div>${body}</section>`}).join("")}
 
 /* ---------- Roda de premsa: crònica del partit i preguntes en funció del que ha passat ---------- */
 function matchStory(m){const me=S.user,r=m.res,mine=m.h===me,gf=mine?r.gh:r.ga,gc=mine?r.ga:r.gh,opp=mine?m.a:m.h;
@@ -3858,6 +3858,91 @@ function rosterRoleFix(){
 }
 rosterBaseFix();
 const _renderRosterRoles=render;render=function(){rosterRoleFix();return _renderRosterRoles()};
+
+/* Lliga Catalana abans de la lliga regular. Fonts i adaptacions: LLIGA_CATALANA.md. */
+const CAT_CLUBS=new Set(["BAR","IGU","REU","CAL","NOI","LLE","VOL","CLD","LLO","VIL","MAC","PGEG","PBAR","PCPT","PREU","PCON","PCHO","PCHV","PPSC","PPAL","PNOI","PIGU","PESP","PVIL","PMOL","PMAT","PVIC","PSJU","PCER","PMAN","PVEN","FPAL","FVOL","FMAT","FPSC","FALP","FIVA","FCER","FMAN","FBIG"]);
+Object.assign(COMPS,{
+ LCAT:{g:"M",n:()=>W("Lliga Catalana","Liga Catalana"),col:"#f2c200",prize:[.15,.6]},
+ LCPL:{g:"M",n:()=>W("Lliga Catalana Plata","Liga Catalana Plata"),col:"#c9d3de",prize:[.05,.15]},
+ LCFEM:{g:"F",n:()=>W("Lliga Catalana femenina","Liga Catalana femenina"),col:"#e7a8ff",prize:[.05,.25]}
+});
+for(const k of ["LCAT","LCPL","LCFEM"])DIVS[k]=COMPS[k].n();
+function catKind(id){const d=divOf(id);if(d==="OK"&&(CAT_CLUBS.has(id)||id==="ALC"))return "LCAT";if((d==="PN"||d==="PS")&&CAT_CLUBS.has(id))return "LCPL";if(d==="FEM"&&CAT_CLUBS.has(id))return "LCFEM";return null}
+function catRoundRobin(ids){
+ const ring=ids.slice();if(ring.length%2)ring.push(null);const out=[];
+ for(let r=0;r<ring.length-1;r++){const pairs=[];for(let i=0;i<ring.length/2;i++){const h=ring[i],a=ring[ring.length-1-i];if(h&&a)pairs.push((r+i)%2?[a,h]:[h,a])}out.push(pairs);ring.splice(1,0,ring.pop())}
+ return out;
+}
+function catEnsure(){
+ if(!S||S.round!==0||S.finished||!S.comp)return;
+ const k=catKind(S.user);if(!k||S.comp.C[k])return;
+ const teams=Object.keys(S.teams).filter(id=>catKind(id)===k);if(teams.length<4)return;
+ const fixed={A:["IGU","NOI","LLE","VIL"],B:["BAR","VOL","LLO","ALC"],C:["CAL","REU","MAC","CLD"]};
+ let groups={};
+ if(k==="LCAT"&&teams.length===12&&Object.values(fixed).flat().every(id=>teams.includes(id)))groups=fixed;
+ else{const n=Math.min(k==="LCPL"?4:3,Math.floor(teams.length/2)),ranked=teams.slice().sort((a,b)=>teamOvr(b)-teamOvr(a)||a.localeCompare(b));
+  for(let i=0;i<n;i++)groups[String.fromCharCode(65+i)]=[];
+  ranked.forEach((id,i)=>{const row=Math.floor(i/n),g=row%2?n-1-i%n:i%n;groups[String.fromCharCode(65+g)].push(id)})}
+ const md=Object.fromEntries(Object.entries(groups).map(([g,ids])=>[g,catRoundRobin(ids)]));
+ S.comp.C[k]={k,teams,groups,md,step:0,st:"grp",res:[],pre:true};
+}
+function catCurrent(){if(!S||S.round!==0||!S.comp)return null;const c=S.comp.C[catKind(S.user)];return c&&c.st!=="done"?c:null}
+function catBatch(c){
+ if(c.st==="grp")return Object.entries(c.md).flatMap(([group,rounds])=>(rounds[c.step]||[]).map(([h,a])=>({h,a,group,stage:`${W("Grup","Grupo")} ${group} · J${c.step+1}`})));
+ return (c.pairs||[]).map(([h,a])=>({h,a,stage:stName(c.st)}));
+}
+function catStage(c){return c.st==="grp"?W("Fase de grups","Fase de grupos")+" · J"+(c.step+1):stName(c.st)}
+function catQualify(c){
+ const tables=Object.keys(c.groups).map(g=>grpTable(c,g)),first=tables.map(t=>t[0].id);
+ if(first.length<4){const remaining=tables.flatMap(t=>t.slice(1));remaining.sort((a,b)=>b.pts/Math.max(1,b.pj)-a.pts/Math.max(1,a.pj)||(b.gf-b.gc)/Math.max(1,b.pj)-(a.gf-a.gc)/Math.max(1,a.pj)||b.gf-a.gf||a.id.localeCompare(b.id));for(const r of remaining)if(first.length<4)first.push(r.id)}
+ c.pairs=[[first[0],first[3]],[first[1],first[2]]];c.st="sf";
+ pushNews(W(`${COMPS[c.k].n()}: classificats per a les semifinals: `,`${COMPS[c.k].n()}: clasificados para las semifinales: `)+first.map(cName).join(", ")+".",first.includes(S.user));
+}
+function catCompleteBatch(c,batch){
+ const knockout=c.st!=="grp",winners=[];S.compRecent=[];
+ for(const m of batch){let extra="",winner=null;
+  if(knockout){const kw=koWin(m.h,m.a,m.res.gh,m.res.ga);winner=kw.w;winners.push(winner);if(kw.pen)extra=W("penals: ","penaltis: ")+cName(winner)}
+  cLog(c,m.stage,m.h,m.a,m.res,extra,knockout);const record=c.res[c.res.length-1];record.group=m.group;record.preStep=c.step;
+  if(!knockout&&m.h===S.user){const amount=Math.round(S.teams[S.user].rep*.025*1000)/1000;S.teams[S.user].budget+=amount;let l=S.ledger.find(l=>l.r===0);if(!l){l={r:0,att:0,tickets:0,spons:0,bar:0,sal:0,staff:0,extra:0};S.ledger.unshift(l)}l.tickets+=amount;l.preseason=true}
+ }
+ c.step++;
+ if(c.st==="grp"&&c.step>=Math.max(...Object.values(c.md).map(r=>r.length)))catQualify(c);
+ else if(c.st==="sf"){c.pairs=[[winners[0],winners[1]]];c.st="f"}
+ else if(c.st==="f"){c.champ=winners[0];c.runner=batch[0].h===c.champ?batch[0].a:batch[0].h;c.st="done";compAward(c);newChallenge();pushNews(W("La Lliga Catalana ha acabat. Ara comença la lliga regular.","La Liga Catalana ha terminado. Ahora empieza la liga regular."),true)}
+ save();
+}
+function catPlayRound(c){
+ const batch=catBatch(c),um=batch.find(m=>m.h===S.user||m.a===S.user);
+ if(c.recoveredStep!==c.step){for(const tid of c.teams)for(const p of squad(tid)){p.energy=clamp(p.energy+6,30,100);if(p.inj>0)p.inj--}c.recoveredStep=c.step}
+ for(const tid of c.teams){autoFix(tid);if(tid!==S.user)aiTactic(tid)}
+ for(const m of batch)if(m!==um)m.res=cMatch(m.h,m.a,c.st!=="grp");
+ if(!um){catCompleteBatch(c,batch);view="inici";return}
+ tac(S.user).talk=null;um.live={ev:[],lh:new Set(),la:new Set(),simTo:0};
+ ui.match={m:um,round:c.step+1,half:1,cat:c.k,catBatch:batch,catStage:catStage(c)};liveSeg(1,25);view="partit";
+}
+const _compInitCat=compInit;compInit=function(){_compInitCat();catEnsure()};
+const _migrateCat=migrate;migrate=function(st){st=_migrateCat(st);if(st){const prev=S;S=st;try{catEnsure()}finally{S=prev}}return st};
+const _playRoundCat=playRound;playRound=function(){catEnsure();const c=catCurrent();if(c)return catPlayRound(c);return _playRoundCat()};
+const _finishRoundCat=finishRound;finishRound=function(um){
+ if(!ui.match?.cat)return _finishRoundCat(um);
+ const c=S.comp.C[ui.match.cat];if(!c||um.catFinished)return;um.catFinished=true;
+ for(const id of new Set([...(um.res.lh||[]),...(um.res.la||[])])){const p=S.players[id];if(p)p.energy=clamp(p.energy-6,30,100)}
+ catCompleteBatch(c,ui.match.catBatch);
+};
+const _afterMatchCat=afterMatch;afterMatch=function(){
+ if(!ui.match?.cat)return _afterMatchCat();
+ const m=ui.match.m,r=S.comp.C[ui.match.cat].res.slice().reverse().find(x=>x.h===m.h&&x.a===m.a&&x.preStep===ui.match.round-1),ht=$("#ht");
+ ht.hidden=false;ht.innerHTML=`<div class="bevel panel"><h2>${esc(COMPS[ui.match.cat].n())}</h2><p>${esc(cName(m.h))} <b>${m.res.gh}–${m.res.ga}</b> ${esc(cName(m.a))}${r?.x?" · "+esc(r.x):""}</p><p class="muted">${W("Aquest resultat compta per a la Lliga Catalana. La lliga regular encara no ha començat.","Este resultado cuenta para la Liga Catalana. La liga regular todavía no ha empezado.")}</p><button class="btn" data-v="comp">${W("Veure classificació i resultats","Ver clasificación y resultados")}</button></div>`;
+ ht.querySelector('[data-v]').onclick=()=>{view="comp";render()};
+};
+function catHome(c){
+ const m=catBatch(c).find(m=>m.h===S.user||m.a===S.user);
+ return `<section class="bevel panel"><h2>${esc(COMPS[c.k].n())} · ${esc(catStage(c))}</h2><p>${W("La temporada comença amb la competició catalana, abans de la primera jornada de lliga. El calendari s’adapta als equips de la partida.","La temporada empieza con la competición catalana, antes de la primera jornada de liga. El calendario se adapta a los equipos de la partida.")}</p>${m?arenaHero(m):`<p>${W("El teu equip no juga aquesta ronda. Avança per completar la competició abans de començar la lliga regular.","Tu equipo no juega esta ronda. Avanza para completar la competición antes de empezar la liga regular.")}</p>`}<div class="row"><button class="btn primary" data-play="1">${m?W("Jugar partit","Jugar partido"):W("Avançar ronda","Avanzar ronda")}</button><button class="btn" data-v="alineacio">${W("Alineació","Alineación")}</button><button class="btn" data-v="comp">${W("Grups i resultats","Grupos y resultados")}</button></div></section>`;
+}
+const _iniciCat=VIEWS.inici;VIEWS.inici=function(){const c=catCurrent();return c?catHome(c):_iniciCat()};
+const _renderCat=render;render=function(){catEnsure();const result=_renderCat(),c=catCurrent();if(c){for(const b of document.querySelectorAll('#bPlay,[data-play]'))b.textContent=W("Jugar Lliga Catalana","Jugar Liga Catalana")}return result};
+
+const _partitCat=VIEWS.partit;VIEWS.partit=function(){let h=_partitCat();return ui.match?.cat?h.replace(/<h2>[^<]*<\/h2>/,`<h2>${esc(COMPS[ui.match.cat].n())} · ${esc(ui.match.catStage)}</h2>`):h};
 
 function start(data){if(data&&data.S){S=migrate(data.S);view=data.view||"inici"}render();
   // Si el navegador ha esborrat el localStorage però queda la còpia a IndexedDB, la recuperem
