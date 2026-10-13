@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="ca">
 <head>
-<meta name="hm27-version" content="hm27-v25">
+<meta name="hm27-version" content="hm27-v26">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="Hoquei Manager 27: fantasy d'hoquei patins gratuït i no oficial, amb un mode mànager.">
@@ -1017,7 +1017,7 @@ function render(){
   <header class="top bevel">
     <div class="club">${shield(me,34)}<div><b>${esc(me.name)}</b><div class="muted">${esc(me.arena)}${_tx(` · Temporada `)}${S.season}-${String((S.season+1)%100).padStart(2,"0")}</div></div></div>
     ${lvlBadge()}${_tx(`
-    <div class="kpi"><span class="lbl">Pressupost</span><span class="v num">`)}${money(me.budget)}${_tx(`</span></div>
+    <div class="kpi"><span class="lbl">Pressupost</span><span class="v num">`)}${budgetAmount(me.budget)}${_tx(`</span></div>
     <div class="kpi"><span class="lbl">Jornada</span><span class="v num">`)}${catCurrent()?W("Pretemporada","Pretemporada"):Math.min(S.round+1,NROUNDS())+"/"+NROUNDS()}${_tx(`</span></div>
     <div class="kpi"><span class="lbl">Posició</span><span class="v num">`)}${S.round?ord(pos):"–"}${_tx(`</span></div>
     `)}<button class="btn" data-manual-save aria-label="${W("Desar partida","Guardar partida")}">💾 ${W("Desar partida","Guardar partida")}</button>${_tx(`
@@ -1027,7 +1027,7 @@ function render(){
   <div class="mbar"><button class="btn" id="bNav" aria-haspopup="true"><b aria-hidden="true">☰</b><span>${(items.find(x=>x[0]===view)||items[0])[1]}</span>${nOff?`${_tx(`<span class="badge" title="`)}${W(_tx("Ofertes pendents"),_tx("Ofertas pendientes"))}${_tx(`" style="background:var(--bad);color:#fff;border-radius:10px;padding:0 7px;font-size:12px;margin-left:auto">`)}${nOff} ${W("ofertes","ofertas")}</span>`:""}</button><button class="btn" data-manual-save aria-label="${W("Desar partida","Guardar partida")}" title="${W("Desar partida","Guardar partida")}">💾 ${W("Desar","Guardar")}</button>${ui.match&&ui.match.m&&ui.match.m.live&&view==="partit"?"":S.finished?`<button class="btn primary" data-new="1">${W(_tx("Nova temporada"),_tx("Nueva temporada"))}</button>`:`<button class="btn primary" data-play="1">${W(_tx("Jugar"),_tx("Jugar"))} J${S.round+1} ▸</button>`}</div>
   <div class="shell">
     <nav class="menu bevel" aria-label="Menú"><div class="navhead"><b>${W(_tx("Menú"),_tx("Menú"))}${_tx(`</b><button class="btn" id="bNavX" aria-label="`)}${W(_tx("Tanca"),_tx("Cierra"))}">✕</button></div>${items.map(([k,l,b])=>k==="sep"?`<div class="sep"></div>`:`${_tx(`<button data-v="`)}${k}" ${view===k?_tx("aria-current=\"page\""):""}>${l}${b?`<span class="badge">${b}</span>`:""}</button>`).join("")}<div class="sep"></div><button data-fed>🔄 ${W("Revisar federacions","Revisar federaciones")}</button><button data-contact>✉ ${W("Contacte","Contacto")}</button><div class="navx"><button class="btn" id="bMenu2">${W(_tx("Menú principal"),_tx("Menú principal"))}</button></div></nav>
-    <main>${VIEWS[view]?VIEWS[view]():VIEWS.inici()}</main>
+    <main>${view!=="partit"?budgetWarningPanel():""}${VIEWS[view]?VIEWS[view]():VIEWS.inici()}</main>
   </div>`;
   bind();
 }
@@ -1195,7 +1195,7 @@ equips(){
   <p class="muted" style="margin:0;max-width:75ch">Noms: plantilles inscrites a la Lliga Catalana 2026-27 (FECAPA). Liceo i Rivas porten la plantilla de l'OK Liga 2025-26 fins que la RFEP publiqui la nova. Els porters surten de les actes dels partits. Dels menors d'edat no se'n mostra l'edat ni el sou. Mitjanes: calculades amb les tres darreres temporades d'OK Liga (gols, assistències, partits, titularitats i nivell de l'equip on jugava cada jugador). Les mitjanes, els sous i els valors són estimacions del joc, no dades reals. Clica un jugador per veure'n les dades o corregir-lo.</p>
   <p style="margin:0">`)}${({"2025":_tx("<span class=\"tag sale\">PLANTILLA 2025-26 (RFEP)</span>"),"plata":_tx("<span class=\"tag\" style=\"background:var(--data);color:#fff\">VE DE L'OK LIGA PLATA</span>"),"plata26":_tx("<span class=\"tag\" style=\"background:var(--data);color:#fff\">OK LIGA PLATA 2026-27 (RFEP)</span>")})[ALLTEAMS.find(x=>x.id===tid)?.src]||_tx("<span class=\"tag\" style=\"background:var(--good);color:#fff\">NOMS FECAPA 2026-27</span>")}${_tx(`</p>
   <div class="row"><label class="lbl" for="eqSel">Equip</label><select id="eqSel">`)}${Object.values(S.teams).map(x=>`${_tx(`<option value="`)}${x.id}" ${x.id===tid?"selected":""}>${esc(x.name)}</option>`).join("")}</select>
-  <span class="muted">${esc(t.city)} · ${esc(t.arena)} · <span class="stars">${stars(t.rep)}</span> · ${money(t.budget)}${_tx(` · Mitjana `)}${teamOvr(tid)}</span></div>
+  <span class="muted">${esc(t.city)} · ${esc(t.arena)} · <span class="stars">${stars(t.rep)}</span> · ${budgetAmount(t.budget)}${_tx(` · Mitjana `)}${teamOvr(tid)}</span></div>
   <div class="row">${shield(t,52)}${_tx(`<label class="lbl" for="eqC1">Color principal</label><input type="color" id="eqC1" value="`)}${t.c1}${_tx(`" style="width:48px;height:36px;padding:2px">
    <label class="lbl" for="eqC2">Color secundari</label><input type="color" id="eqC2" value="`)}${t.c2}${_tx(`" style="width:48px;height:36px;padding:2px">
    <span class="muted">Distintiu amb els colors del club (no és l'escut oficial).</span></div>
@@ -1204,7 +1204,7 @@ equips(){
 finances(){
   const me=S.teams[S.user];const bal=l=>l.tickets+l.spons+(l.bar||0)-l.sal-(l.staff||0)-(l.travel||0)+(l.extra||0);const tot=S.ledger.reduce((s,l)=>s+bal(l),0);
   return `${_tx(`<section class="bevel panel"><h2>Finances</h2>
-  <div class="grid2"><div><span class="lbl">Pressupost actual</span><div class="ovr acc" style="font-size:40px">`)}${money(me.budget)}${_tx(`</div></div>
+  <div class="grid2"><div><span class="lbl">Pressupost actual</span><div class="ovr acc" style="font-size:40px">`)}${budgetAmount(me.budget)}${_tx(`</div></div>
   <div><span class="lbl">Massa salarial anual</span><div class="ovr" style="font-size:40px">`)}${money(salaryMass(S.user))}</div><span class="muted">${money(Math.round(salaryMass(S.user)/26))}${_tx(` per jornada</span></div>
   <div><span class="lbl">Balanç de la temporada</span><div class="ovr `)}${tot>=0?"good":"bad"}${_tx(`" style="font-size:40px">`)}${tot>=0?"+":""}${money(tot)}${_tx(`</div></div></div>
   <div class="scroll"><table><thead><tr><th>Jornada</th><th class="r">Públic</th><th class="r">Taquilla</th><th class="r">Patrocini</th><th class="r">Bar</th><th class="r">Sous i staff</th><th class="r">${W("Viatges","Viajes")}</th><th class="r">Altres</th><th class="r">Balanç</th></tr></thead><tbody>
@@ -3943,6 +3943,34 @@ const _iniciCat=VIEWS.inici;VIEWS.inici=function(){const c=catCurrent();return c
 const _renderCat=render;render=function(){catEnsure();const result=_renderCat(),c=catCurrent();if(c){for(const b of document.querySelectorAll('#bPlay,[data-play]'))b.textContent=W("Jugar Lliga Catalana","Jugar Liga Catalana")}return result};
 
 const _partitCat=VIEWS.partit;VIEWS.partit=function(){let h=_partitCat();return ui.match?.cat?h.replace(/<h2>[^<]*<\/h2>/,`<h2>${esc(COMPS[ui.match.cat].n())} · ${esc(ui.match.catStage)}</h2>`):h};
+/* Fi Lliga Catalana */
+
+/* Alertes de tresoreria: informen i proposen mesures, sense reiniciar el saldo. */
+function budgetAmount(amount){return `<span${amount<0?' class="bad" style="color:var(--bad)"':''}>${money(amount)}</span>`}
+function budgetWarningPanel(){
+ if(!S||!S.teams||!(S.teams[S.user]?.budget<0))return "";
+ const deficit=-S.teams[S.user].budget,C=S.club||{},paid=squad(S.user).filter(p=>p.salary>0).slice().sort((a,b)=>b.salary-a.salary).slice(0,2);
+ const suggestions=[W("Ajornar nous fitxatges, obres i altres despeses opcionals fins a recuperar el saldo.","Aplazar nuevos fichajes, obras y otros gastos opcionales hasta recuperar el saldo.")];
+ if(paid.length)suggestions.push(W("Revisar els sous més alts: ","Revisar los sueldos más altos: ")+paid.map(p=>`${esc(p.name)} (${money(p.salary)}/${W("temporada","temporada")})`).join(", ")+". "+W("Posar a la venda els jugadors prescindibles pot aportar diners i reduir la massa salarial; l’ingrés dependrà de les ofertes.","Poner a la venta a los jugadores prescindibles puede aportar dinero y reducir la masa salarial; el ingreso dependerá de las ofertas."));
+ suggestions.push(!C.sponsor?W("Triar un patrocinador a «Club i pavelló» per obtenir ingressos regulars. Les primes depenen de complir els objectius.","Elegir un patrocinador en «Club y pabellón» para obtener ingresos regulares. Las primas dependen de cumplir los objetivos."):W("Revisar el contracte del patrocinador i els objectius que donen dret a la prima.","Revisar el contrato del patrocinador y los objetivos que dan derecho a la prima."));
+ suggestions.push(W("Revisar el personal i el cos tècnic. Acomiadar entrenadors té una indemnització: compara-la amb l’estalvi abans de decidir.","Revisar el personal y el cuerpo técnico. Despedir entrenadores tiene una indemnización: compárala con el ahorro antes de decidir."));
+ if(C.bar?.staff==="pro")suggestions.push(W("Valorar portar el bar amb voluntaris per estalviar el cost del personal contractat.","Valorar llevar el bar con voluntarios para ahorrar el coste del personal contratado."));
+ return `<section class="bevel panel" role="status" aria-live="polite" style="border:2px solid var(--bad);gap:10px"><h2 style="color:var(--bad)">⚠ ${S.finished?W("Temporada acabada amb pressupost negatiu","Temporada terminada con presupuesto negativo"):W("Pressupost negatiu","Presupuesto negativo")}</h2><p style="margin:0">${W("Saldo actual","Saldo actual")}: <b>${budgetAmount(-deficit)}</b>. ${W("Cal recuperar","Hay que recuperar")} <b>${money(deficit)}</b> ${W("per tornar a zero. El saldo es conserva la temporada següent; els nous ingressos i despeses el continuaran modificant.","para volver a cero. El saldo se conserva la temporada siguiente; los nuevos ingresos y gastos lo seguirán modificando.")}</p><ul style="margin:0;padding-left:22px">${suggestions.map(s=>`<li>${s}</li>`).join("")}</ul><div class="row" style="flex-wrap:wrap">${[["finances",W("Revisar finances","Revisar finanzas")],["plantilla",W("Revisar plantilla i sous","Revisar plantilla y sueldos")],["club",W("Patrocini i despeses del club","Patrocinio y gastos del club")],["cos",W("Revisar cos tècnic","Revisar cuerpo técnico")]].filter(([v])=>v!==view).map(([v,label])=>`<button class="btn" data-v="${v}">${label}</button>`).join("")}</div></section>`;
+}
+function budgetWarningCheck(){
+ if(!S||!S.teams||!S.teams[S.user])return;
+ const negative=S.teams[S.user].budget<0,previous=S.budgetWarning;
+ if(!negative){if(previous?.active){previous.active=false;save()}return}
+ let changed=false;
+ if(!previous||previous.team!==S.user||previous.season!==S.season){S.budgetWarning={team:S.user,season:S.season,active:false,closed:false};changed=true}
+ const alert=S.budgetWarning;
+ if(!alert.active){alert.active=true;changed=true;pushNews(W(`FINANCES: pressupost negatiu (${money(S.teams[S.user].budget)}). Revisa sous, vendes, patrocini i despeses al pla de recuperació.`,`FINANZAS: presupuesto negativo (${money(S.teams[S.user].budget)}). Revisa sueldos, ventas, patrocinio y gastos en el plan de recuperación.`),true)}
+ if(S.finished&&!alert.closed){alert.closed=true;changed=true;const message=W(`FINAL DE TEMPORADA: el club tanca amb ${money(S.teams[S.user].budget)}. El saldo negatiu passa a la temporada següent. Consulta el pla de recuperació a Finances.`,`FINAL DE TEMPORADA: el club cierra con ${money(S.teams[S.user].budget)}. El saldo negativo pasa a la temporada siguiente. Consulta el plan de recuperación en Finanzas.`);pushNews(message,true);toast(message)}
+ if(changed)save();
+}
+const _endSeasonBudget=endSeason;endSeason=function(){const result=_endSeasonBudget();budgetWarningCheck();return result};
+const _renderBudget=render;render=function(){budgetWarningCheck();return _renderBudget()};
+/* Fi alertes de pressupost */
 
 function start(data){if(data&&data.S){S=migrate(data.S);view=data.view||"inici"}render();
   // Si el navegador ha esborrat el localStorage però queda la còpia a IndexedDB, la recuperem

@@ -4,7 +4,7 @@ import vm from 'node:vm';
 import {readFileSync} from 'node:fs';
 const html=readFileSync(new URL('../index.html',import.meta.url),'utf8');
 const between=(a,b)=>html.slice(html.indexOf(a),html.indexOf(b,html.indexOf(a)));
-const feature=between('const CAT_CLUBS=','function start(data){');
+const feature=between('const CAT_CLUBS=','/* Fi Lliga Catalana */');
 const arrays=n=>vm.runInNewContext(html.match(new RegExp('const '+n+'=(\\[[\\s\\S]*?\\]);'))[1],{_tx:x=>x});
 function setup(user='BAR',round=0){
  const teams=arrays('TEAMS0').concat(arrays('TEAMS_PLATA'),arrays('TEAMS_FEM'));

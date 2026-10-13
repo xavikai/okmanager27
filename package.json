@@ -12,6 +12,7 @@
     "test:rosters": "node --test tests/roster-roles.test.mjs",
     "test:coaches": "node --test tests/coach-market.test.mjs",
     "test:updates": "node --test tests/app-updates.test.mjs tests/service-worker.test.mjs",
-    "test:catalan": "node --test tests/catalan-league.test.mjs"
+    "test:catalan": "node --test tests/catalan-league.test.mjs",
+    "test:budget": "node --test tests/negative-budget.test.mjs"
   }
 }

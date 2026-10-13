@@ -43,7 +43,7 @@ test('game inline scripts still parse and travel assets are shipped offline',()=
 test('finance view renders travel and hotel costs and remains compatible with old ledgers',()=>{
   const {c}=setup();c._tx=x=>x;c.esc=x=>x;c.FX=()=>[];c.myDiv=()=> 'OK';
   const start=html.indexOf('finances(){'),end=html.indexOf('\n},\nopcions(){',start);
-  vm.runInContext(functionSource('travelForecast')+'\nfunction financesView()'+html.slice(start+'finances()'.length,end)+'\n}',c);
+  vm.runInContext(html.match(/function budgetAmount[^\n]+/)[0]+'\n'+functionSource('travelForecast')+'\nfunction financesView()'+html.slice(start+'finances()'.length,end)+'\n}',c);
   assert.match(c.financesView(),/colspan="9"/);
   c.finances([{h:'LIC',a:'BAR',res:{gh:0,ga:0}}]);const rendered=c.financesView();
   assert.match(rendered,/Viatges/);assert.match(rendered,/Amb allotjament/);assert.ok(!rendered.includes('NaN'));
