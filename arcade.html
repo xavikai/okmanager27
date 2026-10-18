@@ -1,0 +1,327 @@
+<!doctype html>
+<html lang="ca">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+  <title>OK Manager 27 — Arcade 3D WebGL (Hoquei Patins)</title>
+  <link rel="icon" href="icons/icon-v2-192.png">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <style>
+    :root {
+      --bg: #070b14;
+      --panel: #111827;
+      --line: #1f2937;
+      --fg: #f8fafc;
+      --muted: #94a3b8;
+      --accent: #21b887;
+    }
+    * { box-sizing: border-box; user-select: none; -webkit-user-select: none; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--fg);
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      display: flex;
+      flex-direction: column;
+      height: 100dvh;
+      overflow: hidden;
+    }
+    header.topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 8px 14px;
+      background: rgba(17, 24, 39, 0.96);
+      border-bottom: 1px solid var(--line);
+      flex-wrap: wrap;
+      z-index: 20;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 800;
+      font-size: 14px;
+      letter-spacing: 0.03em;
+    }
+    .badge {
+      background: rgba(33, 184, 135, 0.18);
+      color: #34d399;
+      border: 1px solid rgba(52, 211, 153, 0.4);
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+    .toolbar {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .cam-group {
+      max-width: 100%;
+      flex-wrap: wrap;
+      display: inline-flex;
+      background: #0f172a;
+      padding: 3px;
+      border-radius: 9px;
+      border: 1px solid #334155;
+      gap: 3px;
+    }
+    .btn {
+      background: #1e293b;
+      color: var(--fg);
+      border: 1px solid #334155;
+      border-radius: 7px;
+      padding: 6px 10px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.15s;
+      text-decoration: none;
+    }
+    .btn:hover {
+      background: #334155;
+      border-color: #64748b;
+    }
+    select.btn { max-width: 180px; }
+    [hidden] { display: none !important; }
+    .bench-dialog {
+      color: var(--fg); background: var(--panel); border: 1px solid #475569;
+      border-radius: 16px; width: min(540px, calc(100vw - 24px)); max-height: 85dvh;
+      padding: 22px; overflow: auto; box-shadow: 0 20px 80px #0009;
+    }
+    .bench-dialog::backdrop { background: #020617b8; }
+    .bench-dialog h2 { margin: 0 0 8px; }
+    .bench-dialog p { color: var(--muted); font-size: 13px; }
+    .bench-dialog label { display: grid; gap: 6px; margin: 14px 0; font-size: 13px; }
+    .bench-dialog select { width: 100%; max-width: none; }
+    .bench-dialog ul { padding-left: 20px; line-height: 1.8; font-size: 12px; }
+    .bench-actions { display: flex; gap: 8px; justify-content: flex-end; flex-wrap: wrap; }
+    .cam-group .btn {
+      border: none;
+      background: transparent;
+      color: #94a3b8;
+      padding: 5px 9px;
+    }
+    .cam-group .btn.active {
+      background: #2563eb;
+      color: #ffffff;
+      box-shadow: 0 2px 8px rgba(37, 99, 235, 0.45);
+    }
+    .btn.accent {
+      background: #059669;
+      border-color: #10b981;
+    }
+    .btn.warn {
+      background: #b45309;
+      border-color: #f59e0b;
+    }
+    .stage {
+      position: relative;
+      flex: 1;
+      width: 100%;
+      overflow: hidden;
+    }
+    #webglContainer {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+    }
+    canvas#hudCanvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 5;
+    }
+    .touch-layer {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      padding: 18px 26px;
+      z-index: 10;
+    }
+    .joy-zone {
+      pointer-events: auto;
+      width: 116px;
+      height: 116px;
+      border-radius: 50%;
+      background: rgba(15, 23, 42, 0.55);
+      border: 2px solid rgba(255, 255, 255, 0.25);
+      box-shadow: 0 0 18px rgba(56, 189, 248, 0.25);
+      display: grid;
+      place-items: center;
+      touch-action: none;
+    }
+    .joy-stick {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, #f8fafc, #94a3b8);
+      border: 2px solid #cbd5e1;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+      transition: transform 0.04s linear;
+    }
+    .action-cluster {
+      pointer-events: auto;
+      position: relative;
+      width: 170px;
+      height: 136px;
+      touch-action: none;
+    }
+    .act-btn {
+      position: absolute;
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      border: 2px solid rgba(255, 255, 255, 0.45);
+      background: radial-gradient(circle at 35% 30%, rgba(51, 65, 85, 0.9), rgba(15, 23, 42, 0.92));
+      color: #fff;
+      font-weight: 800;
+      font-size: 11px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2px;
+      cursor: pointer;
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.45);
+      touch-action: none;
+    }
+    .act-btn:active {
+      transform: scale(0.93);
+    }
+    .act-btn.shoot {
+      right: 0;
+      bottom: 8px;
+      width: 72px;
+      height: 72px;
+      border-color: #f87171;
+      background: radial-gradient(circle at 35% 30%, #dc2626, #7f1d1d);
+    }
+    .act-btn.pass {
+      left: 6px;
+      bottom: 4px;
+      border-color: #60a5fa;
+      background: radial-gradient(circle at 35% 30%, #2563eb, #1e3a8a);
+    }
+    .act-btn.sprint {
+      right: 18px;
+      top: 0;
+      width: 56px;
+      height: 56px;
+      border-color: #34d399;
+      background: radial-gradient(circle at 35% 30%, #059669, #064e3b);
+    }
+    .act-btn small {
+      font-size: 9px;
+      opacity: 0.8;
+      font-weight: 600;
+    }
+    footer.helpbar {
+      background: rgba(15, 23, 42, 0.95);
+      border-top: 1px solid var(--line);
+      padding: 6px 14px;
+      font-size: 12px;
+      color: var(--muted);
+      display: flex;
+      justify-content: center;
+      gap: 18px;
+      flex-wrap: wrap;
+      z-index: 20;
+    }
+    footer.helpbar b {
+      color: #e2e8f0;
+    }
+    @media (max-width: 640px) {
+      footer.helpbar { display: none; }
+      .joy-zone { width: 98px; height: 98px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <span>🏑 OK MANAGER 27</span>
+      <span id="matchFormat" class="badge">2 × 25 min</span>
+    </div>
+    <div class="toolbar">
+      <div class="cam-group" role="group" aria-label="Selector de càmera">
+        <button data-cam="nhl_side" class="btn active">🎥 1. TV Horitzontal Zoom 3D</button>
+        <button data-cam="nhl_iso" class="btn">🎥 2. Diagonal NHL 3D</button>
+        <button data-cam="end3d" class="btn">🎥 3. Vertical Atac 3D</button>
+        <button data-cam="wide3d" class="btn">🎥 4. Panoràmica</button>
+      </div>
+      <button id="btnDiff" class="btn">🧤 Porter: Equilibrat</button>
+      <button id="btnPace" class="btn">⏱ Ritme: Pausat (Realista)</button>
+      <button id="btnCourt" class="btn">Pista: Blava WSE</button>
+      <button id="btnDirectFoul" class="btn warn">⚡ Practica una directa</button>
+      <button id="btnBlueCard" class="btn" style="background:#1d4ed8;border-color:#60a5fa;">🟦 Prova una blava</button>
+      <button id="btnPause" class="btn" aria-pressed="false">⏸ Pausa</button>
+      <button id="btnBench" class="btn">👥 Banqueta (B)</button>
+      <button id="btnSecondHalf" class="btn accent" hidden>▶ Salta el descans · 2a part</button>
+      <select id="matchDuration" class="btn" aria-label="Durada del pròxim partit" title="S’aplica amb Nou partit">
+        <option value="1500" selected>Partit: 2 × 25 min</option>
+        <option value="180">Arcade: 2 × 3 min</option>
+      </select>
+      <button id="btnReset" class="btn">🔄 Nou partit</button>
+    </div>
+  </header>
+
+  <main class="stage" id="stageWrap">
+    <div id="webglContainer"></div>
+    <canvas id="hudCanvas"></canvas>
+
+    <div class="touch-layer">
+      <div id="joyZone" class="joy-zone" title="Joystick de patinatge">
+        <div id="joyStick" class="joy-stick"></div>
+      </div>
+
+      <div class="action-cluster">
+        <button id="btnSprint" class="act-btn sprint">
+          <span>SPRINT</span>
+          <small>SHIFT / L</small>
+        </button>
+        <button id="btnPass" class="act-btn pass">
+          <span>PASSA / ROBA</span>
+          <small>ESPAI / J</small>
+        </button>
+        <button id="btnShoot" class="act-btn shoot">
+          <span>XUT / ENTRADA</span>
+          <small>K / X</small>
+        </button>
+      </div>
+    </div>
+  </main>
+
+  <footer class="helpbar">
+    <span><b>Passar / Treure bola (estic):</b> <b>Espai / J / Z</b></span>
+    <span><b>Xut pala / Entrada forta:</b> Mantén <b>K / X</b> + apunta (<b>W/S</b>)</span>
+    <span><b>Sprint:</b> <b>Shift / L / C</b> · <b>Canvi jugador:</b> <b>Q / Tab</b></span>
+    <span><b>Àrbitres:</b> <b>🟦 Blava:</b> 2 min complets · <b>P:</b> pausa</span>
+  </footer>
+
+  <dialog id="benchDialog" class="bench-dialog" aria-labelledby="benchTitle">
+    <h2 id="benchTitle">Banqueta · Barça</h2>
+    <p>El joc queda en pausa mentre fas els canvis. Pots substituir patinadors i porters i tornar-los a fer entrar. Els suplents marcats «demo» són jugadors de prova.</p>
+    <p id="benchSummary" role="status" aria-live="polite"></p>
+    <label>Surt de pista<select id="benchOut" class="btn"></select></label>
+    <label>Entra des de la banqueta<select id="benchIn" class="btn"></select></label>
+    <div class="bench-actions">
+      <button id="btnApplySub" class="btn accent" type="button">Fes el canvi</button>
+      <button id="btnCloseBench" class="btn" type="button">Torna al partit</button>
+    </div>
+    <ul id="benchRoster" aria-label="Estat dels deu jugadors"></ul>
+  </dialog>
+  <script src="arcade.js"></script>
+</body>
+</html>
