@@ -14,6 +14,8 @@ Un fantasy d'hoquei patins de la lliga masculina de màxima categoria (temporada
 
 ## Modes de joc
 
+El mànager també inclou l’**OK Liga Plata Femenina**, amb 14 clubs, 167 jugadores reals contrastades amb actes RFEP i fonts federatives, calendari, mercat i dos ascensos/descensos amb la màxima femenina. Vegeu [fonts i regles](OK_LIGA_PLATA_FEMENINA.md). La [repesca d’exjugadors](REPESCA_QUALITAT.md) incorpora valoracions segons trajectòria i palmarès, amb més cansament per als retirats.
+
 - **Fantasy:** lligues amb amics. Cada mànager té 35 M per fer una plantilla de 8 jugadors (2 porters i 6 de pista), alinea cinc titulars i un capità cada jornada, i suma punts segons el que fan els jugadors als partits reals o simulats.
 - **Mànager:** portes un club de l'OK Liga o de l'OK Liga Plata (grups Nord i Sud, amb ascensos i descensos), amb alineacions, tàctica, fitxatges i finances. El mercat és obert tota la temporada i els fitxatges s'incorporen a l'instant. Les ofertes inclouen traspàs, sou, anys de contracte i condicions com feina a la ciutat, pis pagat, cotxe, estudis o promesa de titularitat. Es poden tenir diverses partides alhora; es desen al navegador i, si s'inicia sessió amb Google (Cloudflare D1), també al núvol per continuar-les des de qualsevol dispositiu.
   - **Competicions:** Supercopa d'Espanya, Copa del Rei, Lliga Europea (WSE Champions League) i Copa de la CERS (WSE Cup); a la femenina, Supercopa, Copa de la Reina i Lliga Europea femenina. Es juguen entre jornades.
@@ -102,3 +104,7 @@ Una tasca programada revisa cada setmana la FECAPA, la RFEP, la federació itali
  "youth":{"add":[],"pos":{"80224":"POR"},"remove":[]},
  "vets":{"add":[]}}
 ```
+
+### Actualització hm27-v49
+
+La instal·lació disposa d’un botó destacat al menú. Les partides del núvol es poden copiar individualment o totes al dispositiu, com a còpies independents que preserven les partides locals. El compte creador, acreditat pel correu verificat de Google, disposa d’un panell privat d’activitat dels darrers cinc minuts; el servidor denega la consulta a la resta. Els comptes ja connectats han de tornar a iniciar sessió una vegada per acreditar aquest permís.

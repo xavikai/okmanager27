@@ -2,7 +2,7 @@ import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import vm from 'node:vm';
 import {readFileSync} from 'node:fs';
-const html=readFileSync(new URL('../index.html',import.meta.url),'utf8');
+const html=readFileSync(new URL('../index.html',import.meta.url),'utf8').replace(/\r\n/g,'\n');
 const between=(a,b)=>html.slice(html.indexOf(a),html.indexOf(b,html.indexOf(a)));
 const array=n=>vm.runInNewContext(html.match(new RegExp('(?:const|let|var) '+n+'\\s*=\\s*(\\[[\\s\\S]*?\\]);'))[1],{_tx:x=>x});
 function setup(){

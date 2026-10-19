@@ -1,0 +1,89 @@
+[
+  {
+    "name": "Marc Torra",
+    "rating": 92,
+    "birth": "1984-09-15",
+    "clubs": "CP Tordera · CH Lloret · CP Vic · Barça · Benfica · Reus Deportiu · UD Oliveirense",
+    "ca": "4 Mundials · 2 Europeus · 4 Copes d’Europa · 3 OK Lligues",
+    "es": "4 Mundiales · 2 Europeos · 4 Copas de Europa · 3 OK Ligas",
+    "sources": [
+      "https://fep.es/noticias/marc-torra-anuncia-que-cuelga-los-patines-tras-una-carrera-llena-de-exitos-15939-14.htm",
+      "https://www.fcbarcelona.cat/ca/noticies/4425565/marc-torra-la-nostra-competitivitat-tambe-sha-de-demostrar-a-europa-i-aixi-ho-estem-fent"
+    ]
+  },
+  {
+    "name": "Sergi Panadero",
+    "rating": 92,
+    "birth": "1982-04-26",
+    "clubs": "CP Vic · CP Voltregà · Barça",
+    "ca": "21 temporades al Barça · 67 títols al comunicat de comiat · 8 Lligues Europees",
+    "es": "21 temporadas en el Barça · 67 títulos en el comunicado de despedida · 8 Ligas Europeas",
+    "sources": [
+      "https://www.fcbarcelona.cat/ca/noticies/4037761/sergi-panadero-posa-fi-a-la-seva-etapa-com-a-jugador-blaugrana-despres-de-21-temporades"
+    ]
+  },
+  {
+    "name": "Jordi Bargalló",
+    "rating": 91,
+    "birth": "1979-12-05",
+    "clubs": "CE Noia · HC Liceo · Igualada HC · UD Oliveirense",
+    "ca": "4 Mundials · 4 Europeus · 3 Champions · MVP de l’OK Lliga 2013",
+    "es": "4 Mundiales · 4 Europeos · 3 Champions · MVP de la OK Liga 2013",
+    "sources": [
+      "https://cenoia.com/jordibargallo/",
+      "https://fep.es/noticias/jordi-bargallo-comunica-que-colgara-los-patines-a-final-de-temporada-16036-14.htm",
+      "https://fep.es/noticias/jordi-bargallo-y-carla-giudici--elegidos-mvp-de-la-ok-liga-y-ok-liga-femenina-7681-14.htm"
+    ]
+  },
+  {
+    "name": "Jordi Adroher",
+    "rating": 90,
+    "birth": "1984-11-22",
+    "clubs": "SHUM · CH Lloret · CP Vic · Barça · Reus Deportiu · Breganze · Benfica · HC Liceo · UD Oliveirense",
+    "ca": "3 Mundials · 3 Europeus · campió d’Europa amb el Benfica",
+    "es": "3 Mundiales · 3 Europeos · campeón de Europa con el Benfica",
+    "sources": [
+      "https://fep.es/noticias/jordi-adroher-comunica-que-se-retira-despues-de-una-carrera-llena-de-exitos-16151-14.htm",
+      "https://www.fcbarcelona.cat/ca/noticies/1571972/un-benfica-amb-quatre-exblaugranes-a-la-plantilla",
+      "https://www.csd.gob.es/sites/default/files/media/files/2018-09/ROMD2015.pdf"
+    ]
+  },
+  {
+    "name": "Jaume Llaverola",
+    "rating": 88,
+    "birth": "1975-07-31",
+    "clubs": "Igualada HC · Barça · HC Piera · CH Lloret · HC Liceo · Blanes · Girona CH",
+    "ca": "Porter d’Igualada i Liceo · campió de Copa d’Europa, Lliga i Copa del Rei",
+    "es": "Portero de Igualada y Liceo · campeón de Copa de Europa, Liga y Copa del Rey",
+    "sources": [
+      "https://www.enciclopedia.cat/esportpedia/jaume-llaverola-vidal",
+      "https://www.fcbarcelona.cat/ca/noticies/1692431/benvingut-al-club-dels-40-aitor-egurrola/amp"
+    ]
+  },
+  {
+    "name": "Aleix Esteller",
+    "rating": 85,
+    "birth": "1987-07-02",
+    "clubs": "CE Noia Freixenet",
+    "ca": "19 temporades a l’elit · Copa del Rei 2008 · CERS i Continental 2014 · Lliga Catalana 2023",
+    "es": "19 temporadas en la élite · Copa del Rey 2008 · CERS y Continental 2014 · Liga Catalana 2023",
+    "sources": [
+      "https://cenoia.com/aleix-esteller-posa-punt-final-a-la-seva-trajectoria-com-a-jugador-despres-de-19-temporades-a-lelit-amb-el-noia-freixenet/",
+      "https://europe.worldskate.org/wp-content/uploads/CE-Noia-Sarzana-Group-B.pdf"
+    ]
+  },
+  {
+    "name": "Josep Selva",
+    "rating": 88,
+    "birth": "1985-12-09",
+    "clubs": "Lleida · Noia · Blanes · Vendrell · Reus Deportiu · Viareggio · UD Oliveirense · Calafell",
+    "ca": "Jepi Selva · Copa del Rei i CERS 2013 amb el Vendrell · segon a l’MVP de l’OK Lliga 2013",
+    "es": "Jepi Selva · Copa del Rey y CERS 2013 con el Vendrell · segundo en el MVP de la OK Liga 2013",
+    "now": "HC Valls",
+    "sources": [
+      "https://fep.es/noticias/jordi-bargallo-y-carla-giudici--elegidos-mvp-de-la-ok-liga-y-ok-liga-femenina-7681-14.htm",
+      "https://el3devuit.cat/2026/02/18/137892/esports/jepi-selva-capita-del-cp-calafell-anuncia-la-retirada-de-lhoquei-patins-a-final-de-temporada/",
+      "https://tac12.tv/valls/arxiu-valls/item/45868-jepi-selva-patinara-a-casa"
+    ]
+  }
+]

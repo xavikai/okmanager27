@@ -1,0 +1,1962 @@
+[
+  {
+    "id": "FPTC",
+    "name": "Tres Cantos PC",
+    "city": "Tres Cantos",
+    "arena": "Centro Deportivo Laura Oter",
+    "c1": "#164798",
+    "c2": "#ffffff",
+    "rep": 2,
+    "bud": 4.4,
+    "coords": [
+      40.6,
+      -3.71
+    ],
+    "div": "FP",
+    "fem": true,
+    "src": "femplata27",
+    "provisional": true,
+    "p": [
+      [
+        "Paula Mateo",
+        "POR",
+        null,
+        69,
+        "ESP",
+        0,
+        null,
+        false
+      ],
+      [
+        "Vinyet Pujol",
+        "POR",
+        null,
+        68,
+        "ESP",
+        0,
+        null,
+        false
+      ],
+      [
+        "Elena Arganda",
+        "JUG",
+        null,
+        67,
+        "ESP",
+        0,
+        null,
+        false
+      ],
+      [
+        "Ainara Estévez",
+        "JUG",
+        null,
+        66,
+        "ESP",
+        0,
+        null,
+        false
+      ],
+      [
+        "Vega Estevez Oteiza",
+        "JUG",
+        null,
+        65,
+        "ESP",
+        0,
+        null,
+        false
+      ],
+      [
+        "Alba García",
+        "JUG",
+        null,
+        69,
+        "ESP",
+        0,
+        null,
+        false
+      ],
+      [
+        "Alba Nieto Diez",
+        "JUG",
+        null,
+        68,
+        "ESP",
+        0,
+        null,
+        false
+      ],
+      [
+        "Mercedes Otamendi",
+        "JUG",
+        null,
+        67,
+        "ESP",
+        0,
+        null,
+        false
+      ],
+      [
+        "Mireia Arranz",
+        "JUG",
+        null,
+        66,
+        "ESP",
+        0,
+        null,
+        false
+      ],
+      [
+        "Marta Cañadillas",
+        "JUG",
+        null,
+        65,
+        "ESP",
+        0,
+        null,
+        false
+      ],
+      [
+        "Rosario Viñuela Leon",
+        "JUG",
+        null,
+        69,
+        "ESP",
+        0,
+        null,
+        false
+      ],
+      [
+        "Raquel Rubio",
+        "JUG",
+        null,
+        68,
+        "ESP",
+        0,
+        null,
+        false
+      ]
+    ]
+  },
+  {
+    "id": "FPLR",
+    "name": "CP Las Rozas",
+    "city": "Las Rozas",
+    "arena": "Colegio Virgen de Europa",
+    "c1": "#18642d",
+    "c2": "#ffffff",
+    "rep": 2,
+    "bud": 4.5,
+    "coords": [
+      40.49,
+      -3.87
+    ],
+    "div": "FP",
+    "fem": true,
+    "src": "femplata27",
+    "provisional": true,
+    "p": [
+      [
+        "Portera 1 · simulada",
+        "POR",
+        null,
+        70,
+        "ESP",
+        0,
+        null,
+        true
+      ],
+      [
+        "Portera 2 · simulada",
+        "POR",
+        null,
+        69,
+        "ESP",
+        0,
+        null,
+        true
+      ],
+      [
+        "Jugadora 1 · simulada",
+        "JUG",
+        null,
+        68,
+        "ESP",
+        0,
+        null,
+        true
+      ],
+      [
+        "Jugadora 2 · simulada",
+        "JUG",
+        null,
+        67,
+        "ESP",
+        0,
+        null,
+        true
+      ],
+      [
+        "Jugadora 3 · simulada",
+        "JUG",
+        null,
+        66,
+        "ESP",
+        0,
+        null,
+        true
+      ],
+      [
+        "Jugadora 4 · simulada",
+        "JUG",
+        null,
+        70,
+        "ESP",
+        0,
+        null,
+        true
+      ],
+      [
+        "Jugadora 5 · simulada",
+        "JUG",
+        null,
+        69,
+        "ESP",
+        0,
+        null,
+        true
+      ],
+      [
+        "Jugadora 6 · simulada",
+        "JUG",
+        null,
+        68,
+        "ESP",
+        0,
+        null,
+        true
+      ],
+      [
+        "Jugadora 7 · simulada",
+        "JUG",
+        null,
+        67,
+        "ESP",
+        0,
+        null,
+        true
+      ],
+      [
+        "Jugadora 8 · simulada",
+        "JUG",
+        null,
+        66,
+        "ESP",
+        0,
+        null,
+        true
+      ],
+      [
+        "Jugadora 9 · simulada",
+        "JUG",
+        null,
+        70,
+        "ESP",
+        0,
+        null,
+        true
+      ],
+      [
+        "Jugadora 10 · simulada",
+        "JUG",
+        null,
+        69,
+        "ESP",
+        0,
+        null,
+        true
+      ]
+    ]
+  },
+  {
+    "id": "FPMI",
+    "name": "CP Mieres",
+    "city": "Mieres",
+    "arena": "Pabellón Visiola Rollán",
+    "c1": "#173a72",
+    "c2": "#ffffff",
+    "rep": 2,
+    "bud": 4.2,
+    "coords": [
+      43.25,
+      -5.77
+    ],
+    "div": "FP",
+    "fem": true,
+    "src": "femplata27",
+    "provisional": true,
+    "p": [
+      [
+        "Portera 1 · simulada",
+        "POR",
+        null,
+        68,
+        "ESP",
+        0,
+        null,
+        true
+      ],
+      [
+        "Portera 2 · simulada",
+        "POR",
+        null,
+        67,
+        "ESP",
+        0,
+        null,
+        true
+      ],
+      [
+        "Jugadora 1 · simulada",
+        "JUG",
+        null,
+        66,
+        "ESP",
+        0,
+        null,
+        true
+      ],
+      [
+        "Jugadora 2 · simulada",
+        "JUG",
+        null,
+        65,
+        "ESP",
+        0,
+        null,
+        true
+      ],
+      [
+        "Jugadora 3 · simulada",
+        "JUG",
+        null,
+        64,
+        "ESP",
+        0,
+        null,
+        true
+      ],
+      [
+        "Jugadora 4 · simulada",
+        "JUG",
+        null,
+        68,
+        "ESP",
+        0,
+        null,
+        true
+      ],
+      [
+        "Jugadora 5 · simulada",
+        "JUG",
+        null,
+        67,
+        "ESP",
+        0,
+        null,
+        true
+      ],
+      [
+        "Jugadora 6 · simulada",
+        "JUG",
+        null,
+        66,
+        "ESP",
+        0,
+        null,
+        true
+      ],
+      [
+        "Jugadora 7 · simulada",
+        "JUG",
+        null,
+        65,
+        "ESP",
+        0,
+        null,
+        true
+      ],
+      [
+        "Jugadora 8 · simulada",
+        "JUG",
+        null,
+        64,
+        "ESP",
+        0,
+        null,
+        true
+      ],
+      [
+        "Jugadora 9 · simulada",
+        "JUG",
+        null,
+        68,
+        "ESP",
+        0,
+        null,
+        true
+      ],
+      [
+        "Jugadora 10 · simulada",
+        "JUG",
+        null,
+        67,
+        "ESP",
+        0,
+        null,
+        true
+      ]
+    ]
+  },
+  {
+    "id": "FPTV",
+    "name": "Traviesas HC",
+    "city": "Vigo",
+    "arena": "Pabellón Pablo Beiro",
+    "c1": "#154291",
+    "c2": "#ffffff",
+    "rep": 1,
+    "bud": 3,
+    "coords": [
+      42.23,
+      -8.72
+    ],
+    "div": "FP",
+    "fem": true,
+    "src": "femplata27",
+    "provisional": true,
+    "p": [
+      [
+        "Portera 1 · simulada",
+        "POR",
+        null,
+        62,
+        "ESP",
+        0,
+        null,
+        true
+      ],
+      [
+        "Portera 2 · simulada",
+        "POR",
+        null,
+        61,
+        "ESP",
+        0,
+        null,
+        true
+      ],
+      [
+        "Jugadora 1 · simulada",
+        "JUG",
+        null,
+        60,
+        "ESP",
+        0,
+        null,
+        true
+      ],
+      [
+        "Jugadora 2 · simulada",
+        "JUG",
+        null,
+        59,
+        "ESP",
+        0,
+        null,
+        true
+      ],
+      [
+        "Jugadora 3 · simulada",
+        "JUG",
+        null,
+        58,
+        "ESP",
+        0,
+        null,
+        true
+      ],
+      [
+        "Jugadora 4 · simulada",
+        "JUG",
+        null,
+        62,
+        "ESP",
+        0,
+        null,
+        true
+      ],
+      [
+        "Jugadora 5 · simulada",
+        "JUG",
+        null,
+        61,
+        "ESP",
+        0,
+        null,
+        true
+      ],
+      [
+        "Jugadora 6 · simulada",
+        "JUG",
+        null,
+        60,
+        "ESP",
+        0,
+        null,
+        true
+      ],
+      [
+        "Jugadora 7 · simulada",
+        "JUG",
+        null,
+        59,
+        "ESP",
+        0,
+        null,
+        true
+      ],
+      [
+        "Jugadora 8 · simulada",
+        "JUG",
+        null,
+        58,
+        "ESP",
+        0,
+        null,
+        true
+      ],
+      [
+        "Jugadora 9 · simulada",
+        "JUG",
+        null,
+        62,
+        "ESP",
+        0,
+        null,
+        true
+      ],
+      [
+        "Jugadora 10 · simulada",
+        "JUG",
+        null,
+        61,
+        "ESP",
+        0,
+        null,
+        true
+      ]
+    ]
+  },
+  {
+    "id": "FPRS",
+    "name": "CP Patín Raspeig",
+    "city": "Sant Vicent del Raspeig",
+    "arena": "Pavelló Municipal Sant Vicent del Raspeig",
+    "c1": "#e1bb14",
+    "c2": "#222222",
+    "rep": 1,
+    "bud": 3.2,
+    "coords": [
+      38.4,
+      -0.53
+    ],
+    "div": "FP",
+    "fem": true,
+    "src": "femplata27",
+    "provisional": true,
+    "p": [
+      [
+        "Portera 1 · simulada",
+        "POR",
+        null,
+        64,
+        "ESP",
+        0,
+        null,
+        true
+      ],
+      [
+        "Portera 2 · simulada",
+        "POR",
+        null,
+        63,
+        "ESP",
+        0,
+        null,
+        true
+      ],
+      [
+        "Jugadora 1 · simulada",
+        "JUG",
+        null,
+        62,
+        "ESP",
+        0,
+        null,
+        true
+      ],
+      [
+        "Jugadora 2 · simulada",
+        "JUG",
+        null,
+        61,
+        "ESP",
+        0,
+        null,
+        true
+      ],
+      [
+        "Jugadora 3 · simulada",
+        "JUG",
+        null,
+        60,
+        "ESP",
+        0,
+        null,
+        true
+      ],
+      [
+        "Jugadora 4 · simulada",
+        "JUG",
+        null,
+        64,
+        "ESP",
+        0,
+        null,
+        true
+      ],
+      [
+        "Jugadora 5 · simulada",
+        "JUG",
+        null,
+        63,
+        "ESP",
+        0,
+        null,
+        true
+      ],
+      [
+        "Jugadora 6 · simulada",
+        "JUG",
+        null,
+        62,
+        "ESP",
+        0,
+        null,
+        true
+      ],
+      [
+        "Jugadora 7 · simulada",
+        "JUG",
+        null,
+        61,
+        "ESP",
+        0,
+        null,
+        true
+      ],
+      [
+        "Jugadora 8 · simulada",
+        "JUG",
+        null,
+        60,
+        "ESP",
+        0,
+        null,
+        true
+      ],
+      [
+        "Jugadora 9 · simulada",
+        "JUG",
+        null,
+        64,
+        "ESP",
+        0,
+        null,
+        true
+      ],
+      [
+        "Jugadora 10 · simulada",
+        "JUG",
+        null,
+        63,
+        "ESP",
+        0,
+        null,
+        true
+      ]
+    ]
+  },
+  {
+    "id": "FPBE",
+    "name": "DP Berenguela",
+    "city": "Santiago de Compostel·la",
+    "arena": "Pabellón Santiago Vite",
+    "c1": "#23549c",
+    "c2": "#ffffff",
+    "rep": 1,
+    "bud": 3.3,
+    "coords": [
+      42.88,
+      -8.55
+    ],
+    "div": "FP",
+    "fem": true,
+    "src": "femplata27",
+    "provisional": true,
+    "p": [
+      [
+        "Portera 1 · simulada",
+        "POR",
+        null,
+        65,
+        "ESP",
+        0,
+        null,
+        true
+      ],
+      [
+        "Portera 2 · simulada",
+        "POR",
+        null,
+        64,
+        "ESP",
+        0,
+        null,
+        true
+      ],
+      [
+        "Jugadora 1 · simulada",
+        "JUG",
+        null,
+        63,
+        "ESP",
+        0,
+        null,
+        true
+      ],
+      [
+        "Jugadora 2 · simulada",
+        "JUG",
+        null,
+        62,
+        "ESP",
+        0,
+        null,
+        true
+      ],
+      [
+        "Jugadora 3 · simulada",
+        "JUG",
+        null,
+        61,
+        "ESP",
+        0,
+        null,
+        true
+      ],
+      [
+        "Jugadora 4 · simulada",
+        "JUG",
+        null,
+        65,
+        "ESP",
+        0,
+        null,
+        true
+      ],
+      [
+        "Jugadora 5 · simulada",
+        "JUG",
+        null,
+        64,
+        "ESP",
+        0,
+        null,
+        true
+      ],
+      [
+        "Jugadora 6 · simulada",
+        "JUG",
+        null,
+        63,
+        "ESP",
+        0,
+        null,
+        true
+      ],
+      [
+        "Jugadora 7 · simulada",
+        "JUG",
+        null,
+        62,
+        "ESP",
+        0,
+        null,
+        true
+      ],
+      [
+        "Jugadora 8 · simulada",
+        "JUG",
+        null,
+        61,
+        "ESP",
+        0,
+        null,
+        true
+      ],
+      [
+        "Jugadora 9 · simulada",
+        "JUG",
+        null,
+        65,
+        "ESP",
+        0,
+        null,
+        true
+      ],
+      [
+        "Jugadora 10 · simulada",
+        "JUG",
+        null,
+        64,
+        "ESP",
+        0,
+        null,
+        true
+      ]
+    ]
+  },
+  {
+    "id": "FPAC",
+    "name": "CP Alcorcón",
+    "city": "Alcorcón",
+    "arena": "Prado de Santo Domingo",
+    "c1": "#154f9a",
+    "c2": "#f1cc20",
+    "rep": 1,
+    "bud": 3.1,
+    "coords": [
+      40.35,
+      -3.83
+    ],
+    "div": "FP",
+    "fem": true,
+    "src": "femplata27",
+    "provisional": true,
+    "p": [
+      [
+        "Portera 1 · simulada",
+        "POR",
+        null,
+        63,
+        "ESP",
+        0,
+        null,
+        true
+      ],
+      [
+        "Portera 2 · simulada",
+        "POR",
+        null,
+        62,
+        "ESP",
+        0,
+        null,
+        true
+      ],
+      [
+        "Jugadora 1 · simulada",
+        "JUG",
+        null,
+        61,
+        "ESP",
+        0,
+        null,
+        true
+      ],
+      [
+        "Jugadora 2 · simulada",
+        "JUG",
+        null,
+        60,
+        "ESP",
+        0,
+        null,
+        true
+      ],
+      [
+        "Jugadora 3 · simulada",
+        "JUG",
+        null,
+        59,
+        "ESP",
+        0,
+        null,
+        true
+      ],
+      [
+        "Jugadora 4 · simulada",
+        "JUG",
+        null,
+        63,
+        "ESP",
+        0,
+        null,
+        true
+      ],
+      [
+        "Jugadora 5 · simulada",
+        "JUG",
+        null,
+        62,
+        "ESP",
+        0,
+        null,
+        true
+      ],
+      [
+        "Jugadora 6 · simulada",
+        "JUG",
+        null,
+        61,
+        "ESP",
+        0,
+        null,
+        true
+      ],
+      [
+        "Jugadora 7 · simulada",
+        "JUG",
+        null,
+        60,
+        "ESP",
+        0,
+        null,
+        true
+      ],
+      [
+        "Jugadora 8 · simulada",
+        "JUG",
+        null,
+        59,
+        "ESP",
+        0,
+        null,
+        true
+      ],
+      [
+        "Jugadora 9 · simulada",
+        "JUG",
+        null,
+        63,
+        "ESP",
+        0,
+        null,
+        true
+      ],
+      [
+        "Jugadora 10 · simulada",
+        "JUG",
+        null,
+        62,
+        "ESP",
+        0,
+        null,
+        true
+      ]
+    ]
+  },
+  {
+    "id": "FPALC",
+    "name": "CP Alcalá Hockey",
+    "city": "Alcalá de Henares",
+    "arena": "Ciudad Deportiva Municipal del Val",
+    "c1": "#c52331",
+    "c2": "#ffffff",
+    "rep": 2,
+    "bud": 4.3,
+    "coords": [
+      40.48,
+      -3.36
+    ],
+    "div": "FP",
+    "fem": true,
+    "src": "femplata27",
+    "provisional": true,
+    "p": [
+      [
+        "Portera 1 · simulada",
+        "POR",
+        null,
+        69,
+        "ESP",
+        0,
+        null,
+        true
+      ],
+      [
+        "Portera 2 · simulada",
+        "POR",
+        null,
+        68,
+        "ESP",
+        0,
+        null,
+        true
+      ],
+      [
+        "Jugadora 1 · simulada",
+        "JUG",
+        null,
+        67,
+        "ESP",
+        0,
+        null,
+        true
+      ],
+      [
+        "Jugadora 2 · simulada",
+        "JUG",
+        null,
+        66,
+        "ESP",
+        0,
+        null,
+        true
+      ],
+      [
+        "Jugadora 3 · simulada",
+        "JUG",
+        null,
+        65,
+        "ESP",
+        0,
+        null,
+        true
+      ],
+      [
+        "Jugadora 4 · simulada",
+        "JUG",
+        null,
+        69,
+        "ESP",
+        0,
+        null,
+        true
+      ],
+      [
+        "Jugadora 5 · simulada",
+        "JUG",
+        null,
+        68,
+        "ESP",
+        0,
+        null,
+        true
+      ],
+      [
+        "Jugadora 6 · simulada",
+        "JUG",
+        null,
+        67,
+        "ESP",
+        0,
+        null,
+        true
+      ],
+      [
+        "Jugadora 7 · simulada",
+        "JUG",
+        null,
+        66,
+        "ESP",
+        0,
+        null,
+        true
+      ],
+      [
+        "Jugadora 8 · simulada",
+        "JUG",
+        null,
+        65,
+        "ESP",
+        0,
+        null,
+        true
+      ],
+      [
+        "Jugadora 9 · simulada",
+        "JUG",
+        null,
+        69,
+        "ESP",
+        0,
+        null,
+        true
+      ],
+      [
+        "Jugadora 10 · simulada",
+        "JUG",
+        null,
+        68,
+        "ESP",
+        0,
+        null,
+        true
+      ]
+    ]
+  },
+  {
+    "id": "FPCV",
+    "name": "Colegio Virgen de Europa",
+    "city": "Boadilla del Monte",
+    "arena": "Colegio Virgen de Europa",
+    "c1": "#225937",
+    "c2": "#ffffff",
+    "rep": 1,
+    "bud": 2.8,
+    "coords": [
+      40.41,
+      -3.88
+    ],
+    "div": "FP",
+    "fem": true,
+    "src": "femplata27",
+    "provisional": true,
+    "p": [
+      [
+        "Portera 1 · simulada",
+        "POR",
+        null,
+        61,
+        "ESP",
+        0,
+        null,
+        true
+      ],
+      [
+        "Portera 2 · simulada",
+        "POR",
+        null,
+        60,
+        "ESP",
+        0,
+        null,
+        true
+      ],
+      [
+        "Jugadora 1 · simulada",
+        "JUG",
+        null,
+        59,
+        "ESP",
+        0,
+        null,
+        true
+      ],
+      [
+        "Jugadora 2 · simulada",
+        "JUG",
+        null,
+        58,
+        "ESP",
+        0,
+        null,
+        true
+      ],
+      [
+        "Jugadora 3 · simulada",
+        "JUG",
+        null,
+        57,
+        "ESP",
+        0,
+        null,
+        true
+      ],
+      [
+        "Jugadora 4 · simulada",
+        "JUG",
+        null,
+        61,
+        "ESP",
+        0,
+        null,
+        true
+      ],
+      [
+        "Jugadora 5 · simulada",
+        "JUG",
+        null,
+        60,
+        "ESP",
+        0,
+        null,
+        true
+      ],
+      [
+        "Jugadora 6 · simulada",
+        "JUG",
+        null,
+        59,
+        "ESP",
+        0,
+        null,
+        true
+      ],
+      [
+        "Jugadora 7 · simulada",
+        "JUG",
+        null,
+        58,
+        "ESP",
+        0,
+        null,
+        true
+      ],
+      [
+        "Jugadora 8 · simulada",
+        "JUG",
+        null,
+        57,
+        "ESP",
+        0,
+        null,
+        true
+      ],
+      [
+        "Jugadora 9 · simulada",
+        "JUG",
+        null,
+        61,
+        "ESP",
+        0,
+        null,
+        true
+      ],
+      [
+        "Jugadora 10 · simulada",
+        "JUG",
+        null,
+        60,
+        "ESP",
+        0,
+        null,
+        true
+      ]
+    ]
+  },
+  {
+    "id": "FPCO",
+    "name": "Coslada RH",
+    "city": "Coslada",
+    "arena": "Polideportivo Valleaguado",
+    "c1": "#dd2534",
+    "c2": "#ffffff",
+    "rep": 1,
+    "bud": 2.8,
+    "coords": [
+      40.42,
+      -3.56
+    ],
+    "div": "FP",
+    "fem": true,
+    "src": "femplata27",
+    "provisional": true,
+    "p": [
+      [
+        "Portera 1 · simulada",
+        "POR",
+        null,
+        60,
+        "ESP",
+        0,
+        null,
+        true
+      ],
+      [
+        "Portera 2 · simulada",
+        "POR",
+        null,
+        59,
+        "ESP",
+        0,
+        null,
+        true
+      ],
+      [
+        "Jugadora 1 · simulada",
+        "JUG",
+        null,
+        58,
+        "ESP",
+        0,
+        null,
+        true
+      ],
+      [
+        "Jugadora 2 · simulada",
+        "JUG",
+        null,
+        57,
+        "ESP",
+        0,
+        null,
+        true
+      ],
+      [
+        "Jugadora 3 · simulada",
+        "JUG",
+        null,
+        56,
+        "ESP",
+        0,
+        null,
+        true
+      ],
+      [
+        "Jugadora 4 · simulada",
+        "JUG",
+        null,
+        60,
+        "ESP",
+        0,
+        null,
+        true
+      ],
+      [
+        "Jugadora 5 · simulada",
+        "JUG",
+        null,
+        59,
+        "ESP",
+        0,
+        null,
+        true
+      ],
+      [
+        "Jugadora 6 · simulada",
+        "JUG",
+        null,
+        58,
+        "ESP",
+        0,
+        null,
+        true
+      ],
+      [
+        "Jugadora 7 · simulada",
+        "JUG",
+        null,
+        57,
+        "ESP",
+        0,
+        null,
+        true
+      ],
+      [
+        "Jugadora 8 · simulada",
+        "JUG",
+        null,
+        56,
+        "ESP",
+        0,
+        null,
+        true
+      ],
+      [
+        "Jugadora 9 · simulada",
+        "JUG",
+        null,
+        60,
+        "ESP",
+        0,
+        null,
+        true
+      ],
+      [
+        "Jugadora 10 · simulada",
+        "JUG",
+        null,
+        59,
+        "ESP",
+        0,
+        null,
+        true
+      ]
+    ]
+  },
+  {
+    "id": "FPPO",
+    "name": "HC Ponteareas",
+    "city": "Ponteareas",
+    "arena": "Pavillón Municipal Álvaro Pino",
+    "c1": "#c52a35",
+    "c2": "#ffffff",
+    "rep": 1,
+    "bud": 2.8,
+    "coords": [
+      42.17,
+      -8.5
+    ],
+    "div": "FP",
+    "fem": true,
+    "src": "femplata27",
+    "provisional": true,
+    "p": [
+      [
+        "Portera 1 · simulada",
+        "POR",
+        null,
+        60,
+        "ESP",
+        0,
+        null,
+        true
+      ],
+      [
+        "Portera 2 · simulada",
+        "POR",
+        null,
+        59,
+        "ESP",
+        0,
+        null,
+        true
+      ],
+      [
+        "Jugadora 1 · simulada",
+        "JUG",
+        null,
+        58,
+        "ESP",
+        0,
+        null,
+        true
+      ],
+      [
+        "Jugadora 2 · simulada",
+        "JUG",
+        null,
+        57,
+        "ESP",
+        0,
+        null,
+        true
+      ],
+      [
+        "Jugadora 3 · simulada",
+        "JUG",
+        null,
+        56,
+        "ESP",
+        0,
+        null,
+        true
+      ],
+      [
+        "Jugadora 4 · simulada",
+        "JUG",
+        null,
+        60,
+        "ESP",
+        0,
+        null,
+        true
+      ],
+      [
+        "Jugadora 5 · simulada",
+        "JUG",
+        null,
+        59,
+        "ESP",
+        0,
+        null,
+        true
+      ],
+      [
+        "Jugadora 6 · simulada",
+        "JUG",
+        null,
+        58,
+        "ESP",
+        0,
+        null,
+        true
+      ],
+      [
+        "Jugadora 7 · simulada",
+        "JUG",
+        null,
+        57,
+        "ESP",
+        0,
+        null,
+        true
+      ],
+      [
+        "Jugadora 8 · simulada",
+        "JUG",
+        null,
+        56,
+        "ESP",
+        0,
+        null,
+        true
+      ],
+      [
+        "Jugadora 9 · simulada",
+        "JUG",
+        null,
+        60,
+        "ESP",
+        0,
+        null,
+        true
+      ],
+      [
+        "Jugadora 10 · simulada",
+        "JUG",
+        null,
+        59,
+        "ESP",
+        0,
+        null,
+        true
+      ]
+    ]
+  },
+  {
+    "id": "FPOV",
+    "name": "Oviedo Roller HC femení",
+    "city": "Oviedo",
+    "arena": "Polideportivo de Villafría",
+    "c1": "#1c3152",
+    "c2": "#ffffff",
+    "rep": 1,
+    "bud": 2.9,
+    "coords": [
+      43.36,
+      -5.85
+    ],
+    "div": "FP",
+    "fem": true,
+    "src": "femplata27",
+    "provisional": true,
+    "p": [
+      [
+        "Portera 1 · simulada",
+        "POR",
+        null,
+        61,
+        "ESP",
+        0,
+        null,
+        true
+      ],
+      [
+        "Portera 2 · simulada",
+        "POR",
+        null,
+        60,
+        "ESP",
+        0,
+        null,
+        true
+      ],
+      [
+        "Jugadora 1 · simulada",
+        "JUG",
+        null,
+        59,
+        "ESP",
+        0,
+        null,
+        true
+      ],
+      [
+        "Jugadora 2 · simulada",
+        "JUG",
+        null,
+        58,
+        "ESP",
+        0,
+        null,
+        true
+      ],
+      [
+        "Jugadora 3 · simulada",
+        "JUG",
+        null,
+        57,
+        "ESP",
+        0,
+        null,
+        true
+      ],
+      [
+        "Jugadora 4 · simulada",
+        "JUG",
+        null,
+        61,
+        "ESP",
+        0,
+        null,
+        true
+      ],
+      [
+        "Jugadora 5 · simulada",
+        "JUG",
+        null,
+        60,
+        "ESP",
+        0,
+        null,
+        true
+      ],
+      [
+        "Jugadora 6 · simulada",
+        "JUG",
+        null,
+        59,
+        "ESP",
+        0,
+        null,
+        true
+      ],
+      [
+        "Jugadora 7 · simulada",
+        "JUG",
+        null,
+        58,
+        "ESP",
+        0,
+        null,
+        true
+      ],
+      [
+        "Jugadora 8 · simulada",
+        "JUG",
+        null,
+        57,
+        "ESP",
+        0,
+        null,
+        true
+      ],
+      [
+        "Jugadora 9 · simulada",
+        "JUG",
+        null,
+        61,
+        "ESP",
+        0,
+        null,
+        true
+      ],
+      [
+        "Jugadora 10 · simulada",
+        "JUG",
+        null,
+        60,
+        "ESP",
+        0,
+        null,
+        true
+      ]
+    ]
+  },
+  {
+    "id": "FPGI",
+    "name": "Gatikako Iusturi",
+    "city": "Gatika",
+    "arena": "Polideportivo de Gatika",
+    "c1": "#227741",
+    "c2": "#ffffff",
+    "rep": 1,
+    "bud": 3.3,
+    "coords": [
+      43.36,
+      -2.87
+    ],
+    "div": "FP",
+    "fem": true,
+    "src": "femplata27",
+    "provisional": true,
+    "p": [
+      [
+        "Portera 1 · simulada",
+        "POR",
+        null,
+        65,
+        "ESP",
+        0,
+        null,
+        true
+      ],
+      [
+        "Portera 2 · simulada",
+        "POR",
+        null,
+        64,
+        "ESP",
+        0,
+        null,
+        true
+      ],
+      [
+        "Jugadora 1 · simulada",
+        "JUG",
+        null,
+        63,
+        "ESP",
+        0,
+        null,
+        true
+      ],
+      [
+        "Jugadora 2 · simulada",
+        "JUG",
+        null,
+        62,
+        "ESP",
+        0,
+        null,
+        true
+      ],
+      [
+        "Jugadora 3 · simulada",
+        "JUG",
+        null,
+        61,
+        "ESP",
+        0,
+        null,
+        true
+      ],
+      [
+        "Jugadora 4 · simulada",
+        "JUG",
+        null,
+        65,
+        "ESP",
+        0,
+        null,
+        true
+      ],
+      [
+        "Jugadora 5 · simulada",
+        "JUG",
+        null,
+        64,
+        "ESP",
+        0,
+        null,
+        true
+      ],
+      [
+        "Jugadora 6 · simulada",
+        "JUG",
+        null,
+        63,
+        "ESP",
+        0,
+        null,
+        true
+      ],
+      [
+        "Jugadora 7 · simulada",
+        "JUG",
+        null,
+        62,
+        "ESP",
+        0,
+        null,
+        true
+      ],
+      [
+        "Jugadora 8 · simulada",
+        "JUG",
+        null,
+        61,
+        "ESP",
+        0,
+        null,
+        true
+      ],
+      [
+        "Jugadora 9 · simulada",
+        "JUG",
+        null,
+        65,
+        "ESP",
+        0,
+        null,
+        true
+      ],
+      [
+        "Jugadora 10 · simulada",
+        "JUG",
+        null,
+        64,
+        "ESP",
+        0,
+        null,
+        true
+      ]
+    ]
+  },
+  {
+    "id": "FPST",
+    "name": "Santutxu Hockey Taldea",
+    "city": "Bilbao",
+    "arena": "Polideportivo de Txurdinaga",
+    "c1": "#cc263c",
+    "c2": "#ffffff",
+    "rep": 1,
+    "bud": 2.6,
+    "coords": [
+      43.25,
+      -2.92
+    ],
+    "div": "FP",
+    "fem": true,
+    "src": "femplata27",
+    "provisional": true,
+    "p": [
+      [
+        "Portera 1 · simulada",
+        "POR",
+        null,
+        59,
+        "ESP",
+        0,
+        null,
+        true
+      ],
+      [
+        "Portera 2 · simulada",
+        "POR",
+        null,
+        58,
+        "ESP",
+        0,
+        null,
+        true
+      ],
+      [
+        "Jugadora 1 · simulada",
+        "JUG",
+        null,
+        57,
+        "ESP",
+        0,
+        null,
+        true
+      ],
+      [
+        "Jugadora 2 · simulada",
+        "JUG",
+        null,
+        56,
+        "ESP",
+        0,
+        null,
+        true
+      ],
+      [
+        "Jugadora 3 · simulada",
+        "JUG",
+        null,
+        55,
+        "ESP",
+        0,
+        null,
+        true
+      ],
+      [
+        "Jugadora 4 · simulada",
+        "JUG",
+        null,
+        59,
+        "ESP",
+        0,
+        null,
+        true
+      ],
+      [
+        "Jugadora 5 · simulada",
+        "JUG",
+        null,
+        58,
+        "ESP",
+        0,
+        null,
+        true
+      ],
+      [
+        "Jugadora 6 · simulada",
+        "JUG",
+        null,
+        57,
+        "ESP",
+        0,
+        null,
+        true
+      ],
+      [
+        "Jugadora 7 · simulada",
+        "JUG",
+        null,
+        56,
+        "ESP",
+        0,
+        null,
+        true
+      ],
+      [
+        "Jugadora 8 · simulada",
+        "JUG",
+        null,
+        55,
+        "ESP",
+        0,
+        null,
+        true
+      ],
+      [
+        "Jugadora 9 · simulada",
+        "JUG",
+        null,
+        59,
+        "ESP",
+        0,
+        null,
+        true
+      ],
+      [
+        "Jugadora 10 · simulada",
+        "JUG",
+        null,
+        58,
+        "ESP",
+        0,
+        null,
+        true
+      ]
+    ]
+  }
+]

@@ -2,7 +2,7 @@ import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import vm from 'node:vm';
 import {readFileSync} from 'node:fs';
-const html=readFileSync(new URL('../index.html',import.meta.url),'utf8');
+const html=readFileSync(new URL('../index.html',import.meta.url),'utf8').replace(/\r\n/g,'\n');
 const source=readFileSync(new URL('../travel-costs.js',import.meta.url),'utf8');
 function functionSource(name){return html.match(new RegExp('function '+name+'\\([^]*?\\n}'))[0]}
 function setup(){

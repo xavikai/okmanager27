@@ -19,6 +19,7 @@ export async function onRequest({request,env}) {
     const previous=sessionToken(request);
     await env.METRICS_DB.batch([
       env.METRICS_DB.prepare('INSERT INTO game_users (id,name,created_at) VALUES (?,?,?) ON CONFLICT(id) DO UPDATE SET name=excluded.name').bind(user.id,user.name,now()),
+      user.creator?env.METRICS_DB.prepare('INSERT OR IGNORE INTO game_creator_users(user_id) VALUES(?)').bind(user.id):env.METRICS_DB.prepare('DELETE FROM game_creator_users WHERE user_id=?').bind(user.id),
       env.METRICS_DB.prepare('DELETE FROM game_sessions WHERE expires_at<=? OR token_hash=?').bind(now(),await hash(previous)),
       env.METRICS_DB.prepare('INSERT INTO game_sessions (token_hash,user_id,expires_at) VALUES (?,?,?)').bind(await hash(token),user.id,now()+2592000)
     ]);

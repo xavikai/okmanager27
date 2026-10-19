@@ -14,7 +14,8 @@ export function sessionToken(request) {
 export async function session(request,env) {
   const token=sessionToken(request);
   if(!/^[0-9a-f]{64}$/.test(token)||!env.METRICS_DB)return null;
-  return await env.METRICS_DB.prepare('SELECT u.id,u.name FROM game_sessions s JOIN game_users u ON u.id=s.user_id WHERE s.token_hash=? AND s.expires_at>?').bind(await hash(token),now()).first();
+  const user=await env.METRICS_DB.prepare('SELECT u.id,u.name,EXISTS(SELECT 1 FROM game_creator_users c WHERE c.user_id=u.id) AS creator FROM game_sessions s JOIN game_users u ON u.id=s.user_id WHERE s.token_hash=? AND s.expires_at>?').bind(await hash(token),now()).first();
+  if(user){if(user.creator)user.creator=true;else delete user.creator}return user;
 }
 export function originAllowed(request) {return request.headers.get('Origin')===new URL(request.url).origin;}
 export async function readJson(request,limit=1100000) {
@@ -27,6 +28,8 @@ export async function readJson(request,limit=1100000) {
 export async function verifyGoogle(credential,clientId) {
   const {payload}=await jwtVerify(credential,googleKeys,{audience:clientId,issuer:['https://accounts.google.com','accounts.google.com'],algorithms:['RS256'],maxTokenAge:'2h'});
   if(typeof payload.sub!=='string'||!payload.sub||!payload.exp)throw Error('Invalid identity');
-  return {id:payload.sub,name:typeof payload.given_name==='string'?payload.given_name.slice(0,80):'Jugador'};
+  const user={id:payload.sub,name:typeof payload.given_name==='string'?payload.given_name.slice(0,80):'Jugador'};
+  if(payload.email_verified===true&&typeof payload.email==='string'&&payload.email.toLowerCase()==='carrotrevoltstudio@gmail.com')user.creator=true;
+  return user;
 }
 export function json(data,status=200,headers={}) {return Response.json(data,{status,headers:{'Cache-Control':'no-store',...headers}});}
