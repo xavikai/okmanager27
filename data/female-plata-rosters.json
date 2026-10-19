@@ -1,0 +1,956 @@
+{
+  "source": "https://www.hockeypatines.fep.es/league/3571",
+  "checked": "2026-10-18",
+  "registered": 169,
+  "confirmed": 167,
+  "teams": [
+    {
+      "id": "FPTC",
+      "name": "Tres Cantos PC",
+      "fedId": "3752",
+      "players": [
+        {
+          "id": "17850",
+          "name": "Elena Arganda Soto",
+          "pos": "JUG"
+        },
+        {
+          "id": "35434",
+          "name": "Mireia Arranz Perpinyá",
+          "pos": "JUG"
+        },
+        {
+          "id": "8674",
+          "name": "Marta Cañadillas Martinez",
+          "pos": "JUG"
+        },
+        {
+          "id": "27246",
+          "name": "Vega Estevez Oteiza",
+          "pos": "JUG"
+        },
+        {
+          "id": "29457",
+          "name": "Ainara Estevez Oteiza",
+          "pos": "JUG"
+        },
+        {
+          "id": "29462",
+          "name": "Alba Garcia Alonso",
+          "pos": "JUG"
+        },
+        {
+          "id": "30350",
+          "name": "Paula Mateo Viguri",
+          "pos": "POR"
+        },
+        {
+          "id": "27247",
+          "name": "Alba Nieto Diez",
+          "pos": "JUG"
+        },
+        {
+          "id": "31074",
+          "name": "Mercedes Otamendi González De Vega",
+          "pos": "JUG"
+        },
+        {
+          "id": "32134",
+          "name": "Vinyet Pujol Minguez",
+          "pos": "POR"
+        },
+        {
+          "id": "27252",
+          "name": "Rosario Viñuela Leon",
+          "pos": "JUG"
+        },
+        {
+          "id": "22828",
+          "name": "Raquel Rubio De La Torre",
+          "pos": "JUG"
+        }
+      ]
+    },
+    {
+      "id": "FPLR",
+      "name": "CP Las Rozas",
+      "fedId": "3693",
+      "players": [
+        {
+          "id": "30091",
+          "name": "Luana Maite Alvarez Sisterna",
+          "pos": "JUG"
+        },
+        {
+          "id": "17853",
+          "name": "Naiara Balmori Miranda",
+          "pos": "JUG"
+        },
+        {
+          "id": "23040",
+          "name": "Cristina España Fariñas",
+          "pos": "POR"
+        },
+        {
+          "id": "30089",
+          "name": "Camila Luz Guido",
+          "pos": "JUG"
+        },
+        {
+          "id": "24392",
+          "name": "Silvia Herrero Granda",
+          "pos": "JUG"
+        },
+        {
+          "id": "7882",
+          "name": "Ana Horche Mora",
+          "pos": "JUG"
+        },
+        {
+          "id": "8092",
+          "name": "Carolina Monedero Juzgado",
+          "pos": "JUG"
+        },
+        {
+          "id": "24124",
+          "name": "Alejandra Muniain Medina",
+          "pos": "JUG"
+        },
+        {
+          "id": "30090",
+          "name": "Maria Paulina Santibañez Torres",
+          "pos": "POR"
+        },
+        {
+          "id": "17403",
+          "name": "Monica Villaro Sanchez",
+          "pos": "JUG"
+        },
+        {
+          "id": "17851",
+          "name": "Aitana Gata Guardiola",
+          "pos": "JUG"
+        }
+      ]
+    },
+    {
+      "id": "FPMI",
+      "name": "CP Mieres",
+      "fedId": "3754",
+      "players": [
+        {
+          "id": "25259",
+          "name": "Valentina Ailen Domínguez",
+          "pos": "JUG"
+        },
+        {
+          "id": "18662",
+          "name": "Ariadna Fernández Iglesias",
+          "pos": "JUG"
+        },
+        {
+          "id": "22346",
+          "name": "Manuela López Álvarez",
+          "pos": "POR"
+        },
+        {
+          "id": "24586",
+          "name": "Ariadna Martínez Fernández",
+          "pos": "JUG"
+        },
+        {
+          "id": "22627",
+          "name": "Claudia Molano Vega",
+          "pos": "JUG"
+        },
+        {
+          "id": "29748",
+          "name": "Nerea Molano Vega",
+          "pos": "JUG"
+        },
+        {
+          "id": "24426",
+          "name": "Paula Peña García",
+          "pos": "JUG"
+        },
+        {
+          "id": "10776",
+          "name": "Milagros Puig Arrebillaga",
+          "pos": "JUG"
+        },
+        {
+          "id": "12640",
+          "name": "Paula Rey Alvarez",
+          "pos": "POR"
+        },
+        {
+          "id": "18898",
+          "name": "Olaya Rodríguez Ferrero",
+          "pos": "JUG"
+        },
+        {
+          "id": "19825",
+          "name": "Julieta Rouco Mantilla",
+          "pos": "POR"
+        },
+        {
+          "id": "25258",
+          "name": "Viznia Fernanda Silva Castro",
+          "pos": "JUG"
+        }
+      ]
+    },
+    {
+      "id": "FPTV",
+      "name": "Traviesas HC",
+      "fedId": "3681",
+      "players": [
+        {
+          "id": "26985",
+          "name": "Sabela Alvarez Fernandez",
+          "pos": "JUG"
+        },
+        {
+          "id": "35310",
+          "name": "Luana Agostina Carena",
+          "pos": "JUG"
+        },
+        {
+          "id": "18932",
+          "name": "Olaya Gonzalez Gonzalez",
+          "pos": "JUG"
+        },
+        {
+          "id": "32217",
+          "name": "Priscila Rosario Molina Sigre",
+          "pos": "JUG"
+        },
+        {
+          "id": "14159",
+          "name": "Uxía Pereiro Pérez",
+          "pos": "JUG"
+        },
+        {
+          "id": "24634",
+          "name": "Gema Pérez Lorenzo",
+          "pos": "POR"
+        },
+        {
+          "id": "30190",
+          "name": "Martina Ruz Aranda",
+          "pos": "POR"
+        },
+        {
+          "id": "18947",
+          "name": "Paula Sanz Meneses",
+          "pos": "JUG"
+        },
+        {
+          "id": "17325",
+          "name": "Marta Ureña Perez",
+          "pos": "POR"
+        },
+        {
+          "id": "33748",
+          "name": "Noela Carrera Perez",
+          "pos": "JUG"
+        },
+        {
+          "id": "27387",
+          "name": "Marina Pérez González",
+          "pos": "JUG"
+        }
+      ]
+    },
+    {
+      "id": "FPRS",
+      "name": "CP Patín Raspeig",
+      "fedId": "3701",
+      "players": [
+        {
+          "id": "14188",
+          "name": "Alejandra Aiko Alcobendas Miguez",
+          "pos": "JUG"
+        },
+        {
+          "id": "31939",
+          "name": "Marian Arche Company",
+          "pos": "JUG"
+        },
+        {
+          "id": "19086",
+          "name": "Laura Canto Mullor",
+          "pos": "JUG"
+        },
+        {
+          "id": "31941",
+          "name": "Ángela Ceña Martín",
+          "pos": "JUG"
+        },
+        {
+          "id": "31942",
+          "name": "Sara Fernández Sempere",
+          "pos": "JUG"
+        },
+        {
+          "id": "22911",
+          "name": "Zoe Agustina Gomez Quiroga",
+          "pos": "POR"
+        },
+        {
+          "id": "27470",
+          "name": "Sabrina Yoselie Gomez Quiroga",
+          "pos": "JUG"
+        },
+        {
+          "id": "14692",
+          "name": "Marta Milán Palazón",
+          "pos": "JUG"
+        },
+        {
+          "id": "14693",
+          "name": "Paula Milán Palazón",
+          "pos": "JUG"
+        },
+        {
+          "id": "31938",
+          "name": "Beatriz Samuels Martínez",
+          "pos": "POR"
+        },
+        {
+          "id": "27772",
+          "name": "Consol Quiles Cascant",
+          "pos": "POR"
+        }
+      ]
+    },
+    {
+      "id": "FPBE",
+      "name": "DP Berenguela",
+      "fedId": "3702",
+      "players": [
+        {
+          "id": "22277",
+          "name": "Noelia Castro Gende",
+          "pos": "POR"
+        },
+        {
+          "id": "28101",
+          "name": "Luján Mella Padín",
+          "pos": "POR"
+        },
+        {
+          "id": "27046",
+          "name": "Claudia Mella Padin",
+          "pos": "JUG"
+        },
+        {
+          "id": "8107",
+          "name": "Raquel Parga Torres",
+          "pos": "JUG"
+        },
+        {
+          "id": "30589",
+          "name": "Catalina Ramirez Garnica",
+          "pos": "JUG"
+        },
+        {
+          "id": "22799",
+          "name": "Tamara Francisca Ramirez Garnica",
+          "pos": "JUG"
+        },
+        {
+          "id": "28098",
+          "name": "Gemma Ramos Gil",
+          "pos": "JUG"
+        },
+        {
+          "id": "30191",
+          "name": "Ana Sangiao Alcaide",
+          "pos": "JUG"
+        },
+        {
+          "id": "23401",
+          "name": "Pia Carla Sarmiento Escoda",
+          "pos": "JUG"
+        },
+        {
+          "id": "25341",
+          "name": "Maria Fernanda Yacanto Frau",
+          "pos": "JUG"
+        },
+        {
+          "id": "12659",
+          "name": "Alba Pampín Vilares",
+          "pos": "JUG"
+        },
+        {
+          "id": "27236",
+          "name": "Malena Gomez Espiñeira",
+          "pos": "JUG"
+        },
+        {
+          "id": "26911",
+          "name": "Marta Rivera Costoya",
+          "pos": "POR"
+        },
+        {
+          "id": "19109",
+          "name": "Sandra Viadel Turjanicova",
+          "pos": "JUG"
+        }
+      ]
+    },
+    {
+      "id": "FPAC",
+      "name": "CP Alcorcón",
+      "fedId": "3751",
+      "players": [
+        {
+          "id": "32205",
+          "name": "Erika Carballo Sanz",
+          "pos": "JUG"
+        },
+        {
+          "id": "32206",
+          "name": "Mara Carballo Sanz",
+          "pos": "JUG"
+        },
+        {
+          "id": "20248",
+          "name": "Daniela Del Olmo Sanchez",
+          "pos": "POR"
+        },
+        {
+          "id": "18940",
+          "name": "Mariona Escoda Muñoz",
+          "pos": "POR"
+        },
+        {
+          "id": "32204",
+          "name": "Lara Garcia Lechuga",
+          "pos": "JUG"
+        },
+        {
+          "id": "20249",
+          "name": "Carla Garcia Romero",
+          "pos": "JUG"
+        },
+        {
+          "id": "20259",
+          "name": "Irma Garcia Romero",
+          "pos": "JUG"
+        },
+        {
+          "id": "35308",
+          "name": "Marta Lloret Jimenez",
+          "pos": "JUG"
+        },
+        {
+          "id": "24585",
+          "name": "Amelie Maroto Lorenzo",
+          "pos": "JUG"
+        },
+        {
+          "id": "21207",
+          "name": "Lucia Rico Guzman",
+          "pos": "JUG"
+        },
+        {
+          "id": "8091",
+          "name": "Natalia Velazquez Santaflorentina",
+          "pos": "JUG"
+        },
+        {
+          "id": "29456",
+          "name": "Xiana Freiria Sande",
+          "pos": "JUG"
+        },
+        {
+          "id": "20252",
+          "name": "Elisa Lopez Alameda",
+          "pos": "JUG"
+        },
+        {
+          "id": "35309",
+          "name": "Valeria Rama Ormeño",
+          "pos": "JUG"
+        },
+        {
+          "id": "23240",
+          "name": "Inmaculada Colomer Ruiz",
+          "pos": "POR"
+        }
+      ]
+    },
+    {
+      "id": "FPALC",
+      "name": "CP Alcalá Hockey",
+      "fedId": "3737",
+      "players": [
+        {
+          "id": "35378",
+          "name": "Ariana Roxana Bricius Batinas",
+          "pos": "JUG"
+        },
+        {
+          "id": "35298",
+          "name": "Carlota Jaramillo Lopez",
+          "pos": "JUG"
+        },
+        {
+          "id": "29405",
+          "name": "Sara Jimenez Ballesteros",
+          "pos": "JUG"
+        },
+        {
+          "id": "11612",
+          "name": "Carmen Morales Carrillo",
+          "pos": "JUG"
+        },
+        {
+          "id": "18946",
+          "name": "Isabel Otamendi González De La Vega",
+          "pos": "JUG"
+        },
+        {
+          "id": "24583",
+          "name": "Leonor Perez Simon",
+          "pos": "POR"
+        },
+        {
+          "id": "16302",
+          "name": "Nerea Perez Simon",
+          "pos": "JUG"
+        },
+        {
+          "id": "35299",
+          "name": "Silvia Rosado López",
+          "pos": "JUG"
+        },
+        {
+          "id": "26904",
+          "name": "Ainhoa Sanchez Gonzalez",
+          "pos": "POR"
+        }
+      ]
+    },
+    {
+      "id": "FPCV",
+      "name": "Colegio Virgen de Europa",
+      "fedId": "3722",
+      "players": [
+        {
+          "id": "14949",
+          "name": "Alicia Abad Zamorano",
+          "pos": "POR"
+        },
+        {
+          "id": "30134",
+          "name": "Cristina Alfonso Sanjuan",
+          "pos": "JUG"
+        },
+        {
+          "id": "28532",
+          "name": "Paula Martinez Jimenez",
+          "pos": "JUG"
+        },
+        {
+          "id": "17847",
+          "name": "Celia Mateos Lopez",
+          "pos": "JUG"
+        },
+        {
+          "id": "17854",
+          "name": "Sara Minaya Bravo",
+          "pos": "JUG"
+        },
+        {
+          "id": "35303",
+          "name": "Galia Osa Corres",
+          "pos": "JUG"
+        },
+        {
+          "id": "17329",
+          "name": "Carmela Perez Martinez",
+          "pos": "JUG"
+        },
+        {
+          "id": "28927",
+          "name": "Lola Perez-Beato San Roman",
+          "pos": "JUG"
+        },
+        {
+          "id": "32553",
+          "name": "Carla Perez-Beato San Roman",
+          "pos": "JUG"
+        },
+        {
+          "id": "17852",
+          "name": "Claudia Sanchez Rivera",
+          "pos": "POR"
+        }
+      ]
+    },
+    {
+      "id": "FPCO",
+      "name": "Coslada RH",
+      "fedId": "3762",
+      "players": [
+        {
+          "id": "8141",
+          "name": "Carlota Antunez Ramos",
+          "pos": "JUG"
+        },
+        {
+          "id": "8701",
+          "name": "María Castelo Noya",
+          "pos": "JUG"
+        },
+        {
+          "id": "16311",
+          "name": "Gabriela Delgado Santisteban",
+          "pos": "JUG"
+        },
+        {
+          "id": "16504",
+          "name": "Elaia Haro Fernandez De Corres",
+          "pos": "JUG"
+        },
+        {
+          "id": "8682",
+          "name": "Marina Monge Terrado",
+          "pos": "JUG"
+        },
+        {
+          "id": "18956",
+          "name": "Leire Ortiz Simon",
+          "pos": "JUG"
+        },
+        {
+          "id": "29846",
+          "name": "Nerea Rivera Fernandez",
+          "pos": "JUG"
+        },
+        {
+          "id": "14980",
+          "name": "Anna Sanchez Carrillo",
+          "pos": "POR"
+        },
+        {
+          "id": "23039",
+          "name": "Nerea Sanchez Del Val",
+          "pos": "JUG"
+        },
+        {
+          "id": "22457",
+          "name": "Celia Santos Fernández",
+          "pos": "JUG"
+        },
+        {
+          "id": "8055",
+          "name": "Patricia Sanz Delgado",
+          "pos": "POR"
+        }
+      ]
+    },
+    {
+      "id": "FPPO",
+      "name": "HC Ponteareas",
+      "fedId": "3708",
+      "players": [
+        {
+          "id": "32279",
+          "name": "Dulce Elena Giraldez Rincon",
+          "pos": "JUG"
+        },
+        {
+          "id": "35305",
+          "name": "Lourdes Julieta Gomez Agüero",
+          "pos": "JUG"
+        },
+        {
+          "id": "32211",
+          "name": "Laura Fernanda Laiton Rios",
+          "pos": "JUG"
+        },
+        {
+          "id": "32209",
+          "name": "Maria Paula Martin Catalini",
+          "pos": "POR"
+        },
+        {
+          "id": "32208",
+          "name": "Rocio Abril Ortega Zunino",
+          "pos": "JUG"
+        },
+        {
+          "id": "31348",
+          "name": "Aldara Perez Diaz",
+          "pos": "JUG"
+        },
+        {
+          "id": "35307",
+          "name": "Serena Rios Aguilar",
+          "pos": "JUG"
+        },
+        {
+          "id": "35304",
+          "name": "Agostina Seronello Escañuela",
+          "pos": "POR"
+        },
+        {
+          "id": "35306",
+          "name": "Priscila Guadalupe Videla",
+          "pos": "JUG"
+        },
+        {
+          "id": "25461",
+          "name": "Antia Alfaya Garrido",
+          "pos": "POR"
+        },
+        {
+          "id": "32493",
+          "name": "Tania Maria Garcia Rodriguez",
+          "pos": "POR"
+        },
+        {
+          "id": "32252",
+          "name": "Aitana Melon Luque",
+          "pos": "JUG"
+        }
+      ]
+    },
+    {
+      "id": "FPOV",
+      "name": "Oviedo Roller HC femení",
+      "fedId": "3677",
+      "players": [
+        {
+          "id": "5124",
+          "name": "Beatriz Cadrecha Pérez",
+          "pos": "JUG"
+        },
+        {
+          "id": "35248",
+          "name": "Nora Cardín Rodríguez",
+          "pos": "JUG"
+        },
+        {
+          "id": "34853",
+          "name": "Lia Couselo Arias",
+          "pos": "JUG"
+        },
+        {
+          "id": "27487",
+          "name": "Lúa Couselo Arias",
+          "pos": "JUG"
+        },
+        {
+          "id": "26647",
+          "name": "Licia Cuesta Perez",
+          "pos": "JUG"
+        },
+        {
+          "id": "26650",
+          "name": "Ilary De La Cruz Nadyne",
+          "pos": "POR"
+        },
+        {
+          "id": "17901",
+          "name": "Noa Freije Sánchez",
+          "pos": "JUG"
+        },
+        {
+          "id": "31877",
+          "name": "Paula Freije Sánchez",
+          "pos": "JUG"
+        },
+        {
+          "id": "26627",
+          "name": "Ana Maria Gutierrez Lopez",
+          "pos": "JUG"
+        },
+        {
+          "id": "31282",
+          "name": "Henar Iglesias Díaz",
+          "pos": "JUG"
+        },
+        {
+          "id": "24356",
+          "name": "Luján Marqués Menéndez",
+          "pos": "JUG"
+        },
+        {
+          "id": "24425",
+          "name": "Olaya Martinez Niño",
+          "pos": "JUG"
+        },
+        {
+          "id": "23128",
+          "name": "Lucía Sala Arroyo",
+          "pos": "POR"
+        },
+        {
+          "id": "7514",
+          "name": "María Fidalgo Muñoz",
+          "pos": "POR"
+        },
+        {
+          "id": "35249",
+          "name": "Yara García Alonso",
+          "pos": "JUG"
+        }
+      ]
+    },
+    {
+      "id": "FPGI",
+      "name": "Gatikako Iusturi",
+      "fedId": "3710",
+      "players": [
+        {
+          "id": "21309",
+          "name": "Garazi Bilbao Bedialauneta",
+          "pos": "JUG"
+        },
+        {
+          "id": "21313",
+          "name": "Naiara Cuadra Oleaga",
+          "pos": "JUG"
+        },
+        {
+          "id": "27049",
+          "name": "Leire Cuadra Oleaga",
+          "pos": "JUG"
+        },
+        {
+          "id": "22774",
+          "name": "Anaiz Haro Fernandez De Corres",
+          "pos": "JUG"
+        },
+        {
+          "id": "23096",
+          "name": "Saioa Legarreta Bilbao",
+          "pos": "JUG"
+        },
+        {
+          "id": "7651",
+          "name": "Garazi Leranoz Delgado",
+          "pos": "POR"
+        },
+        {
+          "id": "21316",
+          "name": "Uxue Lopez Sanz",
+          "pos": "JUG"
+        },
+        {
+          "id": "29715",
+          "name": "Leire Macias Garcia",
+          "pos": "POR"
+        },
+        {
+          "id": "27480",
+          "name": "Ione Madariaga Goikoetxea",
+          "pos": "JUG"
+        },
+        {
+          "id": "27481",
+          "name": "Paule Madariaga Goikoetxea",
+          "pos": "POR"
+        },
+        {
+          "id": "26750",
+          "name": "Irati Nozal Vicario",
+          "pos": "JUG"
+        },
+        {
+          "id": "19096",
+          "name": "Maria Sevillano Isasi",
+          "pos": "JUG"
+        }
+      ]
+    },
+    {
+      "id": "FPST",
+      "name": "Santutxu Hockey Taldea",
+      "fedId": "3756",
+      "players": [
+        {
+          "id": "29704",
+          "name": "June Ausin Susinos",
+          "pos": "JUG"
+        },
+        {
+          "id": "31067",
+          "name": "Oihane Barreras De La Fuente",
+          "pos": "JUG"
+        },
+        {
+          "id": "29714",
+          "name": "Arai Cañas Carton",
+          "pos": "JUG"
+        },
+        {
+          "id": "29706",
+          "name": "Noa Carneros Regueiro",
+          "pos": "POR"
+        },
+        {
+          "id": "22773",
+          "name": "Izaro Cenarruzabeitia Etxazarra",
+          "pos": "JUG"
+        },
+        {
+          "id": "33746",
+          "name": "Arissa Jimenez Mendez",
+          "pos": "POR"
+        },
+        {
+          "id": "31069",
+          "name": "Nagore Lopez Soto",
+          "pos": "JUG"
+        },
+        {
+          "id": "31068",
+          "name": "Alba Martinez Salazar",
+          "pos": "JUG"
+        },
+        {
+          "id": "34823",
+          "name": "Nora Nuñez Lastagaray",
+          "pos": "JUG"
+        },
+        {
+          "id": "23123",
+          "name": "Irune Perez Gil",
+          "pos": "JUG"
+        },
+        {
+          "id": "27050",
+          "name": "Nahia Sanjuas Rodriguez",
+          "pos": "JUG"
+        },
+        {
+          "id": "35235",
+          "name": "Maria Elena Suarez Lopez",
+          "pos": "JUG"
+        }
+      ]
+    }
+  ],
+  "pending": [
+    {
+      "id": "35356",
+      "team": "3708",
+      "name": "GONZALEZ GARCIA, LAURA",
+      "reason": "Sense acta de demarcació contrastada; no s’assigna una posició inventada."
+    },
+    {
+      "id": "33349",
+      "team": "3701",
+      "name": "TORO RABIOLI, STELA",
+      "reason": "Sense acta de demarcació contrastada; no s’assigna una posició inventada."
+    }
+  ],
+  "positionSources": "female-plata-position-evidence.json"
+}

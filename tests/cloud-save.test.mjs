@@ -8,7 +8,7 @@ import {onRequest as saves} from '../functions/api/saves/[[slot]].js';
 import {hash,now} from '../server/cloud.mjs';
 const origin='https://hoquei-manager27.pages.dev',client='test.apps.googleusercontent.com';
 function database(){
-  const db=new DatabaseSync(':memory:');db.exec(readFileSync(new URL('../migrations/0002_cloud_saves.sql',import.meta.url),'utf8'));
+  const db=new DatabaseSync(':memory:');db.exec(readFileSync(new URL('../migrations/0002_cloud_saves.sql',import.meta.url),'utf8'));db.exec(readFileSync(new URL('../migrations/0003_presence.sql',import.meta.url),'utf8'));
   const adapter={prepare(sql){const stmt=db.prepare(sql);let args=[];return {bind(...values){args=values;return this},async first(){return stmt.get(...args)||null},async all(){return {results:stmt.all(...args)}},async run(){const result=stmt.run(...args);return {meta:{changes:result.changes}}}}},async batch(items){db.exec('BEGIN');try{const results=[];for(const item of items)results.push(await item.run());db.exec('COMMIT');return results}catch(error){db.exec('ROLLBACK');throw error}}};
   return {db,env:{METRICS_DB:adapter,GOOGLE_CLIENT_ID:client}};
 }

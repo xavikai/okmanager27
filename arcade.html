@@ -3,321 +3,458 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
-  <title>OK Manager 27 — Arcade 3D WebGL (Hoquei Patins)</title>
+  <meta name="theme-color" content="#05070b">
+  <title>OK Manager 27 — Arcade</title>
   <link rel="icon" href="icons/icon-v2-192.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/utils/SkeletonUtils.js"></script>
   <style>
     :root {
-      --bg: #070b14;
-      --panel: #111827;
-      --line: #1f2937;
-      --fg: #f8fafc;
+      --bg: #05070b;
+      --glass: rgba(9, 13, 21, 0.86);
+      --glass-strong: rgba(9, 13, 21, 0.95);
+      --line: rgba(255, 255, 255, 0.10);
+      --line-strong: rgba(255, 255, 255, 0.18);
+      --text: #f1f5f9;
       --muted: #94a3b8;
-      --accent: #21b887;
+      --accent: #f5b301;
+      --accent-ink: #1a1300;
+      --home: #1d4ed8;
+      --home-2: #a3203f;
+      --away: #dc2626;
+      --good: #22c55e;
+      --danger: #ef4444;
+      --radius: 14px;
+      --display: "Barlow Condensed", "Arial Narrow", system-ui, sans-serif;
+      --ui: Inter, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      --safe-l: env(safe-area-inset-left, 0px);
+      --safe-r: env(safe-area-inset-right, 0px);
+      --safe-b: env(safe-area-inset-bottom, 0px);
     }
-    * { box-sizing: border-box; user-select: none; -webkit-user-select: none; }
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    html, body { height: 100%; }
     body {
-      margin: 0;
-      background: var(--bg);
-      color: var(--fg);
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
-      display: flex;
-      flex-direction: column;
-      height: 100dvh;
-      overflow: hidden;
+      margin: 0; background: var(--bg); color: var(--text); font-family: var(--ui);
+      overflow: hidden; user-select: none; -webkit-user-select: none; touch-action: none;
     }
-    header.topbar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-      padding: 8px 14px;
-      background: rgba(17, 24, 39, 0.96);
-      border-bottom: 1px solid var(--line);
-      flex-wrap: wrap;
-      z-index: 20;
-    }
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-weight: 800;
-      font-size: 14px;
-      letter-spacing: 0.03em;
-    }
-    .badge {
-      background: rgba(33, 184, 135, 0.18);
-      color: #34d399;
-      border: 1px solid rgba(52, 211, 153, 0.4);
-      padding: 2px 8px;
-      border-radius: 999px;
-      font-size: 11px;
-      font-weight: 700;
-      text-transform: uppercase;
-    }
-    .toolbar {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      flex-wrap: wrap;
-    }
-    .cam-group {
-      max-width: 100%;
-      flex-wrap: wrap;
-      display: inline-flex;
-      background: #0f172a;
-      padding: 3px;
-      border-radius: 9px;
-      border: 1px solid #334155;
-      gap: 3px;
-    }
-    .btn {
-      background: #1e293b;
-      color: var(--fg);
-      border: 1px solid #334155;
-      border-radius: 7px;
-      padding: 6px 10px;
-      font-size: 12px;
-      font-weight: 700;
-      cursor: pointer;
-      transition: all 0.15s;
-      text-decoration: none;
-    }
-    .btn:hover {
-      background: #334155;
-      border-color: #64748b;
-    }
-    select.btn { max-width: 180px; }
     [hidden] { display: none !important; }
-    .bench-dialog {
-      color: var(--fg); background: var(--panel); border: 1px solid #475569;
-      border-radius: 16px; width: min(540px, calc(100vw - 24px)); max-height: 85dvh;
-      padding: 22px; overflow: auto; box-shadow: 0 20px 80px #0009;
+    button, select, a { font: inherit; color: inherit; }
+
+    .stage { position: fixed; inset: 0; overflow: hidden; }
+    #webglContainer, #hudCanvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+    #hudCanvas { pointer-events: none; z-index: 5; }
+
+    /* Botons flotants de la retransmissió */
+    .corner-actions {
+      position: absolute; top: 12px; right: calc(12px + var(--safe-r)); z-index: 20;
+      display: flex; gap: 8px;
     }
-    .bench-dialog::backdrop { background: #020617b8; }
-    .bench-dialog h2 { margin: 0 0 8px; }
-    .bench-dialog p { color: var(--muted); font-size: 13px; }
-    .bench-dialog label { display: grid; gap: 6px; margin: 14px 0; font-size: 13px; }
-    .bench-dialog select { width: 100%; max-width: none; }
-    .bench-dialog ul { padding-left: 20px; line-height: 1.8; font-size: 12px; }
-    .bench-actions { display: flex; gap: 8px; justify-content: flex-end; flex-wrap: wrap; }
-    .cam-group .btn {
-      border: none;
-      background: transparent;
-      color: #94a3b8;
-      padding: 5px 9px;
+    .icon-btn {
+      width: 42px; height: 42px; border-radius: 12px; display: grid; place-items: center;
+      background: var(--glass); border: 1px solid var(--line-strong); cursor: pointer;
+      backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+      transition: transform .12s ease, background .12s ease, border-color .12s ease;
     }
-    .cam-group .btn.active {
-      background: #2563eb;
-      color: #ffffff;
-      box-shadow: 0 2px 8px rgba(37, 99, 235, 0.45);
-    }
-    .btn.accent {
-      background: #059669;
-      border-color: #10b981;
-    }
-    .btn.warn {
-      background: #b45309;
-      border-color: #f59e0b;
-    }
-    .stage {
-      position: relative;
-      flex: 1;
-      width: 100%;
-      overflow: hidden;
-    }
-    #webglContainer {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-    }
-    canvas#hudCanvas {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-      z-index: 5;
-    }
+    .icon-btn:hover { background: rgba(30, 41, 59, 0.92); border-color: rgba(255,255,255,.3); }
+    .icon-btn:active { transform: scale(.94); }
+    .icon-btn svg { width: 20px; height: 20px; }
+
+    /* Controls tàctils (només en pantalles tàctils) */
     .touch-layer {
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-      display: flex;
-      align-items: flex-end;
-      justify-content: space-between;
-      padding: 18px 26px;
-      z-index: 10;
+      position: absolute; inset: 0; pointer-events: none; z-index: 10; display: none;
+      align-items: flex-end; justify-content: space-between;
+      padding: 0 calc(22px + var(--safe-r)) calc(18px + var(--safe-b)) calc(22px + var(--safe-l));
     }
+    .stage.touch .touch-layer { display: flex; }
     .joy-zone {
-      pointer-events: auto;
-      width: 116px;
-      height: 116px;
-      border-radius: 50%;
-      background: rgba(15, 23, 42, 0.55);
-      border: 2px solid rgba(255, 255, 255, 0.25);
-      box-shadow: 0 0 18px rgba(56, 189, 248, 0.25);
-      display: grid;
-      place-items: center;
-      touch-action: none;
+      pointer-events: auto; width: 128px; height: 128px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(255,255,255,.06), rgba(9,13,21,.45) 70%);
+      border: 1.5px solid rgba(255,255,255,.22); display: grid; place-items: center; touch-action: none;
     }
     .joy-stick {
-      width: 48px;
-      height: 48px;
-      border-radius: 50%;
-      background: radial-gradient(circle at 30% 30%, #f8fafc, #94a3b8);
-      border: 2px solid #cbd5e1;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
-      transition: transform 0.04s linear;
+      width: 54px; height: 54px; border-radius: 50%;
+      background: radial-gradient(circle at 35% 30%, #ffffff, #cbd5e1 55%, #94a3b8);
+      box-shadow: 0 6px 16px rgba(0,0,0,.45); transition: transform .04s linear;
     }
-    .action-cluster {
-      pointer-events: auto;
-      position: relative;
-      width: 170px;
-      height: 136px;
-      touch-action: none;
-    }
+    .action-cluster { pointer-events: auto; position: relative; width: 190px; height: 150px; touch-action: none; }
     .act-btn {
-      position: absolute;
-      width: 64px;
-      height: 64px;
-      border-radius: 50%;
-      border: 2px solid rgba(255, 255, 255, 0.45);
-      background: radial-gradient(circle at 35% 30%, rgba(51, 65, 85, 0.9), rgba(15, 23, 42, 0.92));
-      color: #fff;
-      font-weight: 800;
-      font-size: 11px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 2px;
-      cursor: pointer;
-      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.45);
-      touch-action: none;
+      position: absolute; border-radius: 50%; border: 1.5px solid rgba(255,255,255,.35);
+      color: #fff; display: flex; flex-direction: column; align-items: center; justify-content: center;
+      font-family: var(--display); font-weight: 700; letter-spacing: .04em; font-size: 15px; line-height: 1;
+      box-shadow: 0 8px 20px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,.25); touch-action: none; cursor: pointer;
+      transition: transform .08s ease, filter .08s ease;
     }
-    .act-btn:active {
-      transform: scale(0.93);
+    .act-btn:active, .act-btn.pressed { transform: scale(.92); filter: brightness(1.2); }
+    .act-btn small { font-family: var(--ui); font-size: 9px; font-weight: 600; opacity: .7; margin-top: 3px; letter-spacing: 0; }
+    .act-btn.shoot { right: 0; bottom: 6px; width: 84px; height: 84px; background: radial-gradient(circle at 35% 30%, #ef4444, #991b1b); }
+    .act-btn.pass { right: 96px; bottom: 0; width: 70px; height: 70px; background: radial-gradient(circle at 35% 30%, #3b82f6, #1e3a8a); }
+    .act-btn.sprint { right: 6px; top: 0; width: 58px; height: 58px; background: radial-gradient(circle at 35% 30%, #22c55e, #14532d); }
+    .act-btn.switch { right: 84px; top: 6px; width: 54px; height: 54px; background: radial-gradient(circle at 35% 30%, #64748b, #1e293b); }
+
+    /* Capes de menú */
+    .overlay {
+      position: absolute; inset: 0; z-index: 40; display: grid; place-items: center;
+      padding: 16px calc(16px + var(--safe-r)) calc(16px + var(--safe-b)) calc(16px + var(--safe-l));
+      background: radial-gradient(ellipse at center, rgba(5,7,11,.55), rgba(5,7,11,.88));
+      backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+      animation: fadeIn .22s ease;
     }
-    .act-btn.shoot {
-      right: 0;
-      bottom: 8px;
-      width: 72px;
-      height: 72px;
-      border-color: #f87171;
-      background: radial-gradient(circle at 35% 30%, #dc2626, #7f1d1d);
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes rise { from { opacity: 0; transform: translateY(14px) scale(.98); } to { opacity: 1; transform: none; } }
+    .card {
+      width: min(760px, 100%); max-height: 100%; overflow: auto; border-radius: 20px;
+      background: linear-gradient(180deg, rgba(17,24,39,.96), rgba(9,13,21,.97));
+      border: 1px solid var(--line-strong); box-shadow: 0 30px 80px rgba(0,0,0,.6);
+      animation: rise .28s cubic-bezier(.2,.8,.2,1);
     }
-    .act-btn.pass {
-      left: 6px;
-      bottom: 4px;
-      border-color: #60a5fa;
-      background: radial-gradient(circle at 35% 30%, #2563eb, #1e3a8a);
+    .card::-webkit-scrollbar { width: 8px; }
+    .card::-webkit-scrollbar-thumb { background: rgba(255,255,255,.15); border-radius: 8px; }
+    .eyebrow {
+      font-family: var(--display); font-weight: 700; letter-spacing: .18em; text-transform: uppercase;
+      font-size: 13px; color: var(--accent);
     }
-    .act-btn.sprint {
-      right: 18px;
-      top: 0;
-      width: 56px;
-      height: 56px;
-      border-color: #34d399;
-      background: radial-gradient(circle at 35% 30%, #059669, #064e3b);
+    h1, h2, h3 { margin: 0; font-family: var(--display); font-weight: 800; letter-spacing: .02em; text-transform: uppercase; }
+
+    /* Presentació del partit */
+    .intro { padding: 28px; display: grid; gap: 22px; }
+    .matchup { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 16px; }
+    .team { display: grid; justify-items: center; gap: 10px; text-align: center; }
+    .crest {
+      width: 84px; height: 96px; display: grid; place-items: center; position: relative;
+      clip-path: polygon(50% 0, 100% 14%, 100% 62%, 50% 100%, 0 62%, 0 14%);
+      font-family: var(--display); font-weight: 800; font-size: 28px; letter-spacing: .04em;
+      box-shadow: inset 0 0 0 3px rgba(255,255,255,.2);
     }
-    .act-btn small {
-      font-size: 9px;
-      opacity: 0.8;
-      font-weight: 600;
+    .crest.home { background: repeating-linear-gradient(90deg, var(--home) 0 14px, var(--home-2) 14px 28px); }
+    .crest.away { background: linear-gradient(160deg, #ef4444, #7f1d1d); }
+    .crest span { background: rgba(0,0,0,.35); padding: 2px 8px; border-radius: 6px; }
+    .team h2 { font-size: clamp(22px, 4vw, 32px); }
+    .team .tag { font-size: 12px; color: var(--muted); }
+    .vs { font-family: var(--display); font-weight: 800; font-size: 26px; color: var(--muted); }
+    .option-grid { display: grid; gap: 14px; grid-template-columns: 1fr 1fr; }
+    .option { display: grid; gap: 8px; }
+    .option label, .option .label { font-size: 12px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: .08em; }
+    .segmented { display: flex; flex-wrap: wrap; gap: 4px; padding: 4px; background: rgba(255,255,255,.04); border: 1px solid var(--line); border-radius: 12px; }
+    .segmented button {
+      flex: 1 1 auto; min-width: 56px; padding: 9px 10px; border: 0; border-radius: 9px; background: transparent;
+      color: #cbd5e1; font-weight: 600; font-size: 13px; cursor: pointer; transition: background .12s ease, color .12s ease;
     }
-    footer.helpbar {
-      background: rgba(15, 23, 42, 0.95);
-      border-top: 1px solid var(--line);
-      padding: 6px 14px;
-      font-size: 12px;
-      color: var(--muted);
-      display: flex;
-      justify-content: center;
-      gap: 18px;
-      flex-wrap: wrap;
-      z-index: 20;
+    .segmented button:hover { background: rgba(255,255,255,.06); color: #fff; }
+    .segmented button.active { background: var(--text); color: #0b1020; }
+    .select {
+      width: 100%; padding: 10px 12px; border-radius: 12px; background: rgba(255,255,255,.04);
+      border: 1px solid var(--line); font-weight: 600; font-size: 13px; appearance: none; cursor: pointer;
+      background-image: linear-gradient(45deg, transparent 50%, #94a3b8 50%), linear-gradient(135deg, #94a3b8 50%, transparent 50%);
+      background-position: calc(100% - 18px) 50%, calc(100% - 13px) 50%; background-size: 5px 5px; background-repeat: no-repeat;
     }
-    footer.helpbar b {
-      color: #e2e8f0;
+    .select option { background: #111827; }
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 12px 18px; border-radius: 12px;
+      border: 1px solid var(--line-strong); background: rgba(255,255,255,.05); font-weight: 600; font-size: 14px;
+      cursor: pointer; text-decoration: none; transition: background .12s ease, transform .1s ease, border-color .12s ease;
     }
+    .btn:hover { background: rgba(255,255,255,.1); border-color: rgba(255,255,255,.3); }
+    .btn:active { transform: scale(.98); }
+    .btn.primary { background: var(--accent); color: var(--accent-ink); border-color: transparent; font-family: var(--display); font-size: 20px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; padding: 14px 26px; }
+    .btn.primary:hover { filter: brightness(1.08); background: var(--accent); }
+    .btn.ghost { background: transparent; }
+    .btn.warn { border-color: rgba(245,158,11,.45); }
+    .btn.blue { border-color: rgba(59,130,246,.55); }
+    .actions { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+    .hint { text-align: center; color: var(--muted); font-size: 12px; }
+    kbd {
+      font-family: var(--ui); font-size: 11px; font-weight: 700; padding: 2px 6px; border-radius: 6px;
+      background: rgba(255,255,255,.08); border: 1px solid var(--line-strong); color: #e2e8f0;
+    }
+
+    /* Menú de pausa */
+    .pause { display: grid; grid-template-columns: 230px 1fr; min-height: 420px; }
+    .pause-side { padding: 24px; border-right: 1px solid var(--line); display: grid; align-content: start; gap: 10px; }
+    .pause-side .score {
+      font-family: var(--display); font-weight: 800; font-size: 40px; letter-spacing: .02em; line-height: 1;
+      display: flex; align-items: center; gap: 10px; margin: 6px 0 2px;
+    }
+    .pause-side .score i { font-style: normal; color: var(--muted); font-size: 26px; }
+    .pause-side .meta { font-size: 12px; color: var(--muted); margin-bottom: 12px; }
+    .pause-side .btn { width: 100%; justify-content: flex-start; }
+    .pause-main { padding: 22px 24px; display: grid; gap: 18px; align-content: start; }
+    .tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--line); }
+    .tabs button {
+      background: none; border: 0; padding: 10px 12px; font-weight: 600; font-size: 13px; color: var(--muted);
+      border-bottom: 2px solid transparent; margin-bottom: -1px; cursor: pointer;
+    }
+    .tabs button.active { color: var(--text); border-bottom-color: var(--accent); }
+    .tab-panel { display: grid; gap: 16px; }
+    .controls-table { display: grid; grid-template-columns: auto 1fr; gap: 9px 14px; font-size: 13px; align-items: center; }
+    .controls-table span:nth-child(odd) { display: flex; gap: 4px; flex-wrap: wrap; }
+    .controls-table span:nth-child(even) { color: #cbd5e1; }
+    .note { font-size: 12px; color: var(--muted); line-height: 1.5; margin: 0; }
+
+    /* Resultat (descans i final) */
+    .result { padding: 28px; display: grid; gap: 20px; }
+    .scoreline { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 18px; }
+    .scoreline .team h2 { font-size: 24px; }
+    .big-score { font-family: var(--display); font-weight: 800; font-size: clamp(56px, 10vw, 84px); line-height: 1; display: flex; gap: 14px; align-items: center; }
+    .big-score i { font-style: normal; color: var(--muted); font-size: .6em; }
+    .stats { display: grid; gap: 10px; }
+    .stat { display: grid; grid-template-columns: 48px 1fr 48px; align-items: center; gap: 12px; font-weight: 700; font-family: var(--display); font-size: 20px; }
+    .stat > span:first-child { text-align: right; }
+    .stat .bar { display: grid; gap: 4px; }
+    .stat .bar small { text-align: center; font-family: var(--ui); font-size: 11px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: .08em; }
+    .stat .track { height: 6px; border-radius: 6px; background: rgba(255,255,255,.08); display: flex; overflow: hidden; }
+    .stat .track b { display: block; height: 100%; }
+    .stat .track b.h { background: var(--home); }
+    .stat .track b.a { background: var(--away); margin-left: auto; }
+
+    /* Banqueta */
+    .bench-dialog {
+      color: var(--text); background: linear-gradient(180deg, rgba(17,24,39,.98), rgba(9,13,21,.98));
+      border: 1px solid var(--line-strong); border-radius: 20px; width: min(560px, calc(100vw - 24px)); max-height: 88dvh;
+      padding: 24px; overflow: auto; box-shadow: 0 30px 80px #000a;
+    }
+    .bench-dialog::backdrop { background: rgba(2,6,23,.72); backdrop-filter: blur(4px); }
+    .bench-dialog h2 { font-size: 26px; margin-bottom: 4px; }
+    .bench-dialog p { color: var(--muted); font-size: 13px; line-height: 1.5; }
+    .bench-dialog label { display: grid; gap: 6px; margin: 14px 0; font-size: 12px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: .06em; }
+    .bench-dialog ul { list-style: none; padding: 0; margin: 16px 0 0; display: grid; gap: 4px; font-size: 13px; }
+    .bench-dialog li { padding: 8px 10px; border-radius: 8px; background: rgba(255,255,255,.03); }
+    .bench-actions { display: flex; gap: 8px; justify-content: flex-end; flex-wrap: wrap; }
+
     @media (max-width: 640px) {
-      footer.helpbar { display: none; }
-      .joy-zone { width: 98px; height: 98px; }
+      .pause { grid-template-columns: 1fr; }
+      .pause-side { border-right: 0; border-bottom: 1px solid var(--line); }
+      .option-grid { grid-template-columns: 1fr; }
+      .intro, .result { padding: 20px; gap: 16px; }
+      .crest { width: 60px; height: 70px; font-size: 20px; }
+    }
+    /* Mòbil en horitzontal: tot ha de cabre sense desplaçar. */
+    @media (max-height: 520px) {
+      .overlay { padding: 10px calc(12px + var(--safe-r)) 10px calc(12px + var(--safe-l)); }
+      .card { border-radius: 16px; }
+      .intro { padding: 14px 20px; gap: 10px; }
+      .intro h1 { font-size: 22px !important; }
+      .intro .eyebrow { font-size: 11px; }
+      .matchup { gap: 10px; }
+      .team { grid-template-columns: auto auto; align-items: center; gap: 10px; text-align: left; justify-items: start; }
+      .matchup .team:first-child { justify-self: end; }
+      .crest { width: 44px; height: 50px; font-size: 14px; }
+      .team h2 { font-size: 20px; }
+      .team .tag { font-size: 11px; }
+      .vs { font-size: 18px; }
+      .segmented button { padding: 7px 8px; font-size: 12px; }
+      .btn { padding: 9px 14px; font-size: 13px; }
+      .btn.primary { font-size: 17px; padding: 10px 22px; }
+      .hint { display: none; }
+      .pause { grid-template-columns: 190px 1fr; min-height: 0; }
+      .pause-side { padding: 14px; gap: 6px; }
+      .pause-side .score { font-size: 30px; }
+      .pause-side .meta { margin-bottom: 4px; }
+      .pause-main { padding: 12px 16px; gap: 10px; }
+      .tab-panel { gap: 10px; }
+      .option-grid { gap: 8px 12px; }
+      .option { gap: 4px; }
+      .note { display: none; }
+      .result { padding: 14px 20px; gap: 10px; }
+      .scoreline .team h2 { font-size: 18px; }
+      .big-score { font-size: 52px; }
+      .stats { gap: 4px; }
+      .stat { font-size: 16px; }
+      .joy-zone { width: 112px; height: 112px; }
+    }
+    .act-btn.switch, .act-btn.sprint { font-size: 12px; }
+    .rotate-hint { display: none; }
+    @media (orientation: portrait) and (pointer: coarse) {
+      .rotate-hint {
+        display: grid; position: absolute; inset: auto 12px 12px 12px; z-index: 60; place-items: center;
+        padding: 10px 14px; border-radius: 12px; background: var(--glass-strong); border: 1px solid var(--line-strong);
+        font-size: 13px; color: #e2e8f0; text-align: center;
+      }
     }
   </style>
 </head>
 <body>
-  <header class="topbar">
-    <div class="brand">
-      <span>🏑 OK MANAGER 27</span>
-      <span id="matchFormat" class="badge">2 × 25 min</span>
-    </div>
-    <div class="toolbar">
-      <div class="cam-group" role="group" aria-label="Selector de càmera">
-        <button data-cam="nhl_side" class="btn active">🎥 1. TV Horitzontal Zoom 3D</button>
-        <button data-cam="nhl_iso" class="btn">🎥 2. Diagonal NHL 3D</button>
-        <button data-cam="end3d" class="btn">🎥 3. Vertical Atac 3D</button>
-        <button data-cam="wide3d" class="btn">🎥 4. Panoràmica</button>
-      </div>
-      <button id="btnDiff" class="btn">🧤 Porter: Equilibrat</button>
-      <button id="btnPace" class="btn">⏱ Ritme: Pausat (Realista)</button>
-      <button id="btnCourt" class="btn">Pista: Blava WSE</button>
-      <button id="btnDirectFoul" class="btn warn">⚡ Practica una directa</button>
-      <button id="btnBlueCard" class="btn" style="background:#1d4ed8;border-color:#60a5fa;">🟦 Prova una blava</button>
-      <button id="btnPause" class="btn" aria-pressed="false">⏸ Pausa</button>
-      <button id="btnBench" class="btn">👥 Banqueta (B)</button>
-      <button id="btnSecondHalf" class="btn accent" hidden>▶ Salta el descans · 2a part</button>
-      <select id="matchDuration" class="btn" aria-label="Durada del pròxim partit" title="S’aplica amb Nou partit">
-        <option value="1500" selected>Partit: 2 × 25 min</option>
-        <option value="180">Arcade: 2 × 3 min</option>
-      </select>
-      <button id="btnReset" class="btn">🔄 Nou partit</button>
-    </div>
-  </header>
-
   <main class="stage" id="stageWrap">
     <div id="webglContainer"></div>
     <canvas id="hudCanvas"></canvas>
+
+    <div class="corner-actions">
+      <button id="btnCamera" class="icon-btn" type="button" aria-label="Canvia de càmera" title="Canvia de càmera (tecles 1-4)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
+      </button>
+      <button id="btnPause" class="icon-btn" type="button" aria-label="Pausa (P / Esc)" aria-pressed="false" data-state="playing">
+        <svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/></svg>
+      </button>
+    </div>
 
     <div class="touch-layer">
       <div id="joyZone" class="joy-zone" title="Joystick de patinatge">
         <div id="joyStick" class="joy-stick"></div>
       </div>
-
       <div class="action-cluster">
-        <button id="btnSprint" class="act-btn sprint">
-          <span>SPRINT</span>
-          <small>SHIFT / L</small>
-        </button>
-        <button id="btnPass" class="act-btn pass">
-          <span>PASSA / ROBA</span>
-          <small>ESPAI / J</small>
-        </button>
-        <button id="btnShoot" class="act-btn shoot">
-          <span>XUT / ENTRADA</span>
-          <small>K / X</small>
-        </button>
+        <button id="btnSwitch" class="act-btn switch" aria-label="Canvia de jugador">CANVI</button>
+        <button id="btnSprint" class="act-btn sprint">SPRINT</button>
+        <button id="btnPass" class="act-btn pass">PASSA<small>roba</small></button>
+        <button id="btnShoot" class="act-btn shoot">XUTA<small>entrada</small></button>
       </div>
     </div>
+
+    <!-- Presentació -->
+    <section id="introScreen" class="overlay" aria-labelledby="introTitle">
+      <div class="card intro">
+        <div style="text-align:center;display:grid;gap:6px">
+          <div class="eyebrow">OK Manager 27 · Partit arcade</div>
+          <h1 id="introTitle" style="font-size:clamp(26px,5vw,40px)">Lliga OK · Jornada de prova</h1>
+        </div>
+        <div class="matchup">
+          <div class="team"><div class="crest home"><span>FCB</span></div><div><h2>Barça</h2><div class="tag">Local · tu</div></div></div>
+          <div class="vs">VS</div>
+          <div class="team"><div class="crest away"><span>REU</span></div><div><h2>Reus Deportiu</h2><div class="tag">Visitant · IA</div></div></div>
+        </div>
+        <div class="option-grid">
+          <div class="option">
+            <span class="label">Durada de cada part</span>
+            <div class="segmented" role="group" aria-label="Durada de cada part">
+              <button type="button" data-duration="3">3 min</button>
+              <button type="button" data-duration="5">5 min</button>
+              <button type="button" data-duration="10">10 min</button>
+              <button type="button" data-duration="25">Real</button>
+            </div>
+          </div>
+          <div class="option">
+            <span class="label">Dificultat</span>
+            <div class="segmented" role="group" aria-label="Dificultat">
+              <button type="button" data-diff="easy">Fàcil</button>
+              <button type="button" data-diff="balanced">Normal</button>
+              <button type="button" data-diff="hard">Difícil</button>
+            </div>
+          </div>
+        </div>
+        <div class="actions"><button id="btnStart" class="btn primary" type="button">▶ Comença el partit</button></div>
+        <p class="hint" id="introHint">Teclat: <kbd>↑←↓→</kbd> patina · <kbd>Espai</kbd> passa / roba · <kbd>K</kbd> xuta (mantén) · <kbd>Shift</kbd> sprint · <kbd>Q</kbd> canvia · <kbd>P</kbd> pausa</p>
+      </div>
+    </section>
+
+    <!-- Menú de pausa -->
+    <section id="pauseMenu" class="overlay" aria-labelledby="pauseTitle" hidden>
+      <div class="card pause">
+        <aside class="pause-side">
+          <div class="eyebrow" id="pauseTitle">Pausa</div>
+          <div class="score"><span id="pauseScoreHome">0</span><i>–</i><span id="pauseScoreAway">0</span></div>
+          <div class="meta" id="pauseMeta">1a part · 25:00</div>
+          <button id="btnResume" class="btn" type="button">▶&nbsp; Continua</button>
+          <button id="btnBench" class="btn" type="button">👥&nbsp; Banqueta</button>
+          <button id="btnReset" class="btn" type="button">↻&nbsp; Nou partit</button>
+          <a class="btn ghost" href="index.html">←&nbsp; Torna al manager</a>
+        </aside>
+        <div class="pause-main">
+          <div class="tabs" role="tablist">
+            <button type="button" class="active" data-tab="options">Opcions</button>
+            <button type="button" data-tab="camera">Càmera</button>
+            <button type="button" data-tab="controls">Controls</button>
+            <button type="button" data-tab="training">Entrenament</button>
+          </div>
+          <div class="tab-panel" data-panel="options">
+            <div class="option">
+              <label for="matchDuration">Durada de cada part · <span id="matchFormat">2 × 25 min</span></label>
+              <select id="matchDuration" class="select" aria-label="Durada real de cada part" title="Minuts reals que dura cada part. El rellotge sempre marca 25 minuts">
+                <option value="3">3 minuts reals</option>
+                <option value="4">4 minuts reals</option>
+                <option value="5" selected>5 minuts reals</option>
+                <option value="6">6 minuts reals</option>
+                <option value="7">7 minuts reals</option>
+                <option value="8">8 minuts reals</option>
+                <option value="9">9 minuts reals</option>
+                <option value="10">10 minuts reals</option>
+                <option value="15">15 minuts reals</option>
+                <option value="20">20 minuts reals</option>
+                <option value="25">25 minuts (temps real)</option>
+              </select>
+            </div>
+            <div class="option-grid">
+              <div class="option"><span class="label">Dificultat</span>
+                <div class="segmented"><button type="button" data-diff="easy">Fàcil</button><button type="button" data-diff="balanced">Normal</button><button type="button" data-diff="hard">Difícil</button></div></div>
+              <div class="option"><span class="label">Ritme de joc</span>
+                <div class="segmented"><button type="button" data-pace="realistic">Tranquil</button><button type="button" data-pace="normal">Equilibrat</button><button type="button" data-pace="fast">Ràpid</button></div></div>
+              <div class="option"><span class="label">Pista</span>
+                <div class="segmented"><button type="button" data-court="blue">Blava WSE</button><button type="button" data-court="wood">Parquet</button></div></div>
+              <div class="option"><span class="label">So</span>
+                <div class="segmented"><button type="button" data-sound="on">Activat</button><button type="button" data-sound="off">Silenci</button></div></div>
+              <div class="option"><span class="label">Qualitat gràfica</span>
+                <div class="segmented"><button type="button" data-quality="auto">Automàtica</button><button type="button" data-quality="high">Alta</button><button type="button" data-quality="low">Fluïda</button></div></div>
+              <div class="option"><span class="label">Repeticions de gol</span>
+                <div class="segmented"><button type="button" data-replay="on">Sí</button><button type="button" data-replay="off">No</button></div></div>
+            </div>
+            <p class="note">El rellotge sempre marca 2 × 25 minuts; la durada només canvia la velocitat a què passa. La qualitat s’aplica en tornar a carregar la pàgina.</p>
+          </div>
+          <div class="tab-panel" data-panel="camera" hidden>
+            <div class="segmented" role="group" aria-label="Selector de càmera">
+              <button type="button" data-cam="nhl_side" class="active">TV lateral</button>
+              <button type="button" data-cam="nhl_iso">Diagonal</button>
+              <button type="button" data-cam="end3d">Darrere l’atac</button>
+              <button type="button" data-cam="wide3d">Panoràmica</button>
+            </div>
+            <p class="note">Tecles <kbd>1</kbd>–<kbd>4</kbd> o el botó de càmera. Roda del ratolí o <kbd>+</kbd>/<kbd>−</kbd> per apropar o allunyar.</p>
+          </div>
+          <div class="tab-panel" data-panel="controls" hidden>
+            <div class="controls-table">
+              <span><kbd>↑</kbd><kbd>←</kbd><kbd>↓</kbd><kbd>→</kbd> / <kbd>WASD</kbd></span><span>Patinar · apuntar el xut amunt o avall</span>
+              <span><kbd>Espai</kbd> <kbd>J</kbd></span><span>Passar · sense bola: treure-la amb l’estic</span>
+              <span><kbd>K</kbd> <kbd>X</kbd> (mantén)</span><span>Carregar el xut (deixa anar a la zona verda) · sense bola: entrada forta</span>
+              <span><kbd>Shift</kbd> <kbd>L</kbd></span><span>Sprint (gasta energia)</span>
+              <span><kbd>Q</kbd> <kbd>Tab</kbd></span><span>Canviar de jugador (el marcat amb ▼)</span>
+              <span><kbd>B</kbd></span><span>Banqueta i canvis</span>
+              <span><kbd>P</kbd> <kbd>Esc</kbd></span><span>Pausa</span>
+            </div>
+            <p class="note">Al mòbil: joystick a l’esquerra, botons d’acció a la dreta. L’objectiu verd sobre la porteria indica on aniria el xut.</p>
+          </div>
+          <div class="tab-panel" data-panel="training" hidden>
+            <p class="note">Situacions per practicar les regles del reglament. Es juguen dins del partit actual.</p>
+            <div class="actions" style="justify-content:flex-start">
+              <button id="btnDirectFoul" class="btn warn" type="button">⚡ Practica una falta directa</button>
+              <button id="btnBlueCard" class="btn blue" type="button">🟦 Prova una targeta blava</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Descans i final -->
+    <section id="resultScreen" class="overlay" aria-labelledby="resultTitle" hidden>
+      <div class="card result">
+        <div style="text-align:center;display:grid;gap:4px">
+          <div class="eyebrow" id="resultEyebrow">Final del partit</div>
+          <h2 id="resultTitle" style="font-size:22px;color:#cbd5e1">Temps exhaurit</h2>
+        </div>
+        <div class="scoreline">
+          <div class="team"><div class="crest home"><span>FCB</span></div><h2>Barça</h2></div>
+          <div class="big-score"><span id="resultHome">0</span><i>–</i><span id="resultAway">0</span></div>
+          <div class="team"><div class="crest away"><span>REU</span></div><h2>Reus</h2></div>
+        </div>
+        <div class="stats" id="resultStats"></div>
+        <div class="actions">
+          <button id="btnSecondHalf" class="btn primary" type="button" hidden>▶ Comença la 2a part</button>
+          <button id="btnResultBench" class="btn" type="button" hidden>👥 Banqueta</button>
+          <button id="btnRematch" class="btn primary" type="button" hidden>↻ Revenja</button>
+          <a class="btn ghost" href="index.html">← Torna al manager</a>
+        </div>
+      </div>
+    </section>
+    <div class="rotate-hint" role="note">↻ Gira el mòbil en horitzontal per jugar més còmode</div>
   </main>
 
-  <footer class="helpbar">
-    <span><b>Passar / Treure bola (estic):</b> <b>Espai / J / Z</b></span>
-    <span><b>Xut pala / Entrada forta:</b> Mantén <b>K / X</b> + apunta (<b>W/S</b>)</span>
-    <span><b>Sprint:</b> <b>Shift / L / C</b> · <b>Canvi jugador:</b> <b>Q / Tab</b></span>
-    <span><b>Àrbitres:</b> <b>🟦 Blava:</b> 2 min complets · <b>P:</b> pausa</span>
-  </footer>
-
   <dialog id="benchDialog" class="bench-dialog" aria-labelledby="benchTitle">
+    <div class="eyebrow">Canvis il·limitats</div>
     <h2 id="benchTitle">Banqueta · Barça</h2>
     <p>El joc queda en pausa mentre fas els canvis. Pots substituir patinadors i porters i tornar-los a fer entrar. Els suplents marcats «demo» són jugadors de prova.</p>
     <p id="benchSummary" role="status" aria-live="polite"></p>
-    <label>Surt de pista<select id="benchOut" class="btn"></select></label>
-    <label>Entra des de la banqueta<select id="benchIn" class="btn"></select></label>
+    <label>Surt de pista<select id="benchOut" class="select"></select></label>
+    <label>Entra des de la banqueta<select id="benchIn" class="select"></select></label>
     <div class="bench-actions">
-      <button id="btnApplySub" class="btn accent" type="button">Fes el canvi</button>
+      <button id="btnApplySub" class="btn primary" type="button" style="font-size:16px;padding:12px 18px">Fes el canvi</button>
       <button id="btnCloseBench" class="btn" type="button">Torna al partit</button>
     </div>
     <ul id="benchRoster" aria-label="Estat dels deu jugadors"></ul>

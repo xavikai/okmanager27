@@ -61,6 +61,8 @@ test('full arcade startup, rendering, passing, cards, pause and reset do not thr
   assert.ok(nextFrame,'animation starts');
   const frame=time=>nextFrame(time);
   frame(10016);frame(10034);
+  elements.get('btnStart').events.get('click')();
+  frame(10040);
   const event={preventDefault(){},code:'Space',repeat:false};
   windowEvents.get('keydown')(event);
   frame(10051);
@@ -75,7 +77,7 @@ test('full arcade startup, rendering, passing, cards, pause and reset do not thr
   assert.match(elements.get('benchSummary').textContent,/Canvis: 1/);
   elements.get('btnCloseBench').events.get('click')();
   assert.equal(elements.get('benchDialog').open,false);
-  assert.equal(elements.get('btnPause').textContent,'⏸ Pausa');
+  assert.equal(elements.get('btnPause').dataset.state,'playing');
   elements.get('btnBlueCard').events.get('click')();
   for(let i=0;i<150;i++)frame(10051+i*1000/60);
   elements.get('btnPause').events.get('click')();frame(12600);
